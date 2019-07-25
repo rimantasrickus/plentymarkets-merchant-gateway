@@ -1,0 +1,157 @@
+<button id="checkoutButtonHeidelpay" class="btn btn-success btn-block" @click="heidelpayPayment()" :disabled="waiting">
+    <i id="checkoutButtonHeidelpayArrow" class="fa fa-arrow-right" aria-hidden="true"></i>
+    {{ trans("Ceres::Template.checkoutBuyNow") }}
+</button>
+<script type="text/javascript">
+const mopList = {{mopList | json_encode | raw}};
+
+function getBasketMOP() {
+    return vueApp.$root.$options.store.state.checkout.payment.methodOfPaymentId;
+}
+
+function getPlaceOrderComponent() {
+    for (let i = 0; i < vueApp.$children.length; i++) {
+        for (let j = 0; j < vueApp.$children[i].$children.length; j++) {
+            if (vueApp.$children[i].$children[j].$vnode.componentOptions.tag === 'place-order'
+                && typeof vueApp.$children[i].$children[j].preparePayment === 'function') {
+
+                return vueApp.$children[i].$children[j];
+            }
+        }
+    }
+}
+
+function heidelpayPayment() {
+    const placeOrderComponent = getPlaceOrderComponent();
+    if (placeOrderComponent.validateCheckout()) {
+        var heidelpayInstance = new heidelpay('{{publicKey}}');
+        let paymentInstance = null;
+        for (mop of mopList) {
+            if (mop.id === getBasketMOP() && mop.paymentKey === '{{invoice}}') {
+                paymentInstance = heidelpayInstance.Invoice();
+            }
+            if (mop.id === getBasketMOP() && mop.paymentKey === '{{invoiceGuaranteed}}') {
+                if ({{useInvoiceFactoring}}) {
+                    paymentInstance = heidelpayInstance.InvoiceFactoring();
+                } else {
+                    paymentInstance = heidelpayInstance.InvoiceGuaranteed();
+                }
+            }
+            if (mop.id === getBasketMOP() && mop.paymentKey === '{{invoiceGuaranteedB2B}}') {
+                if ({{useInvoiceB2BFactoring}}) {
+                    paymentInstance = heidelpayInstance.InvoiceFactoring();
+                } else {
+                    paymentInstance = heidelpayInstance.InvoiceGuaranteed();
+                }
+            }
+        }
+        if (paymentInstance) {
+            paymentInstance.createResource()
+                .then(data => {
+                    console.log('Success: ', data)
+                    fetch('/{{routeName}}/payment-type', {
+                        method: 'POST', 
+                        body: JSON.stringify(data),
+                        headers:{
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(response => {
+                        console.log('Success: ', response)
+                        if (response.success === true) {
+                            placeOrderComponent.preparePayment();
+                            return;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        window.CeresNotification.error(error);
+                    });
+                })
+                .catch(error => {
+                    console.log('Error: ', error);
+                    window.CeresNotification.error(error);
+                })
+        }
+    }
+}
+
+function checkHeidelpayActive(e) {
+    let pluginIds = [];
+    for (mop of mopList) {
+        pluginIds.push(mop.id);
+    }
+    if (document.getElementById('checkoutButtonHeidelpay').parentNode.childNodes.length > 1) {
+        // we have more than one button, need to act
+        if (e === false) {
+            if (isHeidelpaySelected()) {
+                hideAllButHeidelpay(true);
+            } else {
+                hideHeidelpay();
+            }
+        } else { // paymentchange
+            if (pluginIds.includes(e.detail)) {
+                hideAllButHeidelpay(true);
+            } else {
+                hideHeidelpay();
+            }
+        }
+    } else {
+        if (pluginIds.includes(e.detail)) {
+            hideAllButHeidelpay(true);
+        } else {
+            hideAllButHeidelpay(false);
+        }
+    }
+}
+
+function hideHeidelpay() {
+    // show all buttons
+    for(element of document.getElementById('checkoutButtonHeidelpay').parentNode.childNodes) {
+        if (element.tagName == 'BUTTON') {
+            element.style.display = 'block';
+        }
+    }
+    
+    // hide own button
+    document.getElementById('checkoutButtonHeidelpay').style.display = 'none';
+}
+
+function isHeidelpaySelected() {
+    for(input of document.getElementsByTagName('input')) {
+        for (mop of mopList) {
+            if (input.value == mop.id && input.checked === true) {
+                return true;
+            }        
+        }
+    }
+
+    return false;
+}
+
+function hideAllButHeidelpay(isSelected) {
+    if (isSelected === true) {
+        document.getElementById('checkoutButtonHeidelpay').innerHTML = `<i class="fa fa-arrow-right" aria-hidden="true"><\/i> {{ trans("Heidelpay::Frontend.checkoutBuyNow") }}`;
+    } else {
+        document.getElementById('checkoutButtonHeidelpay').innerHTML = `<i class="fa fa-arrow-right" aria-hidden="true"><\/i> {{ trans("Ceres::Template.checkoutBuyNow") }}`;
+    }
+
+    // hide all buttons
+    for(element of document.getElementById('checkoutButtonHeidelpay').parentNode.childNodes) {
+        if (element.tagName == 'BUTTON') {
+            element.style.display = 'none';
+        }
+    }
+    
+    // show own button as plugin is selected
+    document.getElementById('checkoutButtonHeidelpay').style.display = 'block';
+}
+
+document.addEventListener("afterPaymentMethodChanged", (e) => {
+    checkHeidelpayActive(e);
+});
+window.addEventListener("load", (e) => {
+    checkHeidelpayActive(e);
+});
+</script>
