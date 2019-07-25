@@ -210,7 +210,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
                 'vat' => $basketItem->vat,
                 'amountGross' => $basketItem->price,
                 'amountVat' => $amountVat,
-                'amountPerUnit' => $basketItem->variationId / $basketItem->quantity,
+                'amountPerUnit' => $basketItem->price / $basketItem->quantity,
                 'amountNet' => $amountNet,
                 'title' => $variation->name,
             ];
