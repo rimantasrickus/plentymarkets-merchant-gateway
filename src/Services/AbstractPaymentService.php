@@ -1,5 +1,5 @@
 <?php
-namespace Heidelpay\Services;
+namespace HeidelpayMGW\Services;
 
 use Plenty\Modules\Payment\Contracts\PaymentContactRelationRepositoryContract;
 use Plenty\Modules\System\Contracts\WebstoreConfigurationRepositoryContract;
@@ -22,9 +22,9 @@ use Plenty\Modules\Basket\Models\Basket;
 use Plenty\Modules\Order\Models\Order;
 use Plenty\Plugin\Application;
 
-use Heidelpay\Helpers\Loggable;
-use Heidelpay\Helpers\OrderHelper;
-use Heidelpay\Helpers\PaymentHelper;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Helpers\OrderHelper;
+use HeidelpayMGW\Helpers\PaymentHelper;
 
 abstract class AbstractPaymentService
 {
@@ -110,7 +110,7 @@ abstract class AbstractPaymentService
     }
 
     /**
-     * Add Heidelpay payment to Order
+     * Add HeidelpayMGW payment to Order
      *
      * @param int $orderId
      * @param string $referenceNumber
@@ -331,7 +331,7 @@ abstract class AbstractPaymentService
             
             $paymentHelper = pluginApp(PaymentHelper::class);
             foreach ($payments as $payment) {
-                if ($paymentHelper->isHeidelpayMOP($payment->mopId)) {
+                if ($paymentHelper->isHeidelpayMGWMOP($payment->mopId)) {
                     $payment->amount = $amount / 100;
                     $payment->status = $paymentStatus;
                     $payment->hash = $orderId.'-'.time();

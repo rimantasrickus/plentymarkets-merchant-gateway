@@ -1,11 +1,11 @@
 <?php
-namespace Heidelpay\Migrations;
+namespace HeidelpayMGW\Migrations;
 
 use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
-use Heidelpay\Helpers\Loggable;
-use Heidelpay\Models\InvoiceGuaranteedB2BSetting;
-use Heidelpay\Configuration\PluginConfiguration;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Models\InvoiceGuaranteedB2BSetting;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 
 class CreateInvoiceGuaranteedB2BSettingTable
 {

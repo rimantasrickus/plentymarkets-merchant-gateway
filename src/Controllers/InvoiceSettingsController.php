@@ -1,13 +1,13 @@
 <?php
-namespace Heidelpay\Controllers;
+namespace HeidelpayMGW\Controllers;
 
 use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\Controller;
 
-use Heidelpay\Helpers\Loggable;
-use Heidelpay\Configuration\PluginConfiguration;
-use Heidelpay\Repositories\InvoiceSettingRepository;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Repositories\InvoiceSettingRepository;
 
 class InvoiceSettingsController extends Controller
 {

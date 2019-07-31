@@ -1,7 +1,7 @@
 <?php
-namespace Heidelpay\Helpers;
+namespace HeidelpayMGW\Helpers;
 
-use Heidelpay\Configuration\PluginConfiguration;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 use Plenty\Plugin\Log\Loggable as PlentyLogger;
 use Plenty\Plugin\Application;
 

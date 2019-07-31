@@ -1,5 +1,5 @@
 <?php
-namespace Heidelpay\Services;
+namespace HeidelpayMGW\Services;
 
 use Plenty\Modules\Item\Variation\Contracts\VariationRepositoryContract;
 use Plenty\Modules\Account\Contact\Contracts\ContactRepositoryContract;
@@ -15,14 +15,14 @@ use Plenty\Plugin\Translation\Translator;
 use Plenty\Modules\Basket\Models\Basket;
 use Plenty\Modules\Order\Models\Order;
 
-use Heidelpay\Helpers\Loggable;
-use Heidelpay\Helpers\OrderHelper;
-use Heidelpay\Helpers\SessionHelper;
-use Heidelpay\Helpers\PaymentHelper;
-use Heidelpay\Services\BasketService;
-use Heidelpay\Configuration\PluginConfiguration;
-use Heidelpay\Repositories\PluginSettingRepository;
-use Heidelpay\Repositories\InvoiceGuaranteedSettingRepository;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Helpers\OrderHelper;
+use HeidelpayMGW\Helpers\SessionHelper;
+use HeidelpayMGW\Helpers\PaymentHelper;
+use HeidelpayMGW\Services\BasketService;
+use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Repositories\PluginSettingRepository;
+use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
 
 class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
 {
@@ -57,7 +57,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
     }
 
     /**
-     * Make a charge call with Heidelpay PHP-SDK
+     * Make a charge call with HeidelpayMGW PHP-SDK
      *
      * @param array $payment
      *
@@ -106,7 +106,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
         $amountSum = 0;
         $paymentHelper = pluginApp(PaymentHelper::class);
         foreach ($payments as $payment) {
-            if ($paymentHelper->isHeidelpayMOP($payment->mopId)) {
+            if ($paymentHelper->isHeidelpayMGWMOP($payment->mopId)) {
                 $amountSum += $payment->amount;
             }
         }
@@ -189,7 +189,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
                 'shopType' => 'Plentymarkets',
                 'shopVersion' => '7',
                 'pluginVersion' => PluginConfiguration::PLUGIN_VERSION,
-                'pluginType' => 'plugin-heidelpay',
+                'pluginType' => 'plugin-HeidelpayMGW',
             ]
         ];
     }
@@ -224,7 +224,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
                 'vat' => $basketItem->vat,
                 'amountGross' => $basketItem->price,
                 'amountVat' => $amountVat,
-                'amountPerUnit' => $basketItem->price / $basketItem->quantity,
+                'amountPerUnit' => $basketItem->variationId / $basketItem->quantity,
                 'amountNet' => $amountNet,
                 'title' => $variation->name,
             ];
@@ -299,7 +299,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
 
             $paymentHelper = pluginApp(PaymentHelper::class);
             foreach ($payments as $payment) {
-                if ($paymentHelper->isHeidelpayMOP($payment->mopId)) {
+                if ($paymentHelper->isHeidelpayMGWMOP($payment->mopId)) {
                     $payment->status = Payment::STATUS_CANCELED;
                     $payment->hash = $orderId.'-'.time();
                     $payment->updateOrderPaymentStatus = true;

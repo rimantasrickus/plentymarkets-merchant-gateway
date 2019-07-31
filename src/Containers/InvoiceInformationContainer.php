@@ -1,10 +1,10 @@
 <?php
-namespace Heidelpay\Containers;
+namespace HeidelpayMGW\Containers;
 
 use Plenty\Plugin\Templates\Twig;
 
-use Heidelpay\Helpers\SessionHelper;
-use Heidelpay\Configuration\PluginConfiguration;
+use HeidelpayMGW\Helpers\SessionHelper;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 
 class InvoiceInformationContainer
 {

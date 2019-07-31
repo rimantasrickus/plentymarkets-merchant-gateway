@@ -1,13 +1,13 @@
 <?php
-namespace Heidelpay\Controllers;
+namespace HeidelpayMGW\Controllers;
 
 use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\Controller;
 
-use Heidelpay\Helpers\Loggable;
-use Heidelpay\Helpers\SessionHelper;
-use Heidelpay\Configuration\PluginConfiguration;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Helpers\SessionHelper;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 
 class PaymetTypeController extends Controller
 {
@@ -28,7 +28,7 @@ class PaymetTypeController extends Controller
      *
      * @return string
      */
-    public function HeidelpayPaymetType(Response $response, Request $request)
+    public function HeidelpayMGWPaymetType(Response $response, Request $request)
     {
         $this->sessionHelper->setValue('paymentType', $request->except('plentyMarkets'));
 

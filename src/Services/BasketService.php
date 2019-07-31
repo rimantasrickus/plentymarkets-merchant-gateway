@@ -1,6 +1,6 @@
 <?php
 
-namespace Heidelpay\Services;
+namespace HeidelpayMGW\Services;
 
 use Plenty\Modules\Order\Shipping\Countries\Contracts\CountryRepositoryContract;
 use Plenty\Modules\Account\Address\Contracts\AddressRepositoryContract;
@@ -12,7 +12,7 @@ use Plenty\Modules\Basket\Models\BasketItem;
 use Plenty\Modules\Item\Item\Models\Item;
 use Plenty\Modules\Basket\Models\Basket;
 
-use Heidelpay\Helpers\Loggable;
+use HeidelpayMGW\Helpers\Loggable;
 
 class BasketService
 {

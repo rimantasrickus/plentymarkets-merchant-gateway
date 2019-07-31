@@ -1,11 +1,11 @@
 <?php
-namespace Heidelpay\Providers;
+namespace HeidelpayMGW\Providers;
 
 use Plenty\Plugin\RouteServiceProvider;
 use Plenty\Plugin\Routing\ApiRouter;
 use Plenty\Plugin\Routing\Router;
 
-use Heidelpay\Configuration\PluginConfiguration;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 
 class PluginRouteServiceProvider extends RouteServiceProvider
 {
@@ -19,7 +19,7 @@ class PluginRouteServiceProvider extends RouteServiceProvider
     ) {
         $apiRouter->version(
             ['v1'],
-            ['namespace' => 'Heidelpay\Controllers', 'middleware' => 'oauth'],
+            ['namespace' => 'HeidelpayMGW\Controllers', 'middleware' => 'oauth'],
             function ($apiRouter) {
                 //Plugin settings
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/plugin-settings', 'PluginSettingsController@getSettings');
@@ -43,7 +43,7 @@ class PluginRouteServiceProvider extends RouteServiceProvider
             }
         );
 
-        $router->post(PluginConfiguration::PLUGIN_NAME.'/payment-type', 'Heidelpay\Controllers\PaymetTypeController@HeidelpayPaymetType');
-        $router->post(PluginConfiguration::PLUGIN_NAME.'/webhooks', 'Heidelpay\Controllers\WebhooksController@handleWebhook');
+        $router->post(PluginConfiguration::PLUGIN_NAME.'/payment-type', 'HeidelpayMGW\Controllers\PaymetTypeController@HeidelpayMGWPaymetType');
+        $router->post(PluginConfiguration::PLUGIN_NAME.'/webhooks', 'HeidelpayMGW\Controllers\WebhooksController@handleWebhook');
     }
 }

@@ -1,19 +1,19 @@
 <?php
-namespace Heidelpay\Configuration;
+namespace HeidelpayMGW\Configuration;
 
 class PluginConfiguration
 {
     // Plugin
-    const PLUGIN_NAME = "Heidelpay";
+    const PLUGIN_NAME = "HeidelpayMGW";
     const PLUGIN_VERSION = "0.1.0";
-    const PLUGIN_KEY = "HeidelpayPaymentPlugin";
+    const PLUGIN_KEY = "HeidelpayMGWPaymentPlugin";
     
-    const PAYMENT_KEY_INVOICE = "HEIDELPAYINVOICE";
-    const INVOICE_FRONTEND_NAME = "HeidelpayInvoice";
-    const PAYMENT_KEY_INVOICE_GUARANTEED = "HEIDELPAYINVOICEGUARANTEED";
-    const INVOICE_GUARANTEED_FRONTEND_NAME = "HeidelpayInvoiceGuaranteed";
-    const PAYMENT_KEY_INVOICE_GUARANTEED_B2B = "HEIDELPAYINVOICEGUARANTEEDB2B";
-    const INVOICE_GUARANTEED_FRONTEND_NAME_B2B = "HeidelpayInvoiceGuaranteedB2B";
+    const PAYMENT_KEY_INVOICE = "HeidelpayMGWINVOICE";
+    const INVOICE_FRONTEND_NAME = "HeidelpayMGWInvoice";
+    const PAYMENT_KEY_INVOICE_GUARANTEED = "HeidelpayMGWINVOICEGUARANTEED";
+    const INVOICE_GUARANTEED_FRONTEND_NAME = "HeidelpayMGWInvoiceGuaranteed";
+    const PAYMENT_KEY_INVOICE_GUARANTEED_B2B = "HeidelpayMGWINVOICEGUARANTEEDB2B";
+    const INVOICE_GUARANTEED_FRONTEND_NAME_B2B = "HeidelpayMGWInvoiceGuaranteedB2B";
 
     // Plugin liscense
     const PLUGIN_SECRET = "pluginES";

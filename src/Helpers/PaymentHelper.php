@@ -1,5 +1,5 @@
 <?php
-namespace Heidelpay\Helpers;
+namespace HeidelpayMGW\Helpers;
 
 use Plenty\Modules\Payment\Contracts\PaymentContactRelationRepositoryContract;
 use Plenty\Modules\Payment\Contracts\PaymentOrderRelationRepositoryContract;
@@ -17,15 +17,15 @@ use Plenty\Modules\Account\Contact\Models\Contact;
 use Plenty\Modules\Payment\Models\Payment;
 use Plenty\Modules\Order\Models\Order;
 
-use Heidelpay\Helpers\Loggable;
-use Heidelpay\Helpers\OrderHelper;
-use Heidelpay\Helpers\SessionHelper;
-use Heidelpay\Models\PaymentInformation;
-use Heidelpay\Services\InvoicePaymentService;
-use Heidelpay\Configuration\PluginConfiguration;
-use Heidelpay\Services\InvoiceGuaranteedPaymentService;
-use Heidelpay\Repositories\PaymentInformationRepository;
-use Heidelpay\Services\InvoiceGuaranteedPaymentServiceB2B;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Helpers\OrderHelper;
+use HeidelpayMGW\Helpers\SessionHelper;
+use HeidelpayMGW\Models\PaymentInformation;
+use HeidelpayMGW\Services\InvoicePaymentService;
+use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Services\InvoiceGuaranteedPaymentService;
+use HeidelpayMGW\Repositories\PaymentInformationRepository;
+use HeidelpayMGW\Services\InvoiceGuaranteedPaymentServiceB2B;
 
 class PaymentHelper
 {
@@ -140,13 +140,13 @@ class PaymentHelper
     }
 
     /**
-     * Check if mop ID is Heidelpay
+     * Check if mop ID is HeidelpayMGW
      *
      * @param int $mopId
      *
      * @return boolean
      */
-    public function isHeidelpayMOP($mopId)
+    public function isHeidelpayMGWMOP($mopId)
     {
         $mopList = $this->getPaymentMethodList();
         foreach ($mopList as $mop) {

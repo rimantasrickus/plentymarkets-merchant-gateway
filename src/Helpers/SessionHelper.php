@@ -1,9 +1,9 @@
 <?php
-namespace Heidelpay\Helpers;
+namespace HeidelpayMGW\Helpers;
 
 use Plenty\Modules\Frontend\Session\Storage\Contracts\FrontendSessionStorageFactoryContract;
 
-use Heidelpay\Configuration\PluginConfiguration;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 
 class SessionHelper
 {

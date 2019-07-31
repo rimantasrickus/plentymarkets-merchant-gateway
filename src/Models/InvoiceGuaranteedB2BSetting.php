@@ -1,5 +1,5 @@
 <?php
-namespace Heidelpay\Models;
+namespace HeidelpayMGW\Models;
 
 use Plenty\Modules\Plugin\DataBase\Contracts\Model;
 
@@ -18,7 +18,7 @@ class InvoiceGuaranteedB2BSetting extends Model
 
     public function getTableName(): string
     {
-        return 'Heidelpay::InvoiceGuaranteedB2BSetting';
+        return 'HeidelpayMGW::InvoiceGuaranteedB2BSetting';
     }
     public function set($data)
     {

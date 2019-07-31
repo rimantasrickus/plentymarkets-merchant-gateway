@@ -1,14 +1,14 @@
 <?php
-namespace Heidelpay\Containers;
+namespace HeidelpayMGW\Containers;
 
 use Plenty\Plugin\Templates\Twig;
 use Plenty\Plugin\Log\Loggable;
 
-use Heidelpay\Helpers\PaymentHelper;
-use Heidelpay\Configuration\PluginConfiguration;
-use Heidelpay\Repositories\PluginSettingRepository;
-use Heidelpay\Repositories\InvoiceGuaranteedSettingRepository;
-use Heidelpay\Repositories\InvoiceGuaranteedB2BSettingRepository;
+use HeidelpayMGW\Helpers\PaymentHelper;
+use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Repositories\PluginSettingRepository;
+use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
+use HeidelpayMGW\Repositories\InvoiceGuaranteedB2BSettingRepository;
 
 class BuyNowButtonContainer
 {

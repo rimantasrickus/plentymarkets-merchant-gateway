@@ -1,5 +1,5 @@
 <?php
-namespace Heidelpay\Models;
+namespace HeidelpayMGW\Models;
 
 use Plenty\Modules\Plugin\DataBase\Contracts\Model;
 
@@ -11,7 +11,7 @@ class PluginSetting extends Model
 
     public function getTableName(): string
     {
-        return 'Heidelpay::PluginSetting';
+        return 'HeidelpayMGW::PluginSetting';
     }
     public function set($data)
     {

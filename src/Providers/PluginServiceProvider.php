@@ -1,5 +1,5 @@
 <?php
-namespace Heidelpay\Providers;
+namespace HeidelpayMGW\Providers;
 
 use Plenty\Modules\EventProcedures\Services\EventProceduresService;
 use Plenty\Modules\EventProcedures\Services\Entries\ProcedureEntry;
@@ -20,19 +20,19 @@ use Plenty\Plugin\Translation\Translator;
 use Plenty\Plugin\Events\Dispatcher;
 use Plenty\Plugin\ServiceProvider;
 
-use Heidelpay\Helpers\Loggable;
-use Heidelpay\Helpers\SessionHelper;
-use Heidelpay\Helpers\PaymentHelper;
-use Heidelpay\Methods\InvoicePaymentMethod;
-use Heidelpay\Configuration\PluginConfiguration;
-use Heidelpay\Providers\PluginRouteServiceProvider;
-use Heidelpay\Methods\InvoiceGuaranteedPaymentMethod;
-use Heidelpay\Methods\InvoiceGuaranteedPaymentMethodB2B;
-use Heidelpay\Repositories\PaymentInformationRepository;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Helpers\SessionHelper;
+use HeidelpayMGW\Helpers\PaymentHelper;
+use HeidelpayMGW\Methods\InvoicePaymentMethod;
+use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Providers\PluginRouteServiceProvider;
+use HeidelpayMGW\Methods\InvoiceGuaranteedPaymentMethod;
+use HeidelpayMGW\Methods\InvoiceGuaranteedPaymentMethodB2B;
+use HeidelpayMGW\Repositories\PaymentInformationRepository;
 
 /**
  * Class PluginServiceProvider
- * @package Heidelpay\Providers
+ * @package HeidelpayMGW\Providers
  */
 class PluginServiceProvider extends ServiceProvider
 {
@@ -95,8 +95,8 @@ class PluginServiceProvider extends ServiceProvider
                 $sessionHelper, $paymentHelper, $logger
             ) {
                 try {
-                    //skip not Heidelpay payment
-                    if (!$paymentHelper->isHeidelpayMOP($event->getMop())) {
+                    //skip not HeidelpayMGW payment
+                    if (!$paymentHelper->isHeidelpayMGWMOP($event->getMop())) {
                         return $event->setType(GetPaymentMethodContent::RETURN_TYPE_CONTINUE);
                     }
 
@@ -131,7 +131,7 @@ class PluginServiceProvider extends ServiceProvider
             ) {
                 try {
                     // if payment method not ours, we don't care
-                    if (!$paymentHelper->isHeidelpayMOP($event->getMop())) {
+                    if (!$paymentHelper->isHeidelpayMGWMOP($event->getMop())) {
                         return $event->setType(GetPaymentMethodContent::RETURN_TYPE_CONTINUE);
                     }
                     $payment = $sessionHelper->getValue('paymentInformation');
@@ -164,7 +164,7 @@ class PluginServiceProvider extends ServiceProvider
                     
                     $docType = $event->getDocType();
                     $mopId = $order->methodOfPaymentId;
-                    if (!$paymentHelper->isHeidelpayMOP($mopId)) {
+                    if (!$paymentHelper->isHeidelpayMGWMOP($mopId)) {
                         return;
                     }
                     $orderId = $order->typeId === 3 ? $order->parentOrder->id : $order->id;

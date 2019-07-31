@@ -1,11 +1,11 @@
 <?php
-namespace Heidelpay\Migrations;
+namespace HeidelpayMGW\Migrations;
 
 use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
-use Heidelpay\Helpers\Loggable;
-use Heidelpay\Models\PluginSetting;
-use Heidelpay\Configuration\PluginConfiguration;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Models\PluginSetting;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 
 class CreatePluginSettingTable
 {

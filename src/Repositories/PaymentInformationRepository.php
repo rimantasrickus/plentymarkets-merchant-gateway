@@ -1,9 +1,9 @@
 <?php
-namespace Heidelpay\Repositories;
+namespace HeidelpayMGW\Repositories;
 
 use Plenty\Modules\Plugin\DataBase\Contracts\DataBase;
 
-use Heidelpay\Models\PaymentInformation;
+use HeidelpayMGW\Models\PaymentInformation;
 
 class PaymentInformationRepository
 {
@@ -47,7 +47,7 @@ class PaymentInformationRepository
     }
 
     /**
-     * Returns PaymentInformation model by Heidelpay Payment ID.
+     * Returns PaymentInformation model by HeidelpayMGW Payment ID.
      *
      * @param string $paymentType
      *

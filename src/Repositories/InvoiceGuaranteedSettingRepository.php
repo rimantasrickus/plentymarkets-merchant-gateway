@@ -1,9 +1,9 @@
 <?php
-namespace Heidelpay\Repositories;
+namespace HeidelpayMGW\Repositories;
 
 use Plenty\Modules\Plugin\DataBase\Contracts\DataBase;
 
-use Heidelpay\Models\InvoiceGuaranteedSetting;
+use HeidelpayMGW\Models\InvoiceGuaranteedSetting;
 
 class InvoiceGuaranteedSettingRepository
 {

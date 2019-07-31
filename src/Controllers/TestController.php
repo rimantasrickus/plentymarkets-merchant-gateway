@@ -1,5 +1,5 @@
 <?php
-namespace Heidelpay\Controllers;
+namespace HeidelpayMGW\Controllers;
 
 use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
@@ -8,8 +8,8 @@ use Plenty\Plugin\Http\Response;
 use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\Controller;
 
-use Heidelpay\Helpers\Loggable;
-use Heidelpay\Configuration\PluginConfiguration;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 
 class TestController extends Controller
 {
@@ -30,8 +30,8 @@ class TestController extends Controller
     public function reset(Request $request, Response $response, Migrate $migrate)
     {
         $model = $request->get('model');
-        $migrate->deleteTable("Heidelpay\\Models\\".$model);
-        $migrate->createTable("Heidelpay\\Models\\".$model);
+        $migrate->deleteTable("HeidelpayMGW\\Models\\".$model);
+        $migrate->createTable("HeidelpayMGW\\Models\\".$model);
 
         return $response->json("Ok");
     }
@@ -47,14 +47,14 @@ class TestController extends Controller
     public function update(Request $request, Response $response, Migrate $migrate)
     {
         $model = $request->get('model');
-        $migrate->updateTable("Heidelpay\\Models\\".$model);
+        $migrate->updateTable("HeidelpayMGW\\Models\\".$model);
 
         return $response->json("Ok");
     }
 
     public function show(Request $request, Response $response)
     {
-        return $response->json(pluginApp(\Plenty\Modules\Plugin\DataBase\Contracts\DataBase::class)->query("Heidelpay\\Models\\".$request->get('model'))->get());
+        return $response->json(pluginApp(\Plenty\Modules\Plugin\DataBase\Contracts\DataBase::class)->query("HeidelpayMGW\\Models\\".$request->get('model'))->get());
     }
 
 
@@ -69,7 +69,7 @@ class TestController extends Controller
 
     public function lib(Request $request, Response $response)
     {
-        $settingsRepo = pluginApp(\Heidelpay\Repositories\PluginSettingRepository::class);
+        $settingsRepo = pluginApp(\HeidelpayMGW\Repositories\PluginSettingRepository::class);
         $settings = $settingsRepo->get();
 
         $lib = pluginApp(LibraryCallContract::class);

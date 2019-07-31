@@ -1,58 +1,58 @@
 {
-    "name": "Heidelpay",
+    "name": "HeidelpayMGW",
     "marketplaceName":
     {
-        "de": "Heidelpay",
-        "en": "Heidelpay"
+        "de": "HeidelpayMGW",
+        "en": "HeidelpayMGW"
     },
-    "namespace": "Heidelpay",
+    "namespace": "HeidelpayMGW",
     "type": "payment",
     "version": "0.1.0",
     "license": "Copyright by hashtagES",
     "isClosedSource": false,
     "price": 0.00,
-    "description": "Heidelpay integration into Plentymarkets",
+    "description": "HeidelpayMGW integration into Plentymarkets",
     "shortDescription": {
-        "de": "Heidelpay integration into Plentymarkets",
-        "en": "Heidelpay integration into Plentymarkets"
+        "de": "HeidelpayMGW integration into Plentymarkets",
+        "en": "HeidelpayMGW integration into Plentymarkets"
     },
     "categories": ["3881"],
-    "keywords": ["Heidelpay"],
+    "keywords": ["HeidelpayMGW"],
     "author": "hashtagES GmbH",
     "authorIcon": "icon_author_xs.png",
     "pluginIcon": "icon_plugin.png",
     "email"  : "hello@hashtages.com",
     "phone"  : "+49 (0) 4264-776949-5",
-    "serviceProvider": "Heidelpay\\Providers\\PluginServiceProvider",
+    "serviceProvider": "HeidelpayMGW\\Providers\\PluginServiceProvider",
     "require": ["IO", "Ceres"],
     "dependencies":{
         "heidelpay/heidelpay-php":"1.1.5.0"
     },      
     "runOnBuild": [
-        "Heidelpay\\Migrations\\CreatePluginSettingTable",
-        "Heidelpay\\Migrations\\CreateInvoiceSettingTable",
-        "Heidelpay\\Migrations\\CreatePaymentInformationTable",
-        "Heidelpay\\Migrations\\CreateInvoiceGuaranteedSettingTable",
-        "Heidelpay\\Migrations\\CreateInvoiceGuaranteedB2BSettingTable"
+        "HeidelpayMGW\\Migrations\\CreatePluginSettingTable",
+        "HeidelpayMGW\\Migrations\\CreateInvoiceSettingTable",
+        "HeidelpayMGW\\Migrations\\CreatePaymentInformationTable",
+        "HeidelpayMGW\\Migrations\\CreateInvoiceGuaranteedSettingTable",
+        "HeidelpayMGW\\Migrations\\CreateInvoiceGuaranteedB2BSettingTable"
     ],
     "dataProviders"         :
     [
         {
-            "key"           :"Heidelpay\\Containers\\InvoiceInformationContainer",
+            "key"           :"HeidelpayMGW\\Containers\\InvoiceInformationContainer",
             "name"          :"InvoiceInformationContainer",
             "description"   :"Display additional data in order confirmation page",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::OrderConfirmation.AdditionalPaymentInformation"
         },
         {
-            "key"           :"Heidelpay\\Containers\\HeidelpayScriptsContainer",
+            "key"           :"HeidelpayMGW\\Containers\\HeidelpayScriptsContainer",
             "name"          :"HeidelpayScriptsContainer",
-            "description"   :"Heidelpay scripts",
+            "description"   :"HeidelpayM scripts",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Script.AfterScriptsLoaded"
         },
         {
-            "key"           :"Heidelpay\\Containers\\BuyNowButtonContainer",
+            "key"           :"HeidelpayMGW\\Containers\\BuyNowButtonContainer",
             "name"          :"BuyNowButtonContainer",
             "description"   :"Heidelpay BuyNow button",
             "multiple"      : false,

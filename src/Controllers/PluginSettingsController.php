@@ -1,5 +1,5 @@
 <?php
-namespace Heidelpay\Controllers;
+namespace HeidelpayMGW\Controllers;
 
 use Plenty\Modules\System\Contracts\WebstoreConfigurationRepositoryContract;
 use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
@@ -8,9 +8,9 @@ use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\Application;
 use Plenty\Plugin\Controller;
 
-use Heidelpay\Helpers\Loggable;
-use Heidelpay\Configuration\PluginConfiguration;
-use Heidelpay\Repositories\PluginSettingRepository;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Repositories\PluginSettingRepository;
 
 class PluginSettingsController extends Controller
 {

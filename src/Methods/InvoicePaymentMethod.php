@@ -1,13 +1,13 @@
 <?php
-namespace Heidelpay\Methods;
+namespace HeidelpayMGW\Methods;
 
 use Plenty\Modules\Payment\Method\Contracts\PaymentMethodService;
 use Plenty\Plugin\Application;
 
-use Heidelpay\Helpers\Loggable;
-use Heidelpay\Services\BasketService;
-use Heidelpay\Configuration\PluginConfiguration;
-use Heidelpay\Repositories\InvoiceSettingRepository;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Services\BasketService;
+use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Repositories\InvoiceSettingRepository;
 
 class InvoicePaymentMethod extends PaymentMethodService
 {

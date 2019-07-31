@@ -1,10 +1,10 @@
 <?php
-namespace Heidelpay\Helpers;
+namespace HeidelpayMGW\Helpers;
 
 use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
 use Plenty\Modules\Authorization\Services\AuthHelper;
 
-use Heidelpay\Configuration\PluginConfiguration;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 
 class OrderHelper
 {
