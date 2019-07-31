@@ -4,10 +4,10 @@ namespace HeidelpayMGW\Containers;
 
 use Plenty\Plugin\Templates\Twig;
 
-class HeidelpayMGWScriptsContainer
+class HeidelpayScriptsContainer
 {
     public function call(Twig $twig)
     {
-        return $twig->render('HeidelpayMGW::content.HeidelpayMGWScripts', []);
+        return $twig->render('HeidelpayMGW::content.HeidelpayScripts', []);
     }
 }
