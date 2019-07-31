@@ -39,7 +39,7 @@ class PluginSettingsController extends Controller
 
             return $response->json([
                 'success' => true,
-                'pluginSetting' => $pluginSetting
+                'settings' => $pluginSetting
             ]);
         } catch (\Exception $e) {
             $this->getLogger(__METHOD__)->exception(
