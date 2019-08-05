@@ -1,116 +1,123 @@
 <?php
+
 namespace HeidelpayMGW\Providers;
 
-use Plenty\Modules\EventProcedures\Services\EventProceduresService;
-use Plenty\Modules\EventProcedures\Services\Entries\ProcedureEntry;
-use Plenty\Modules\Payment\Events\Checkout\GetPaymentMethodContent;
-use Plenty\Modules\Payment\Method\Contracts\PaymentMethodContainer;
-use Plenty\Modules\Basket\Events\BasketItem\AfterBasketItemAdd;
-use Plenty\Modules\Item\Item\Contracts\ItemRepositoryContract;
-use Plenty\Modules\Order\Pdf\Events\OrderPdfGenerationEvent;
-use Plenty\Modules\Frontend\Events\FrontendLanguageChanged;
-use Plenty\Modules\Order\Property\Models\OrderPropertyType;
-use Plenty\Modules\Payment\Events\Checkout\ExecutePayment;
-use Plenty\Modules\Basket\Events\Basket\AfterBasketCreate;
-use Plenty\Modules\Order\Property\Models\OrderProperty;
-use Plenty\Modules\Order\Pdf\Models\OrderPdfGeneration;
-use Plenty\Modules\Document\Models\Document;
-use Plenty\Modules\Payment\Models\Payment;
-use Plenty\Plugin\Translation\Translator;
-use Plenty\Plugin\Events\Dispatcher;
-use Plenty\Plugin\ServiceProvider;
-
 use HeidelpayMGW\Helpers\Loggable;
-use HeidelpayMGW\Helpers\SessionHelper;
+use Plenty\Plugin\ServiceProvider;
+use Plenty\Plugin\Events\Dispatcher;
 use HeidelpayMGW\Helpers\PaymentHelper;
+use HeidelpayMGW\Helpers\SessionHelper;
+use Plenty\Modules\Order\Models\OrderType;
+use Plenty\Modules\Document\Models\Document;
 use HeidelpayMGW\Methods\InvoicePaymentMethod;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 use HeidelpayMGW\Providers\PluginRouteServiceProvider;
+use Plenty\Modules\Order\Pdf\Models\OrderPdfGeneration;
 use HeidelpayMGW\Methods\InvoiceGuaranteedPaymentMethod;
+use Plenty\Modules\Basket\Events\Basket\AfterBasketCreate;
+use Plenty\Modules\Payment\Events\Checkout\ExecutePayment;
 use HeidelpayMGW\Methods\InvoiceGuaranteedPaymentMethodB2B;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
+use Plenty\Modules\Order\Pdf\Events\OrderPdfGenerationEvent;
+use Plenty\Modules\Basket\Events\BasketItem\AfterBasketItemAdd;
+use Plenty\Modules\Payment\Events\Checkout\GetPaymentMethodContent;
+use Plenty\Modules\Payment\Method\Contracts\PaymentMethodContainer;
 
 /**
- * Class PluginServiceProvider
- * @package HeidelpayMGW\Providers
+ * Service provider of plugin
+ *
+ * Copyright (C) 2019 heidelpay GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @link https://docs.heidelpay.com/
+ *
+ * @package  heidelpayMGW/providers
+ *
+ * @author Rimantas <development@heidelpay.com>
  */
 class PluginServiceProvider extends ServiceProvider
 {
     use Loggable;
 
     /**
-     * Register the service provider.
+     * Register service providers
      */
-
     public function register()
     {
         $this->getApplication()->register(PluginRouteServiceProvider::class);
     }
     
+    /**
+     * Everything that needs constant attention goes here. Like system events and so on.
+     *
+     * @param PaymentHelper $paymentHelper  Helper class to handle payment data
+     * @param PaymentMethodContainer $payContainer  Plentymarkets PaymentMethodContainer
+     * @param SessionHelper $sessionHelper  Helper class to save information to session
+     * @param Dispatcher $eventDispatcher  Plentymarkets event Dispatcher
+     * @param PaymentInformationRepository $paymentInformationRepository  Heidelpay payment information repository
+     *
+     * @return void
+     */
     public function boot(
-        EventProceduresService $eventProceduresService,
         PaymentHelper $paymentHelper,
         PaymentMethodContainer $payContainer,
         SessionHelper $sessionHelper,
         Dispatcher $eventDispatcher,
         PaymentInformationRepository $paymentInformationRepository
     ) {
-        $logger = $this->getLogger(__METHOD__);
-
         //Invoice
         $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE,
             InvoicePaymentMethod::class,
-            [
-                AfterBasketItemAdd::class,
-                AfterBasketCreate::class,
-            ]
+            $this->paymentMethodEvents()
         );
         //Invoice guaranteed B2C
         $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED,
             InvoiceGuaranteedPaymentMethod::class,
-            [
-                AfterBasketItemAdd::class,
-                AfterBasketCreate::class,
-            ]
+            $this->paymentMethodEvents()
         );
         //Invoice guaranteed B2B
         $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B,
             InvoiceGuaranteedPaymentMethodB2B::class,
-            [
-                AfterBasketItemAdd::class,
-                AfterBasketCreate::class,
-            ]
+            $this->paymentMethodEvents()
         );
 
-        // Listen for the event that gets the payment method content
+        //Listen for the event that gets the payment method content before Order creation
         $eventDispatcher->listen(
             GetPaymentMethodContent::class,
-            function (GetPaymentMethodContent $event) use (
-                $sessionHelper, $paymentHelper, $logger
-            ) {
+            function (GetPaymentMethodContent $event) use ($sessionHelper, $paymentHelper) {
                 try {
                     //skip not HeidelpayMGW payment
                     if (!$paymentHelper->isHeidelpayMGWMOP($event->getMop())) {
-                        return $event->setType(GetPaymentMethodContent::RETURN_TYPE_CONTINUE);
+                        return;
                     }
 
                     $paymentType = $sessionHelper->getValue('paymentType');
                     if (!empty($paymentType)) {
-                        // make a charge
-                        $orderId = '';
-                        $response = $paymentHelper->executeCharge($paymentType, $orderId, $event->getMop());
+                        //make a charge
+                        $response = $paymentHelper->executeCharge($paymentType, $event->getMop());
                         
                         $event->setValue($response['value']);
                         return $event->setType($response['type']);
                     }
                 } catch (\Exception $e) {
-                    $logger->exception(
+                    $this->getLogger(__METHOD__)->exception(
                         'translation.exception',
                         [
                             'error' => $e->getMessage()
@@ -123,14 +130,12 @@ class PluginServiceProvider extends ServiceProvider
             }
         );
 
-        // Listen for the event that executes the payment
+        //Listen for the event that executes the payment after Order creat
         $eventDispatcher->listen(
             ExecutePayment::class,
-            function (ExecutePayment $event) use (
-                $paymentHelper, $sessionHelper, $logger, $paymentInformationRepository
-            ) {
+            function (ExecutePayment $event) use ($paymentHelper, $sessionHelper, $paymentInformationRepository) {
                 try {
-                    // if payment method not ours, we don't care
+                    //if payment method not ours, we don't care
                     if (!$paymentHelper->isHeidelpayMGWMOP($event->getMop())) {
                         return $event->setType(GetPaymentMethodContent::RETURN_TYPE_CONTINUE);
                     }
@@ -140,7 +145,7 @@ class PluginServiceProvider extends ServiceProvider
                         $paymentHelper->handlePayment($payment, $event->getOrderId(), $event->getMop());
                     }
                 } catch (\Exception $e) {
-                    $logger->exception(
+                    $this->getLogger(__METHOD__)->exception(
                         'translation.exception',
                         [
                             'error' => $e->getMessage()
@@ -153,88 +158,44 @@ class PluginServiceProvider extends ServiceProvider
             }
         );
 
-        // Handle document generation
+        //Handle document generation
         $eventDispatcher->listen(
             OrderPdfGenerationEvent::class,
-            static function (OrderPdfGenerationEvent $event) use (
-                $paymentHelper, $logger, $paymentInformationRepository
-            ) {
+            static function (OrderPdfGenerationEvent $event) use ($paymentHelper, $paymentInformationRepository) {
                 try {
                     $order = $event->getOrder();
-                    
                     $docType = $event->getDocType();
                     $mopId = $order->methodOfPaymentId;
                     if (!$paymentHelper->isHeidelpayMGWMOP($mopId)) {
                         return;
                     }
-                    $orderId = $order->typeId === 3 ? $order->parentOrder->id : $order->id;
-                    $payments = $order->typeId === 3 ? $order->parentOrder->payments : $order->payments;
+                    $orderId = $order->typeId === OrderType::TYPE_RETURN ? $order->parentOrder->id : $order->id;
                     $paymentInformation = $paymentInformationRepository->getByOrderId($orderId);
                     if (empty($paymentInformation)) {
-                        return ;
+                        return;
                     }
-
                     switch ($docType) {
                         case Document::INVOICE:
-                            if ($paymentInformation->paymentMethod == 'invoice' || $paymentInformation->paymentMethod == 'invoice-guaranteed' || $paymentInformation->paymentMethod == 'invoice-factoring') {
-                                if (empty($paymentInformation->transaction)) {
-                                    return;
-                                }
-                                $language = 'DE';
-                                foreach ($order->properties as $property) {
-                                    if ($property->typeId === OrderPropertyType::DOCUMENT_LANGUAGE) {
-                                        $language = $property->value;
-                                    }
-                                }
-                                $translator = pluginApp(Translator::class);
-                                $text = implode(PHP_EOL, [
-                                    $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.transferTo', [], $language),
-                                    $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.iban', [], $language) . $paymentInformation->transaction['iban'],
-                                    $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.bic', [], $language) . $paymentInformation->transaction['bic'],
-                                    $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.holder', [], $language) . $paymentInformation->transaction['holder'],
-                                    $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.descriptor', [], $language) . $paymentInformation->transaction['descriptor'],
-                                ]);
-                                // add payment information to the invoice pdf
-                                $orderPdfGeneration           = pluginApp(OrderPdfGeneration::class);
-                                $orderPdfGeneration->language = $language;
-                                $orderPdfGeneration->advice   = $text;
+                            //add additional Invoice information
+                            $orderPdfGeneration = $paymentHelper->addInfoToInvoice($paymentInformation, $order);
+                            if ($orderPdfGeneration instanceof OrderPdfGeneration) {
                                 $event->addOrderPdfGeneration($orderPdfGeneration);
                             }
                             break;
                         case Document::DELIVERY_NOTE:
-                            // perform finalize transaction
-                            if ($paymentInformation->paymentMethod == 'invoice' || $paymentInformation->paymentMethod == 'invoice-guaranteed' || $paymentInformation->paymentMethod == 'invoice-factoring') {
-                                $invoiceId = '';
-                                foreach ($order->documents as $document) {
-                                    if ($document->type ==  Document::INVOICE) {
-                                        $invoiceId = $document->numberWithPrefix;
-                                    }
-                                }
-                                $paymentHelper->executeShipment(
-                                    $orderId,
-                                    $paymentInformation->transaction['paymentId'],
-                                    $invoiceId
-                                );
-                                return;
-                            }
+                            //perform finalize transaction
+                            $paymentHelper->executeShipment($orderId, $paymentInformation);
                             break;
                         case Document::RETURN_NOTE:
                                 // perform refund transaction
-                                $paymentHelper->cancelCharge(
-                                    $paymentInformation,
-                                    $order->amounts[0]->invoiceTotal,
-                                    (array)$payments,
-                                    $orderId,
-                                    $order->orderItems
-                                );
-                                return;
+                                $paymentHelper->cancelCharge($paymentInformation, $order);
                             break;
                         default:
-                        // do nothing
-                        break;
+                            //do nothing
+                            break;
                     }
                 } catch (\Exception $e) {
-                    $logger->exception(
+                    $this->getLogger(__METHOD__)->exception(
                         'translation.exception',
                         [
                             'error' => $e->getMessage()
@@ -243,5 +204,18 @@ class PluginServiceProvider extends ServiceProvider
                 }
             }
         );
+    }
+
+    /**
+     * Return an array of events
+     *
+     * @return array
+     */
+    private function paymentMethodEvents(): array
+    {
+        return [
+            AfterBasketItemAdd::class,
+            AfterBasketCreate::class
+        ];
     }
 }

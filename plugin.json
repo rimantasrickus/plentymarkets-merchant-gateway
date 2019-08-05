@@ -2,31 +2,32 @@
     "name": "HeidelpayMGW",
     "marketplaceName":
     {
-        "de": "HeidelpayMGW",
-        "en": "HeidelpayMGW"
+        "de": "heidelpay merchant gateway",
+        "en": "heidelpay merchant gateway"
     },
     "namespace": "HeidelpayMGW",
+
     "type": "payment",
     "version": "0.1.0",
-    "license": "Copyright by hashtagES",
+    "license": "Apache-2.0",
     "isClosedSource": false,
     "price": 0.00,
-    "description": "HeidelpayMGW integration into Plentymarkets",
+    "description": "plentymarkets integration for heidelpay merchant gateway",
     "shortDescription": {
-        "de": "HeidelpayMGW integration into Plentymarkets",
-        "en": "HeidelpayMGW integration into Plentymarkets"
+        "de": "heidelpay integration into plentymarkets",
+        "en": "heidelpay integration into plentymarkets"
     },
-    "categories": ["3881"],
-    "keywords": ["HeidelpayMGW"],
+    "categories": ["3519"],
+    "keywords": ["heidelpay", "plentymarkets", "plugin", "payment", "payment method", "credit card", "debit card", "invoice"],
     "author": "hashtagES GmbH",
     "authorIcon": "icon_author_xs.png",
     "pluginIcon": "icon_plugin.png",
-    "email"  : "hello@hashtages.com",
-    "phone"  : "+49 (0) 4264-776949-5",
+    "email"  : "support@heidelpay.com",
+    "phone"  : "+49 (0)6221/6471-100",
     "serviceProvider": "HeidelpayMGW\\Providers\\PluginServiceProvider",
     "require": ["IO", "Ceres"],
     "dependencies":{
-        "heidelpay/heidelpay-php":"1.1.5.0"
+        "heidelpay/heidelpay-php":"1.1.6.0"
     },      
     "runOnBuild": [
         "HeidelpayMGW\\Migrations\\CreatePluginSettingTable",
@@ -35,7 +36,7 @@
         "HeidelpayMGW\\Migrations\\CreateInvoiceGuaranteedSettingTable",
         "HeidelpayMGW\\Migrations\\CreateInvoiceGuaranteedB2BSettingTable"
     ],
-    "dataProviders"         :
+    "dataProviders":
     [
         {
             "key"           :"HeidelpayMGW\\Containers\\InvoiceInformationContainer",
@@ -47,18 +48,16 @@
         {
             "key"           :"HeidelpayMGW\\Containers\\HeidelpayScriptsContainer",
             "name"          :"HeidelpayScriptsContainer",
-            "description"   :"HeidelpayM scripts",
+            "description"   :"heidelpay MGW scripts",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Script.AfterScriptsLoaded"
         },
         {
             "key"           :"HeidelpayMGW\\Containers\\BuyNowButtonContainer",
             "name"          :"BuyNowButtonContainer",
-            "description"   :"Heidelpay BuyNow button",
+            "description"   :"heidelpay MGW BuyNow button",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.PlaceOrder"
         }
     ]
 }
-
-  

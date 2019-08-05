@@ -1,23 +1,63 @@
 <?php
+
 namespace HeidelpayMGW\Helpers;
 
-use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
 use Plenty\Modules\Authorization\Services\AuthHelper;
+use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
 
-use HeidelpayMGW\Configuration\PluginConfiguration;
-
+/**
+* Helper class for Order manipulation with AuthHelper
+*
+* Copyright (C) 2019 heidelpay GmbH
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* @link  https://docs.heidelpay.com/
+*
+* @author  Rimantas  <development@heidelpay.com>
+*
+* @package  heidelpayMGW/helpers
+*/
 class OrderHelper
 {
+    /** @var OrderRepositoryContract $orderRepository */
     private $orderRepository;
+
+    /** @var AuthHelper $authHelper */
     private $authHelper;
     
+    /**
+     * OrderHelper constructor
+     *
+     * @param OrderRepositoryContract $orderRepository
+     * @param AuthHelper $authHelper
+     */
     public function __construct(OrderRepositoryContract $orderRepository, AuthHelper $authHelper)
     {
         $this->orderRepository = $orderRepository;
         $this->authHelper = $authHelper;
     }
 
-    public function findOrderById(int $orderId)
+    /**
+     * Find Order by ID using AuthHelper
+     *
+     * @param int $orderId  Plenty Order ID
+     *
+     * @return \Plenty\Modules\Order\Models\Order
+     *
+     * @throws \Throwable
+     */
+    public function findOrderById(int $orderId): \Plenty\Modules\Order\Models\Order
     {
         return $this->authHelper->processUnguarded(
             function () use ($orderId) {
@@ -26,16 +66,35 @@ class OrderHelper
         );
     }
 
-    public function updateOrder(array $order, int $orderId)
+    /**
+     * Update Order model
+     *
+     * @param array $order  Plenty Order model as array
+     * @param int $orderId  Plenty Order ID
+     *
+     * @return \Plenty\Modules\Order\Models\Order
+     *
+     * @throws \Throwable
+     */
+    public function updateOrder(array $order, int $orderId): \Plenty\Modules\Order\Models\Order
     {
-        $this->authHelper->processUnguarded(
+        return $this->authHelper->processUnguarded(
             function () use ($order, $orderId) {
                 return  $this->orderRepository->updateOrder($order, $orderId);
             }
         );
     }
 
-    public function findOrderByExternalOrderId(string $externalOrderId)
+    /**
+     * Return Order by external Order ID
+     *
+     * @param string $externalOrderId  Heidelpay Order ID
+     *
+     * @return \Plenty\Modules\Order\Models\Order
+     *
+     * @throws \Throwable
+     */
+    public function findOrderByExternalOrderId(string $externalOrderId): \Plenty\Modules\Order\Models\Order
     {
         return $this->authHelper->processUnguarded(
             function () use ($externalOrderId) {

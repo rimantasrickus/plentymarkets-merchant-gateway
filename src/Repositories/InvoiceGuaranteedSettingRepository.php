@@ -1,46 +1,50 @@
 <?php
-namespace HeidelpayMGW\Repositories;
 
-use Plenty\Modules\Plugin\DataBase\Contracts\DataBase;
+namespace HeidelpayMGW\Repositories;
 
 use HeidelpayMGW\Models\InvoiceGuaranteedSetting;
 
-class InvoiceGuaranteedSettingRepository
+/**
+ * Invoice guaranteed settings repository
+ *
+ * Copyright (C) 2019 heidelpay GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @link https://docs.heidelpay.com/
+ *
+ * @package  heidelpayMGW/repositories
+ *
+ * @author Rimantas <development@heidelpay.com>
+ */
+class InvoiceGuaranteedSettingRepository extends BaseSettingRepository
 {
-    private $database;
-
-    public function __construct(DataBase $database)
+    /**
+     * InvoiceGuaranteedSettingRepository constructor
+     */
+    public function __construct()
     {
-        $this->database = $database;
+        parent::__construct(pluginApp(InvoiceGuaranteedSetting::class));
     }
 
     /**
-     * Returns InvoiceGuaranteedSetting model.
+     * Get Heidelpay return reason
      *
-     * @return InvoiceGuaranteedSetting
-     */
-    public function get($toArray = false)
-    {
-        $settings = $this->database->query(InvoiceGuaranteedSetting::class)->get()[0] ?? pluginApp(InvoiceGuaranteedSetting::class);
-        
-        return $toArray ? $this->toArray($settings) : $settings;
-    }
-
-    /**
-     * Saves settings from UI
+     * @param string $returnId  Plenty return reason ID
      *
-     * @param array $data
+     * @return string
      */
-    public function save(array $data)
-    {
-        $model = $this->get()->set($data);
-
-        $this->database->save($model);
-        
-        return $model;
-    }
-
-    public function getReturnCode(string $returnId)
+    public function getReturnCode(string $returnId): string
     {
         $model = $this->get();
 
@@ -53,10 +57,5 @@ class InvoiceGuaranteedSettingRepository
         if ($model->reasonCodeCredit == $returnId) {
             return 'CREDIT';
         }
-    }
-
-    private function toArray($obj)
-    {
-        return json_decode(json_encode($obj), true);
     }
 }

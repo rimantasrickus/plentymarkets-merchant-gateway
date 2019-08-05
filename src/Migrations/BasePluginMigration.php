@@ -5,10 +5,10 @@ namespace HeidelpayMGW\Migrations;
 use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
 use HeidelpayMGW\Helpers\Loggable;
-use HeidelpayMGW\Models\PluginSetting;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 
 /**
- * Create PluginSetting model's table
+ * Base plugin migration class
  *
  * Copyright (C) 2019 heidelpay GmbH
  *
@@ -30,19 +30,35 @@ use HeidelpayMGW\Models\PluginSetting;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class CreatePluginSettingTable extends BasePluginMigration
+class BasePluginMigration
 {
     use Loggable;
 
     /**
-     * Create PluginSetting model's table
+     * Create table for given model
      *
      * @param Migrate $migrate
+     * @param string $model  Class of the model
      *
      * @return void
      */
-    public function run(Migrate $migrate)
+    public function createTable(Migrate $migrate, string $model)
     {
-        $this->createTable($migrate, PluginSetting::class);
+        try {
+            $migrate->createTable($model);
+
+            $this->getLogger(__METHOD__)->info(
+                'translation.migration',
+                // model class name without path
+                explode('\\', $model)[2].' Table created'
+            );
+        } catch (\Exception $e) {
+            $this->getLogger(__METHOD__)->exception(
+                'translation.exception',
+                [
+                    'message' => $e->getMessage()
+                ]
+            );
+        }
     }
 }

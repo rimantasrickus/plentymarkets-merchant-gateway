@@ -1,32 +1,47 @@
 <?php
-namespace HeidelpayMGW\Helpers;
 
-use Plenty\Modules\Payment\Contracts\PaymentContactRelationRepositoryContract;
-use Plenty\Modules\Payment\Contracts\PaymentOrderRelationRepositoryContract;
-use Plenty\Modules\Payment\Method\Contracts\PaymentMethodRepositoryContract;
-use Plenty\Modules\Order\RelationReference\Models\OrderRelationReference;
-use Plenty\Modules\Account\Contact\Contracts\ContactRepositoryContract;
-use Plenty\Modules\Payment\Events\Checkout\GetPaymentMethodContent;
-use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
-use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
-use Plenty\Modules\Payment\Models\PaymentContactRelation;
-use Plenty\Modules\Payment\Method\Models\PaymentMethod;
-use Plenty\Modules\Authorization\Services\AuthHelper;
-use Plenty\Modules\Payment\Models\PaymentProperty;
-use Plenty\Modules\Account\Contact\Models\Contact;
-use Plenty\Modules\Payment\Models\Payment;
-use Plenty\Modules\Order\Models\Order;
+namespace HeidelpayMGW\Helpers;
 
 use HeidelpayMGW\Helpers\Loggable;
 use HeidelpayMGW\Helpers\OrderHelper;
+use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\SessionHelper;
+use Plenty\Plugin\Translation\Translator;
+use Plenty\Modules\Payment\Models\Payment;
 use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Services\InvoicePaymentService;
 use HeidelpayMGW\Configuration\PluginConfiguration;
+use Plenty\Modules\Order\Pdf\Models\OrderPdfGeneration;
 use HeidelpayMGW\Services\InvoiceGuaranteedPaymentService;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
+use Plenty\Modules\Order\Property\Models\OrderPropertyType;
 use HeidelpayMGW\Services\InvoiceGuaranteedPaymentServiceB2B;
+use Plenty\Modules\Payment\Events\Checkout\GetPaymentMethodContent;
+use Plenty\Modules\Payment\Method\Contracts\PaymentMethodRepositoryContract;
 
+/**
+ * Helper class to handle payment data
+ *
+ * Copyright (C) 2019 heidelpay GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @link https://docs.heidelpay.com/
+ *
+ * @package  heidelpayMGW/helpers
+ *
+ * @author Rimantas <development@heidelpay.com>
+ */
 class PaymentHelper
 {
     use Loggable;
@@ -37,8 +52,13 @@ class PaymentHelper
     const PAYMENT_PARTLY = 'payment.partly';
     const PAYMENT_PENDING = 'payment.pending';
 
+    /** @var PaymentMethodRepositoryContract $paymentMethodRepository */
     private $paymentMethodRepository;
+
+    /** @var SessionHelper $sessionHelper */
     private $sessionHelper;
+
+    /** @var PaymentInformationRepository $paymentInformationRepo */
     private $paymentInformationRepo;
  
     public function __construct(
@@ -54,7 +74,7 @@ class PaymentHelper
     /**
      * Create the ID of the payment method if it doesn't exist yet
      *
-     * @param string $payment
+     * @param string $payment  Plenty payment method's key to identify payment by
      *
      * @return void
      */
@@ -98,11 +118,11 @@ class PaymentHelper
     /**
      * Return the ID for the payment method
      *
-     * @param string $payment
+     * @param string $payment  Plenty payment method's key to identify payment by
      *
-     * @return int
+     * @return int -1 if did not find plugin's payment methods
      */
-    public function getPaymentMethod(string $payment)
+    public function getPaymentMethod(string $payment): int
     {
         $paymentMethods = $this->paymentMethodRepository->allForPlugin(PluginConfiguration::PLUGIN_KEY);
  
@@ -118,11 +138,11 @@ class PaymentHelper
     }
 
     /**
-     * Get payment method list
+     * Get plugin's payment method list
      *
-     * @return array
+     * @return array  Payment method list with id and payment key
      */
-    public function getPaymentMethodList()
+    public function getPaymentMethodList(): array
     {
         $paymentMethods = $this->paymentMethodRepository->allForPlugin(PluginConfiguration::PLUGIN_KEY);
         
@@ -131,7 +151,7 @@ class PaymentHelper
             foreach ($paymentMethods as $mop) {
                 $mopList[] = [
                     'id' => $mop->id,
-                    'paymentKey' => $mop->paymentKey,
+                    'paymentKey' => $mop->paymentKey
                 ];
             }
         }
@@ -142,11 +162,11 @@ class PaymentHelper
     /**
      * Check if mop ID is HeidelpayMGW
      *
-     * @param int $mopId
+     * @param int $mopId  Plenty payment method ID
      *
-     * @return boolean
+     * @return bool
      */
-    public function isHeidelpayMGWMOP($mopId)
+    public function isHeidelpayMGWMOP($mopId): bool
     {
         $mopList = $this->getPaymentMethodList();
         foreach ($mopList as $mop) {
@@ -158,7 +178,15 @@ class PaymentHelper
         return false;
     }
 
-    public function executeCharge(array $paymentType, string $orderId, int $mopId)
+    /**
+     * Select payment service, make charge call and handle result
+     *
+     * @param array $paymentType  Heidelpay payment data from JS class in frontend
+     * @param int $mopId  Plenty payment method ID
+     *
+     * @return array GetPaymentMethodContent event's value and type
+     */
+    public function executeCharge(array $paymentType, int $mopId): array
     {
         // don't have orderId yet so we use 0
         $paymentService = $this->getPaymentService(0, $mopId);
@@ -187,7 +215,7 @@ class PaymentHelper
         unset($libResponse['success']);
         // save info for later
         $paymentInformation = [
-            'orderId' => $orderId,
+            'orderId' => '',
             'externalOrderId' => $this->sessionHelper->getValue('externalOrderId'),
             'paymentType' => $paymentType['id'],
             'paymentMethod' => $paymentType['method'],
@@ -202,6 +230,14 @@ class PaymentHelper
         ];
     }
 
+    /**
+     * Select payment service based on method of payment
+     *
+     * @param int $orderId  Plenty Order ID
+     * @param int $mopId  Plenty payment method ID
+     *
+     * @return mixed  Payment service class
+     */
     private function getPaymentService(int $orderId, int $mopId = null)
     {
         if (empty($mopId)) {
@@ -225,52 +261,63 @@ class PaymentHelper
         }
     }
 
+    /**
+     * Handle Plenty payment creation from Heidelpay payment information
+     *
+     * @param array $payment  Payment transaction data from SDK
+     * @param int $orderId  Plenty Order ID
+     * @param int $mopId  Plenty payment method ID
+     *
+     * @return void
+     */
     public function handlePayment(array $payment, int $orderId, int $mopId)
     {
         $paymentService = $this->getPaymentService($orderId);
         $externalOrderId = $this->sessionHelper->getValue('externalOrderId');
-        $referenceNumber = '';
         // handle invoice payment
-        if ($payment['paymentMethod'] == 'invoice' || $payment['paymentMethod'] == 'invoice-guaranteed' || $payment['paymentMethod'] == 'invoice-factoring') {
-            $referenceNumber = $payment['transaction']['descriptor'];
-        }
+        $referenceNumber = $payment['transaction']['shortId'];
         // if payment completed add amount to payment
         $amount = 0.00;
         if ($payment['transaction']['status'] == 'completed') {
             $amount = (float)$payment['transaction']['amount'];
         }
 
-        // add external Order ID and invoice comment to Order
+        // add external Order ID and invoice information comment to Order
         $paymentService->updateOrder($orderId, $externalOrderId);
         $payment = $paymentService->addPaymentToOrder($orderId, $referenceNumber, $mopId, $amount, $payment['transaction']['currency']);
         $paymentService->assignPaymentToContact($payment, $orderId);
     }
 
-    public function cancelCharge(PaymentInformation $paymentInformation, float $invoiceTotal, array $payments, int $orderId, $orderItems)
+    /**
+     * Call payment service's cancelCharge method
+     *
+     * @param PaymentInformation $paymentInformation  Payment transaction data from SDK
+     * @param Order $order  Plenty Order
+     *
+     * @return void
+     */
+    public function cancelCharge(PaymentInformation $paymentInformation, Order $order)
     {
-        if ($paymentInformation->paymentMethod == 'invoice' || $paymentInformation->paymentMethod == 'invoice-guaranteed' || $paymentInformation->paymentMethod == 'invoice-factoring') {
-            if (empty($paymentInformation->transaction)) {
-                return;
-            }
-            $paymentService = $this->getPaymentService($orderId);
-            $paymentService->cancelCharge(
-                $paymentInformation->transaction['paymentId'],
-                $paymentInformation->transaction['chargeId'],
-                $invoiceTotal,
-                (array)$payments,
-                $orderId,
-                $paymentInformation->paymentMethod,
-                $orderItems
-            );
+        if (empty($paymentInformation->transaction)) {
+            return;
         }
+        $paymentService = $this->getPaymentService($order->parentOrder->id);
+        $paymentService->cancelCharge($paymentInformation, $order);
     }
 
-    public function handleWebhook(array $hook, array $libResponse)
+    /**
+     * Handle Heidelpay webhook event
+     *
+     * @param array $hook  Heidelpay webhook information array
+     * @param array $libResponse  Heidelpay payment information from SDK
+     *
+     * @return bool
+     */
+    public function handleWebhook(array $hook, array $libResponse): bool
     {
         if ($hook['event'] == self::PAYMENT_PENDING) {
             return true;
         }
-        $paymentInfo = null;
         if (empty($libResponse['paymentType'])) {
             return false;
         }
@@ -282,9 +329,13 @@ class PaymentHelper
         $paymentService = $this->getPaymentService((int)$paymentInfo->orderId);
         // payment completed logic
         if ($hook['event'] == self::PAYMENT_COMPLETED) {
-            $updated = $paymentService->updatePayedAmount((int)$paymentInfo->orderId, (int)($libResponse['total'] * 100), Payment::STATUS_CAPTURED);
+            $order = pluginApp(OrderHelper::class)->findOrderById((int)$paymentInfo->orderId);
+            // don't duplicate amount
+            if ($order->paymentStatus != 'fullyPaid') {
+                $updated = $paymentService->updatePayedAmount((int)$paymentInfo->orderId, (int)($libResponse['total'] * 100), Payment::STATUS_CAPTURED);
+            }
         }
-        // payment completed logic
+        // payment partially completed logic
         if ($hook['event'] == self::PAYMENT_PARTLY) {
             $updated = $paymentService->updatePayedAmount((int)$paymentInfo->orderId, (int)($libResponse['total'] * 100), Payment::STATUS_PARTIALLY_CAPTURED);
         }
@@ -298,26 +349,76 @@ class PaymentHelper
                 'hook' => $hook,
                 'libResponse' => $libResponse,
                 'paymentInfo' => $paymentInfo,
-                'updated' => $updated,
+                'updated' => $updated
             ]
         );
 
         return $updated;
     }
 
-    public function executeShipment(int $orderId, string $paymentId, string $invoiceId)
+    /**
+     * Call payment service's ship method
+     *
+     * @param integer $orderId Plenty Order ID
+     * @param PaymentInformation $paymentInformation  Payment transaction data from SDK
+     *
+     * @return void
+     */
+    public function executeShipment(int $orderId, PaymentInformation $paymentInformation)
     {
         $paymentService = $this->getPaymentService($orderId);
-        $libResponse = $paymentService->ship($paymentId, $invoiceId, $orderId);
+        $libResponse = $paymentService->ship($paymentInformation, $orderId);
         
         $this->getLogger(__METHOD__)->debug(
             'translation.executeShipment',
             [
                 'orderId' => $orderId,
-                'paymentId' => $paymentId,
-                'invoiceId' => $invoiceId,
+                'paymentId' => $paymentInformation->transaction['paymentId'],
                 'libResponse' => $libResponse
             ]
         );
+    }
+
+    /**
+     * Return OrderPdfGeneration object for additional information in Invoice document
+     *
+     * @param PaymentInformation $paymentInformation  Payment transaction data from SDK
+     * @param Order $order  Plenty Order
+     *
+     * @return OrderPdfGeneration|null  If we don't have transaction information to add return null
+     */
+    public function addInfoToInvoice(PaymentInformation $paymentInformation, Order $order)
+    {
+        // invoice payment's additional info
+        if ($paymentInformation->paymentMethod == PluginConfiguration::INVOICE
+            || $paymentInformation->paymentMethod == PluginConfiguration::INVOICE_GUARANTEED
+            || $paymentInformation->paymentMethod == PluginConfiguration::INVOICE_FACTORING
+        ) {
+            if (empty($paymentInformation->transaction)) {
+                return;
+            }
+            $language = 'DE';
+            foreach ($order->properties as $property) {
+                if ($property->typeId === OrderPropertyType::DOCUMENT_LANGUAGE) {
+                    $language = $property->value;
+                }
+            }
+            /** @var Translator $translator */
+            $translator = pluginApp(Translator::class);
+            $text = implode(PHP_EOL, [
+                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.transferTo', [], $language),
+                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.iban', [], $language) . $paymentInformation->transaction['iban'],
+                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.bic', [], $language) . $paymentInformation->transaction['bic'],
+                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.holder', [], $language) . $paymentInformation->transaction['holder'],
+                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.shortId', [], $language) . $paymentInformation->transaction['shortId'],
+            ]);
+            /** @var OrderPdfGeneration $orderPdfGeneration */
+            $orderPdfGeneration           = pluginApp(OrderPdfGeneration::class);
+            // add payment information to the invoice pdf
+            $orderPdfGeneration->language = $language;
+            $orderPdfGeneration->advice   = $text;
+            
+            return $orderPdfGeneration;
+        }
     }
 }

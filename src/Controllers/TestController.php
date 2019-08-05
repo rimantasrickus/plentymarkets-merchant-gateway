@@ -1,16 +1,39 @@
 <?php
+
 namespace HeidelpayMGW\Controllers;
 
-use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
-use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
-use Plenty\Modules\Plugin\DataBase\Contracts\Model;
-use Plenty\Plugin\Http\Response;
-use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\Controller;
-
 use HeidelpayMGW\Helpers\Loggable;
+use Plenty\Plugin\Http\Request;
+use Plenty\Plugin\Http\Response;
 use HeidelpayMGW\Configuration\PluginConfiguration;
+use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
+use Plenty\Modules\Plugin\DataBase\Contracts\DataBase;
+use Symfony\Component\HttpFoundation\Response as BaseResponse;
 
+/**
+ * Class for Database manipulation
+ *
+ * Copyright (C) 2019 heidelpay GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @link https://docs.heidelpay.com/controllers
+ *
+ * @package  heidelpayMGW/
+ *
+ * @author Rimantas <development@heidelpay.com>
+ */
 class TestController extends Controller
 {
     use Loggable;
@@ -20,65 +43,50 @@ class TestController extends Controller
     }
 
     /**
-     * Reset model.
+     * Reset model
      *
      * @param Request  $request
      * @param Response $response
      *
-     * @return string
+     * @return BaseResponse
      */
-    public function reset(Request $request, Response $response, Migrate $migrate)
+    public function reset(Request $request, Response $response, Migrate $migrate): BaseResponse
     {
         $model = $request->get('model');
-        $migrate->deleteTable("HeidelpayMGW\\Models\\".$model);
-        $migrate->createTable("HeidelpayMGW\\Models\\".$model);
+        $migrate->deleteTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\'.$model);
+        $migrate->createTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\'.$model);
 
-        return $response->json("Ok");
+        return $response->json('Ok');
     }
 
     /**
-     * Update model.
+     * Update model
      *
      * @param Request  $request
      * @param Response $response
      *
-     * @return string
+     * @return BaseResponse
      */
-    public function update(Request $request, Response $response, Migrate $migrate)
+    public function update(Request $request, Response $response, Migrate $migrate): BaseResponse
     {
         $model = $request->get('model');
-        $migrate->updateTable("HeidelpayMGW\\Models\\".$model);
+        $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\'.$model);
 
-        return $response->json("Ok");
+        return $response->json('Ok');
     }
 
-    public function show(Request $request, Response $response)
+    /**
+     * Show model
+     *
+     * @param Request $request
+     * @param Response $response
+     *
+     * @return BaseResponse
+     */
+    public function show(Request $request, Response $response): BaseResponse
     {
-        return $response->json(pluginApp(\Plenty\Modules\Plugin\DataBase\Contracts\DataBase::class)->query("HeidelpayMGW\\Models\\".$request->get('model'))->get());
-    }
-
-
-    public function cron(Request $request, Response $response)
-    {
-        switch ($request->get('model')) {
-            default:
-                return $response->json('no model provided');
-                break;
-        }
-    }
-
-    public function lib(Request $request, Response $response)
-    {
-        $settingsRepo = pluginApp(\HeidelpayMGW\Repositories\PluginSettingRepository::class);
-        $settings = $settingsRepo->get();
-
-        $lib = pluginApp(LibraryCallContract::class);
-        $libResponse = $lib->call(PluginConfiguration::PLUGIN_NAME.'::invoice', [
-            'publicKey' => $settings->publicKey,
-            'privateKey' => $settings->privateKey,
-            'returnUrl' => 'http://test.com/',
-        ]);
-
-        return $response->json($libResponse);
+        $model = $request->get('model');
+        
+        return $response->json(pluginApp(DataBase::class)->query(PluginConfiguration::PLUGIN_NAME.'\\Models\\'.$model)->get());
     }
 }

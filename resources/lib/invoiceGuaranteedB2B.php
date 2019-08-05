@@ -5,7 +5,6 @@ use heidelpayPHP\Resources\EmbeddedResources\BasketItem;
 use heidelpayPHP\Resources\EmbeddedResources\Address;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\CustomerFactory;
-use heidelpayPHP\Constants\Salutations;
 use heidelpayPHP\Resources\Metadata;
 use heidelpayPHP\Resources\Basket;
 
@@ -125,7 +124,7 @@ try {
             'success' => true,
             'iban' => $transaction->getIban(),
             'bic' => $transaction->getBic(),
-            'descriptor' => $transaction->getDescriptor(),
+            'shortId' => $transaction->getShortId(),
             'holder' => $transaction->getHolder(),
             'amount' => $transaction->getAmount(),
             'paymentId' => $transaction->getPayment()->getId(),

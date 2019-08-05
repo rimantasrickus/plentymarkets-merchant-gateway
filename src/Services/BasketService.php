@@ -2,62 +2,83 @@
 
 namespace HeidelpayMGW\Services;
 
-use Plenty\Modules\Order\Shipping\Countries\Contracts\CountryRepositoryContract;
-use Plenty\Modules\Account\Address\Contracts\AddressRepositoryContract;
-use Plenty\Modules\Item\Item\Contracts\ItemRepositoryContract;
-use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
-use Plenty\Modules\Authorization\Services\AuthHelper;
-use Plenty\Modules\Account\Address\Models\Address;
-use Plenty\Modules\Basket\Models\BasketItem;
-use Plenty\Modules\Item\Item\Models\Item;
-use Plenty\Modules\Basket\Models\Basket;
-
 use HeidelpayMGW\Helpers\Loggable;
+use Plenty\Modules\Basket\Models\Basket;
+use Plenty\Modules\Account\Address\Models\Address;
+use Plenty\Modules\Authorization\Services\AuthHelper;
+use Plenty\Modules\Basket\Contracts\BasketRepositoryContract;
+use Plenty\Modules\Account\Address\Contracts\AddressRepositoryContract;
+use Plenty\Modules\Order\Shipping\Countries\Contracts\CountryRepositoryContract;
 
+/**
+ * BasketService class
+ *
+ * Copyright (C) 2019 heidelpay GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @link https://docs.heidelpay.com/
+ *
+ * @package  heidelpayMGW/services
+ *
+ * @author Rimantas <development@heidelpay.com>
+ */
 class BasketService
 {
     use Loggable;
 
+    /** @var AuthHelper $authHelper  Plenty AuthHelper */
     private $authHelper;
-    private $itemRepo;
+
+    /** @var AddressRepositoryContract $addressRepo  Plenty AddressRepository */
     private $addressRepo;
+
+    /** @var BasketRepositoryContract $basketRepo  Plenty BasketRepository */
     private $basketRepo;
+
+    /** @var CountryRepositoryContract $countryRepository  Plenty CountryRepository */
     private $countryRepository;
 
     /**
-     * BasketService constructor.
+     * BasketService constructor
      *
-     * @param CountryRepositoryContract $countryRepository
-     * @param AddressRepositoryContract $addressRepository
-     * @param BasketRepositoryContract $basketRepo
-     * @param LibService $libraryService
-     * @param ItemRepositoryContract $itemRepo
-     * @param AuthHelper $authHelper
+     * @param CountryRepositoryContract $countryRepository  Plenty CountryRepository
+     * @param AddressRepositoryContract $addressRepository  Plenty AddressRepository
+     * @param BasketRepositoryContract $basketRepo  Plenty BasketRepository
+     * @param AuthHelper $authHelper  Plenty AuthHelper
      */
     public function __construct(
         CountryRepositoryContract $countryRepository,
         AddressRepositoryContract $addressRepository,
         BasketRepositoryContract $basketRepo,
-        ItemRepositoryContract $itemRepo,
         AuthHelper $authHelper
     ) {
-        $this->authHelper          = $authHelper;
-        $this->itemRepo            = $itemRepo;
-        $this->addressRepo         = $addressRepository;
-        $this->basketRepo          = $basketRepo;
-        $this->countryRepository   = $countryRepository;
+        $this->authHelper        = $authHelper;
+        $this->addressRepo       = $addressRepository;
+        $this->basketRepo        = $basketRepo;
+        $this->countryRepository = $countryRepository;
     }
     
     /**
-     * Gathers address data (billing/invoice and shipping) and returns them as an array.
+     * Gathers address data (billing/invoice and shipping) and returns them as an array
      *
      * @return Address[]
      */
     public function getCustomerAddressData(): array
     {
         $basket = $this->getBasket();
-        $addresses            = [];
-        $invoiceAddressId     = $basket->customerInvoiceAddressId;
+        $addresses = array();
+        $invoiceAddressId = $basket->customerInvoiceAddressId;
         $addresses['billing'] = empty($invoiceAddressId) ? null : $this->getAddressById($invoiceAddressId);
         // if the shipping address is -99 or null, it is matching the billing address.
         $shippingAddressId = $basket->customerShippingAddressId;
@@ -70,7 +91,7 @@ class BasketService
     }
 
     /**
-     * Returns true if the billing address is B2B.
+     * Returns true if the billing address is B2B
      *
      * @return bool
      */
@@ -82,7 +103,7 @@ class BasketService
     }
 
     /**
-     * Fetches current basket and returns it.
+     * Fetches current basket and returns it
      *
      * @return Basket
      */
@@ -94,7 +115,7 @@ class BasketService
     /**
      * Get country ISO2 code
      *
-     * @param int $countryId
+     * @param int $countryId  Plenty Country ID
      *
      * @return string
      */
@@ -104,10 +125,10 @@ class BasketService
     }
 
     /**
-     * Get country state
+     * Get country state name
      *
-     * @param int $countryId
-     * @param int $stateId
+     * @param int $countryId  Plenty Country ID
+     * @param int $stateId  Plenty State ID
      *
      * @return string
      */
@@ -131,12 +152,12 @@ class BasketService
      */
     private function getAddressById(int $addressId)
     {
-        $authHelper = pluginApp(AuthHelper::class);
-        $address = $authHelper->processUnguarded(
+        $address = $this->authHelper->processUnguarded(
             function () use ($addressId) {
                 return $this->addressRepo->findAddressById($addressId);
             }
         );
+        
         return $address;
     }
 }

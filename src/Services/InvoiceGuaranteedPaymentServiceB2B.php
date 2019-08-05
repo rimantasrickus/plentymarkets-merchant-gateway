@@ -1,82 +1,69 @@
 <?php
-namespace HeidelpayMGW\Services;
 
-use Plenty\Modules\Item\Variation\Contracts\VariationRepositoryContract;
-use Plenty\Modules\Account\Contact\Contracts\ContactRepositoryContract;
-use Plenty\Modules\Account\Address\Contracts\AddressRepositoryContract;
-use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
-use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
-use Plenty\Modules\Order\Property\Models\OrderPropertyType;
-use Plenty\Modules\Order\Property\Models\OrderProperty;
-use Plenty\Modules\Authorization\Services\AuthHelper;
-use Plenty\Modules\Account\Address\Models\Address;
-use Plenty\Modules\Payment\Models\Payment;
-use Plenty\Plugin\Translation\Translator;
-use Plenty\Modules\Basket\Models\Basket;
-use Plenty\Modules\Order\Models\Order;
+namespace HeidelpayMGW\Services;
 
 use HeidelpayMGW\Helpers\Loggable;
 use HeidelpayMGW\Helpers\OrderHelper;
 use HeidelpayMGW\Helpers\SessionHelper;
-use HeidelpayMGW\Helpers\PaymentHelper;
-use HeidelpayMGW\Services\BasketService;
+use Plenty\Modules\Order\Models\Order;
+use HeidelpayMGW\Models\PaymentInformation;
+use Plenty\Plugin\Translation\Translator;
+use Plenty\Modules\Document\Models\Document;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Repositories\PluginSettingRepository;
+use Plenty\Modules\Account\Address\Models\Address;
+use Plenty\Modules\Order\Property\Models\OrderPropertyType;
+use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
 
 class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
 {
     use Loggable;
 
-    private $pluginSettings;
+    /** @var LibraryCallContract $libCall  Plenty LibraryCall */
     private $libCall;
-    private $addressRepository;
-    private $contactRepository;
+
+    /** @var SessionHelper $sessionHelper  Saves information for current plugin session */
     private $sessionHelper;
-    private $basketService;
+
+    /** @var OrderHelper $orderHelper  Order manipulation with AuthHelper */
     private $orderHelper;
 
+    /** @var Translator $translator  Plenty Translator service */
+    private $translator;
+
+    /**
+     * InvoiceGuaranteedPaymentServiceB2B constructor
+     *
+     * @param LibraryCallContract $libCall  Plenty LibraryCall
+     * @param SessionHelper $sessionHelper  Saves information for current plugin session
+     * @param OrderHelper $orderHelper  Order manipulation with AuthHelper
+     * @param Translator $translator  Plenty Translator service
+     */
     public function __construct(
-        PluginSettingRepository $pluginSettingRepository,
         LibraryCallContract $libCall,
-        AddressRepositoryContract $addressRepository,
-        ContactRepositoryContract $contactRepository,
         SessionHelper $sessionHelper,
-        BasketService $basketService,
-        OrderHelper $orderHelper
+        OrderHelper $orderHelper,
+        Translator $translator
     ) {
-        $this->pluginSettings = $pluginSettingRepository->get();
         $this->libCall = $libCall;
-        $this->addressRepository = $addressRepository;
-        $this->contactRepository = $contactRepository;
         $this->sessionHelper = $sessionHelper;
-        $this->basketService = $basketService;
         $this->orderHelper = $orderHelper;
+        $this->translator = $translator;
 
         parent::__construct();
     }
 
     /**
-     * Make a charge call with HeidelpayMGW PHP-SDK
+     * Make a charge call with Heidelpay PHP-SDK
      *
-     * @param array $payment
+     * @param array $payment  Payment type information from Frontend JS
      *
-     * @return string
+     * @return array  Payment information from SDK
      */
-    public function charge(array $payment)
+    public function charge(array $payment): array
     {
-        $basket = $this->basketService->getBasket();
-        $addresses = $this->basketService->getCustomerAddressData();
-        $addresses['billing']['countryCode'] = $this->basketService->getCountryCode((int)$addresses['billing']->countryId);
-        $addresses['billing']['stateName'] = $this->basketService->getCountryState((int)$addresses['billing']->countryId, (int)$addresses['billing']->stateId);
-        $addresses['shipping']['countryCode'] = $this->basketService->getCountryCode((int)$addresses['shipping']->countryId);
-        $addresses['shipping']['stateName'] = $this->basketService->getCountryState((int)$addresses['shipping']->countryId, (int)$addresses['shipping']->stateId);
-        $externalOrderId = $this->generateExternalOrderId($basket->id);
-        $this->sessionHelper->setValue('externalOrderId', $externalOrderId);
-       
-        $data = array();
-        $libResponse = array();
-        $data = $this->prepareRequest($basket, $payment, $addresses, $externalOrderId);
+        $data = parent::prepareChargeRequest($payment);
+
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceGuaranteedB2B', $data);
         
         $this->getLogger(__METHOD__)->debug(
@@ -93,37 +80,19 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
     /**
      * Make API call to cancel charge
      *
-     * @param string $paymentId
-     * @param string $chargeId
-     * @param float $amount
-     * @param array $payments
-     * @param int $orderId
+     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param Order $order  Plenty Order
      *
-     * @return array
+     * @return array  Response from SDK
      */
-    public function cancelCharge(string $paymentId, string $chargeId, float $amount, array $payments, int $orderId, string $paymentMethod = null, $orderItems = null)
+    public function cancelCharge(PaymentInformation $paymentInformation, Order $order): array
     {
-        $amountSum = 0;
-        $paymentHelper = pluginApp(PaymentHelper::class);
-        foreach ($payments as $payment) {
-            if ($paymentHelper->isHeidelpayMGWMOP($payment->mopId)) {
-                $amountSum += $payment->amount;
-            }
-        }
-        if ($amountSum < $amount) {
-            $amount = $amountSum;
-        }
-        $data = [
-            'privateKey' => $this->pluginSettings->privateKey,
-            'paymentId' => $paymentId,
-            'chargeId' => $chargeId,
-            'amount' => $amount
-        ];
+        $data = parent::prepareCancelChargeRequest($paymentInformation, $order);
 
-        if ($paymentMethod == 'invoice-factoring') {
+        if ($paymentInformation->paymentMethod == PluginConfiguration::INVOICE_FACTORING) {
             $invoiceGuaranteedSettingRepo = pluginApp(InvoiceGuaranteedSettingRepository::class);
             $reason = '';
-            foreach ($orderItems as $item) {
+            foreach ($order->orderItems as $item) {
                 foreach ($item->properties as $property) {
                     if ($property->typeId == OrderPropertyType::RETURNS_REASON) {
                         $reason = $invoiceGuaranteedSettingRepo->getReturnCode($property->value);
@@ -135,12 +104,11 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
 
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelCharge', $data);
 
-        $translator = pluginApp(Translator::class);
         $commentText = implode('<br />', [
-            $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAmount') . $amount,
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAmount') . $data['amount']
         ]);
         if (!empty($libResponse['merchantMessage'])) {
-            $commentText = $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage'];
+            $commentText = $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage'];
 
             $this->getLogger(__METHOD__)->error(
                 PluginConfiguration::PLUGIN_NAME.'::translation.cancelChargeError',
@@ -150,7 +118,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
                 ]
             );
         }
-        $this->createOrderComment($orderId, $commentText);
+        $this->createOrderComment($order->parentOrder->id, $commentText);
 
         $this->getLogger(__METHOD__)->debug(
             'translation.cancelCharge',
@@ -164,159 +132,62 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
     }
 
     /**
-     * Prepare information for Invoice charge call
+     * Return array with contact information for Heidelpay customer object
      *
-     * @param Basket $basket
-     * @param array $payment
-     * @param Address $addresses
-     * @param string $externalOrderId
+     * @param Address $address  Plenty Address model
      *
-     * @return array
+     * @return array  Data for Heidelpay B2B customer object
      */
-    public function prepareRequest(Basket $basket, array $payment, array $addresses, string $externalOrderId)
+    public function contactInformation(Address $address): array
     {
-        return [
-            'privateKey' => $this->pluginSettings->privateKey,
-            'baseUrl' => $this->getBaseUrl(),
-            'routeName' => PluginConfiguration::PLUGIN_NAME,
-            'basket' => $this->getBasketForAPI($basket),
-            'invoiceAddress' => $addresses['billing'],
-            'deliveryAddress' => $addresses['shipping'],
-            'contact' => $this->contactInformation($addresses['billing']),
-            'orderId' => $externalOrderId,
-            'paymentType' => $payment,
-            'metadata' => [
-                'shopType' => 'Plentymarkets',
-                'shopVersion' => '7',
-                'pluginVersion' => PluginConfiguration::PLUGIN_VERSION,
-                'pluginType' => 'plugin-HeidelpayMGW',
-            ]
-        ];
-    }
-
-    public function contactInformation(Address $address)
-    {
-        return [
-            'firstName' => $address->firstName,
-            'lastName' => $address->lastName,
-            'email' => $address->email,
-            'birthday' => $address->birthday,
-            'phone' => $address->phone,
-            'mobile' => $address->personalNumber,
-            'company' => $address->companyName,
-            'gender' => $address->gender
-        ];
-    }
-
-    private function getBasketForAPI(Basket $basket)
-    {
-        $variationRepo = pluginApp(VariationRepositoryContract::class);
-        $basketItems = array();
-        $amountTotalVat = 0.0;
-        foreach ($basket->basketItems as $basketItem) {
-            $variation = $variationRepo->findById($basketItem->variationId);
-            $amountNet = $basketItem->price / ($basketItem->vat / 100 + 1);
-            $amountVat = $basketItem->price - $amountNet;
-            $amountTotalVat += $amountVat;
-            $basketItems[] = [
-                'basketItemReferenceId' => $basketItem->variationId,
-                'quantity' => $basketItem->quantity,
-                'vat' => $basketItem->vat,
-                'amountGross' => $basketItem->price,
-                'amountVat' => $amountVat,
-                'amountPerUnit' => $basketItem->variationId / $basketItem->quantity,
-                'amountNet' => $amountNet,
-                'title' => $variation->name,
-            ];
-        }
-
-        return [
-            'amountTotal' => $basket->basketAmount,
-            'amountTotalDiscount' => $basket->couponDiscount,
-            'amountTotalVat' => $amountTotalVat,
-            'currencyCode' => $basket->currency,
-            'shippingAmount' => $basket->shippingAmount,
-            'shippingAmountNet' => $basket->shippingAmountNet,
-            'shippingVat' => $basket->basketItems[0]->vat,
-            'shippingTitle' => 'Shipping',
-            'basketItems' => $basketItems
-        ];
+        $data = parent::contactInformation($address);
+        $data['company'] = $address->companyName;
+        
+        return $data;
     }
 
     /**
      * Update plentymarkets Order with external Order ID and comment
      *
-     * @param int $orderId
-     * @param string $externalOrderId
+     * @param int $orderId  Plenty Order ID
+     * @param string $externalOrderId  Heidelpay Order ID
      *
      * @return void
      */
     public function updateOrder(int $orderId, string $externalOrderId)
     {
-        $order = $this->orderHelper->findOrderById($orderId);
-
-        $externalOrder = pluginApp(OrderProperty::class);
-        $externalOrder->typeId = OrderPropertyType::EXTERNAL_ORDER_ID;
-        $externalOrder->value = $externalOrderId;
-        $order->properties[] = $externalOrder;
-
-        $this->orderHelper->updateOrder($order->toArray(), $orderId);
+        parent::updateOrder($orderId, $externalOrderId);
 
         $charge = $this->sessionHelper->getValue('paymentInformation')['transaction'];
         if (empty($charge)) {
             return;
         }
-        $translator = pluginApp(Translator::class);
         $commentText = implode('<br />', [
-            $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.transferTo'),
-            $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.iban') . $charge['iban'],
-            $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.bic') . $charge['bic'],
-            $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.holder') . $charge['holder'],
-            $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.descriptor') . $charge['descriptor'],
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.transferTo'),
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.iban') . $charge['iban'],
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.bic') . $charge['bic'],
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.holder') . $charge['holder'],
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.shortId') . $charge['shortId']
         ]);
         $this->createOrderComment($orderId, $commentText);
     }
 
     /**
-     * Change payment status to canceled
+     * Change payment status and add comment to Order
      *
-     * @param string $externalOrderId
+     * @param string $externalOrderId  Heidelpay Order ID
      *
-     * @return boolean
+     * @return bool  Was payment status changed
      */
-    public function cancelPayment(string $externalOrderId)
+    public function cancelPayment(string $externalOrderId): bool
     {
         try {
             $order = $this->orderHelper->findOrderByExternalOrderId($externalOrderId);
-            $orderId = $order->id;
-            $authHelper = pluginApp(AuthHelper::class);
-            $paymentRepository = pluginApp(PaymentRepositoryContract::class);
-            $payments = $authHelper->processUnguarded(
-                function () use ($orderId, $paymentRepository) {
-                    return $paymentRepository->getPaymentsByOrderId($orderId);
-                }
-            );
+            parent::changePaymentStatusCanceled($order);
 
-            $paymentHelper = pluginApp(PaymentHelper::class);
-            foreach ($payments as $payment) {
-                if ($paymentHelper->isHeidelpayMGWMOP($payment->mopId)) {
-                    $payment->status = Payment::STATUS_CANCELED;
-                    $payment->hash = $orderId.'-'.time();
-                    $payment->updateOrderPaymentStatus = true;
-                    
-                    $updated = $authHelper->processUnguarded(
-                        function () use ($payment, $paymentRepository) {
-                            return  $paymentRepository->updatePayment($payment);
-                        }
-                    );
-                    $this->assignPaymentToContact($payment, $orderId);
-                }
-            }
-
-            $translator = pluginApp(Translator::class);
             $this->createOrderComment(
-                $orderId,
-                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
+                $order->id,
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
             );
     
             return true;
@@ -332,16 +203,30 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
         }
     }
 
-    public function ship(string $paymentId, string $invoiceId, int $orderId)
+    /**
+     * Make API call ship to finalize transaction
+     *
+     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param integer $orderId  Plenty Order ID
+     *
+     * @return array
+     */
+    public function ship(PaymentInformation $paymentInformation, int $orderId): array
     {
+        $order = $this->orderHelper->findOrderById($orderId);
+        $invoiceId = '';
+        foreach ($order->documents as $document) {
+            if ($document->type ==  Document::INVOICE) {
+                $invoiceId = $document->numberWithPrefix;
+            }
+        }
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceShip', [
-            'privateKey' => $this->pluginSettings->privateKey,
-            'paymentId' => $paymentId,
-            'invoiceId' => $invoiceId,
+            'privateKey' => $this->apiKeysHelper->getPrivateKey(),
+            'paymentId' => $paymentInformation->transaction['paymentId'],
+            'invoiceId' => $invoiceId
         ]);
 
-        $translator = pluginApp(Translator::class);
-        $commentText = $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successShip');
+        $commentText = $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successShip');
         
         if (!$libResponse['success']) {
             $this->getLogger(__METHOD__)->error(
@@ -351,7 +236,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
                 ]
             );
 
-            $commentText = $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage'];
+            $commentText = $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage'];
         }
 
         $this->createOrderComment($orderId, $commentText);

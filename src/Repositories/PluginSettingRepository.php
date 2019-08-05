@@ -1,53 +1,39 @@
 <?php
-namespace HeidelpayMGW\Repositories;
 
-use Plenty\Modules\Plugin\DataBase\Contracts\DataBase;
+namespace HeidelpayMGW\Repositories;
 
 use HeidelpayMGW\Models\PluginSetting;
 
-class PluginSettingRepository
+/**
+ * Plugin settings repository
+ *
+ * Copyright (C) 2019 heidelpay GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @link https://docs.heidelpay.com/
+ *
+ * @package  heidelpayMGW/repositories
+ *
+ * @author Rimantas <development@heidelpay.com>
+ */
+class PluginSettingRepository extends BaseSettingRepository
 {
-    private $database;
-  
-    public function __construct(DataBase $database)
-    {
-        $this->database = $database;
-    }
-
     /**
-     * Returns PluginSetting model.
-     *
-     * @return PluginSetting
+     * PluginSettingRepository constructor
      */
-    public function get($toArray = false)
+    public function __construct()
     {
-        $settings = $this->database->query(PluginSetting::class)->get()[0] ?? pluginApp(PluginSetting::class);
-        return $toArray ? $this->toArray($settings) : $settings;
-    }
-
-    /**
-     * Saves settings from UI
-     *
-     * @param array $data
-     */
-    public function save(array $data)
-    {
-        $model = $this->get()->set($data);
-
-        $this->database->save($model);
-        
-        return $model;
-    }
-
-    /**
-     * Convert object to array
-     *
-     * @param object $obj
-     *
-     * @return array
-     */
-    private function toArray($obj)
-    {
-        return json_decode(json_encode($obj), true);
+        parent::__construct(pluginApp(PluginSetting::class));
     }
 }

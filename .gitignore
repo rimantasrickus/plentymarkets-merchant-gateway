@@ -7,9 +7,11 @@
 # dependencies
 /node_modules
 /bower_components
+/vendor
 
 # IDEs and editors
 /.idea
+/.vscode
 
 # misc
 /.sass-cache
@@ -21,6 +23,8 @@ testem.log
 /typings
 *.log
 /plugin-interface
+/.phan
+plenty.php
 
 # should be fixed in VM
 /ui-backend
@@ -37,4 +41,3 @@ Thumbs.db
 *.tar.gz
 .branchname
 build.properties
-plenty.php

@@ -16,9 +16,9 @@
 	"successSaveSettings": "Settings saved",
 	"guaranteedOrFactoring": " Use Invoice Factoring instead of Invoice Guaranteed",
 	"invoiceFactoringReturnReasons": "Invoice factoring return reason",
-	"reasonCodeCancel": "ReasonId for CANCEL",
-	"reasonCodeReturn": "ReasonId for RETURN",
-	"reasonCodeCredit": "ReasonId for CREDIT",
+	"reasonCodeCancel": "Reason for CANCEL",
+	"reasonCodeReturn": "Reason for RETURN",
+	"reasonCodeCredit": "Reason for CREDIT",
 	"missingReasonCodes": "Missing return reason IDs",
 	"invoiceGuaranteedSettings": "Invoice guaranteed settings",
 	"invoiceGuaranteedB2BSettings": "Invoice guaranteed B2B settings",
@@ -29,5 +29,8 @@
 	"creditCardMaxTotal": "Max. total (Eur)",
 	"creditCardMode": "Transaction mode",
 	"directDebit": "Direct debit",
-	"authorizationCapture": "Authorization with capture"
+	"authorizationCapture": "Authorization with capture",
+	"sandbox": "Sandbox",
+	"production": "Production",
+	"apiMode": "Api mode"
 }

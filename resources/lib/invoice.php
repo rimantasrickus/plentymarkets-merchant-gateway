@@ -1,13 +1,11 @@
 <?php
 set_time_limit(0);
 
-use heidelpayPHP\Resources\EmbeddedResources\BasketItem;
 use heidelpayPHP\Resources\EmbeddedResources\Address;
 use heidelpayPHP\Exceptions\HeidelpayApiException;
 use heidelpayPHP\Resources\CustomerFactory;
 use heidelpayPHP\Constants\Salutations;
 use heidelpayPHP\Resources\Metadata;
-use heidelpayPHP\Resources\Basket;
 
 $heidelpay = new \heidelpayPHP\Heidelpay(SdkRestApi::getParam('privateKey'));
 
@@ -89,8 +87,8 @@ $metadata->addMetadata('pluginVersion', $metadataPlenty['pluginVersion']);
 $metadata->addMetadata('pluginType', $metadataPlenty['pluginType']);
 try {
     $transaction = $heidelpay->charge(
-        number_format($basketPlenty['basketAmount'], 2, '.', ''),
-        $basketPlenty['currency'],
+        number_format($basketPlenty['amountTotal'], 2, '.', ''),
+        $basketPlenty['currencyCode'],
         $paymentType['id'],
         SdkRestApi::getParam('baseUrl').'/checkout',
         $customer,
@@ -104,7 +102,7 @@ try {
             'success' => true,
             'iban' => $transaction->getIban(),
             'bic' => $transaction->getBic(),
-            'descriptor' => $transaction->getDescriptor(),
+            'shortId' => $transaction->getShortId(),
             'holder' => $transaction->getHolder(),
             'amount' => $transaction->getAmount(),
             'paymentId' => $transaction->getPayment()->getId(),
