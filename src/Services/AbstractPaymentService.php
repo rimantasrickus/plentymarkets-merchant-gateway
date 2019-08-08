@@ -5,18 +5,19 @@ namespace HeidelpayMGW\Services;
 use Plenty\Plugin\Application;
 use HeidelpayMGW\Helpers\Loggable;
 use HeidelpayMGW\Helpers\OrderHelper;
+use Plenty\Modules\Order\Models\Order;
+use HeidelpayMGW\Helpers\ApiKeysHelper;
 use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Helpers\SessionHelper;
 use HeidelpayMGW\Services\BasketService;
-use Plenty\Modules\Order\Models\Order;
-use HeidelpayMGW\Models\PaymentInformation;
 use Plenty\Modules\Basket\Models\Basket;
 use Plenty\Modules\Comment\Models\Comment;
 use Plenty\Modules\Payment\Models\Payment;
-use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Models\PaymentInformation;
 use Plenty\Modules\Account\Address\Models\Address;
 use Plenty\Modules\Account\Contact\Models\Contact;
 use Plenty\Modules\Payment\Models\PaymentProperty;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 use Plenty\Modules\Authorization\Services\AuthHelper;
 use Plenty\Modules\Order\Property\Models\OrderProperty;
 use Plenty\Modules\Payment\Models\PaymentOrderRelation;
@@ -30,7 +31,7 @@ use Plenty\Modules\Order\RelationReference\Models\OrderRelationReference;
 use Plenty\Modules\Payment\Contracts\PaymentOrderRelationRepositoryContract;
 use Plenty\Modules\System\Contracts\WebstoreConfigurationRepositoryContract;
 use Plenty\Modules\Payment\Contracts\PaymentContactRelationRepositoryContract;
-use HeidelpayMGW\Helpers\ApiKeysHelper;
+use Plenty\Modules\Frontend\Session\Storage\Contracts\FrontendSessionStorageFactoryContract;
 
 /**
  * AbstractPaymentService class
@@ -219,7 +220,10 @@ abstract class AbstractPaymentService
      */
     public function getBasketForAPI(Basket $basket)
     {
+        /** @var VariationRepositoryContract $variationRepo */
         $variationRepo = pluginApp(VariationRepositoryContract::class);
+        /** @var FrontendSessionStorageFactoryContract $sessionStorageFactory */
+        $sessionStorageFactory = pluginApp(FrontendSessionStorageFactoryContract::class);
         $basketItems = array();
         $amountTotalVat = 0.0;
         foreach ($basket->basketItems as $basketItem) {
@@ -227,6 +231,10 @@ abstract class AbstractPaymentService
             $amountNet = $basketItem->price / ($basketItem->vat / 100 + 1);
             $amountVat = $basketItem->price - $amountNet;
             $amountTotalVat += $amountVat;
+            $itemName = $variation->name;
+            if (empty($itemName)) {
+                $itemName = $variation->itemTexts->where('lang', '=', $sessionStorageFactory->getLocaleSettings()->language)->first()->name;
+            }
             $basketItems[] = [
                 'basketItemReferenceId' => $basketItem->variationId,
                 'quantity' => $basketItem->quantity,
@@ -235,7 +243,7 @@ abstract class AbstractPaymentService
                 'amountVat' => number_format($amountVat, 2, '.', ''),
                 'amountPerUnit' => number_format(($basketItem->price/ $basketItem->quantity), 2, '.', ''),
                 'amountNet' => number_format($amountNet, 2, '.', ''),
-                'title' => $variation->name ?? $basketItem->variationId
+                'title' => $itemName ?: $basketItem->variationId
             ];
         }
 
