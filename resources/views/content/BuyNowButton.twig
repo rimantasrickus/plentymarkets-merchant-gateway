@@ -1,0 +1,166 @@
+<button id="checkoutButtonHeidelpay" class="btn btn-success btn-block" @click="prepareHeidelpayPayment()" :disabled="waiting">
+    <i id="checkoutButtonHeidelpayArrow" class="fa fa-arrow-right" aria-hidden="true"></i>
+    {{ trans("Ceres::Template.checkoutBuyNow") }}
+</button>
+
+<script type="text/javascript">
+const mopList = {{mopList | json_encode | raw}};
+
+function getBasketMOP() {
+    return vueApp.$root.$options.store.state.checkout.payment.methodOfPaymentId;
+}
+
+function getPlaceOrderComponent() {
+    for (let i = 0; i < vueApp.$children.length; i++) {
+        for (let j = 0; j < vueApp.$children[i].$children.length; j++) {
+            if (vueApp.$children[i].$children[j].$vnode.componentOptions.tag === 'place-order'
+                && typeof vueApp.$children[i].$children[j].preparePayment === 'function') {
+
+                return vueApp.$children[i].$children[j];
+            }
+        }
+    }
+}
+
+function prepareHeidelpayPayment() {
+    document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-circle-o-notch fa-spin';
+    const placeOrderComponent = getPlaceOrderComponent();
+    if (placeOrderComponent.validateCheckout()) {
+        var heidelpayInstance = new heidelpay('{{publicKey}}');
+        for (mop of mopList) {
+            if (mop.id === getBasketMOP() && mop.paymentKey === '{{invoice}}') {
+                heidelpayPayment(placeOrderComponent, heidelpayInstance.Invoice());
+            }
+            if (mop.id === getBasketMOP() && mop.paymentKey === '{{invoiceGuaranteed}}') {
+                if ({{useInvoiceFactoring}}) {
+                    heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceFactoring());
+                } else {
+                    heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
+                }
+            }
+            if (mop.id === getBasketMOP() && mop.paymentKey === '{{invoiceGuaranteedB2B}}') {
+                if ({{useInvoiceB2BFactoring}}) {
+                    heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceFactoring());
+                } else {
+                    heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
+                }
+            }
+        }
+    }
+}
+
+function heidelpayPayment(placeOrderComponent, paymentInstance) {
+    if (paymentInstance) {
+        paymentInstance.createResource()
+            .then(data => {
+                console.log('Success: ', data)
+                fetch('/{{routeName}}/payment-type', {
+                    method: 'POST', 
+                    body: JSON.stringify(data),
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(response => {
+                    console.log('Success: ', response)
+                    if (response.success === true) {
+                        placeOrderComponent.preparePayment();
+                        return;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('checkoutButtonHeidelpay').disabled = false;
+                    document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-arrow-right';
+                    window.CeresNotification.error(error);
+                });
+            })
+            .catch(error => {
+                console.log('Error: ', error);
+                document.getElementById('checkoutButtonHeidelpay').disabled = false;
+                document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-arrow-right';
+                window.CeresNotification.error(error);
+            })
+    }
+}
+
+function checkHeidelpayActive(e) {
+    let pluginIds = [];
+    for (mop of mopList) {
+        pluginIds.push(mop.id);
+    }
+    if (document.getElementById('checkoutButtonHeidelpay').parentNode.childNodes.length > 1) {
+        //we have more than one button, need to act
+        if (e === false || e.detail === undefined) {
+            if (isHeidelpaySelected()) {
+                hideAllButHeidelpay(true);
+            } else {
+                hideHeidelpay();
+            }
+        } else { 
+            //paymentchange
+            if (pluginIds.includes(e.detail)) {
+                hideAllButHeidelpay(true);
+            } else {
+                hideHeidelpay();
+            }
+        }
+    } else {
+        if (pluginIds.includes(e.detail)) {
+            hideAllButHeidelpay(true);
+        } else {
+            hideAllButHeidelpay(false);
+        }
+    }
+}
+
+function hideHeidelpay() {
+    //show all buttons
+    for(element of document.getElementById('checkoutButtonHeidelpay').parentNode.childNodes) {
+        if (element.tagName == 'BUTTON') {
+            element.style.display = 'block';
+        }
+    }
+    
+    //hide own button
+    document.getElementById('checkoutButtonHeidelpay').style.display = 'none';
+}
+
+function isHeidelpaySelected() {
+    for(input of document.getElementsByTagName('input')) {
+        for (mop of mopList) {
+            if (input.value == mop.id && input.checked === true) {
+                return true;
+            }        
+        }
+    }
+
+    return false;
+}
+
+function hideAllButHeidelpay(isSelected) {
+    if (isSelected === true) {
+        document.getElementById('checkoutButtonHeidelpay').innerHTML = `<i id="checkoutButtonHeidelpayArrow" class="fa fa-arrow-right" aria-hidden="true"><\/i> {{ trans("HeidelpayMGW::Frontend.checkoutBuyNow") }}`;
+    } else {
+        document.getElementById('checkoutButtonHeidelpay').innerHTML = `<i id="checkoutButtonHeidelpayArrow" class="fa fa-arrow-right" aria-hidden="true"><\/i> {{ trans("Ceres::Template.checkoutBuyNow") }}`;
+    }
+
+    //hide all buttons
+    for(element of document.getElementById('checkoutButtonHeidelpay').parentNode.childNodes) {
+        if (element.tagName == 'BUTTON') {
+            element.style.display = 'none';
+        }
+    }
+    
+    //show own button as plugin is selected
+    document.getElementById('checkoutButtonHeidelpay').style.display = 'block';
+}
+
+document.addEventListener('afterPaymentMethodChanged', (e) => {
+    checkHeidelpayActive(e);
+});
+window.addEventListener('load', (e) => {
+    checkHeidelpayActive(e);
+});
+</script>
