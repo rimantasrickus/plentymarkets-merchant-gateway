@@ -1,4 +1,4 @@
-<button id="checkoutButtonHeidelpay" class="btn btn-success btn-block" @click="prepareHeidelpayPayment()" :disabled="waiting">
+<button id="checkoutButtonHeidelpay" class="btn btn-success btn-block" onclick="prepareHeidelpayPayment()" :disabled="waiting">
     <i id="checkoutButtonHeidelpayArrow" class="fa fa-arrow-right" aria-hidden="true"></i>
     {{ trans("Ceres::Template.checkoutBuyNow") }}
 </button>
@@ -6,11 +6,11 @@
 <script type="text/javascript">
 const mopList = {{mopList | json_encode | raw}};
 
-function getBasketMOP() {
+function getHeidelpayBasketMOP() {
     return vueApp.$root.$options.store.state.checkout.payment.methodOfPaymentId;
 }
 
-function getPlaceOrderComponent() {
+function getHeidelpayPlaceOrderComponent() {
     for (let i = 0; i < vueApp.$children.length; i++) {
         for (let j = 0; j < vueApp.$children[i].$children.length; j++) {
             if (vueApp.$children[i].$children[j].$vnode.componentOptions.tag === 'place-order'
@@ -24,28 +24,76 @@ function getPlaceOrderComponent() {
 
 function prepareHeidelpayPayment() {
     document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-circle-o-notch fa-spin';
-    const placeOrderComponent = getPlaceOrderComponent();
+    const placeOrderComponent = getHeidelpayPlaceOrderComponent();
     if (placeOrderComponent.validateCheckout()) {
         var heidelpayInstance = new heidelpay('{{publicKey}}');
         for (mop of mopList) {
-            if (mop.id === getBasketMOP() && mop.paymentKey === '{{invoice}}') {
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{invoice}}') {
                 heidelpayPayment(placeOrderComponent, heidelpayInstance.Invoice());
             }
-            if (mop.id === getBasketMOP() && mop.paymentKey === '{{invoiceGuaranteed}}') {
-                if ({{useInvoiceFactoring}}) {
-                    heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceFactoring());
-                } else {
-                    heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{invoiceGuaranteed}}') {
+                if (!isBirthDateAvailable() && !heidelpayBirthDate) {
+                    var Customer = heidelpayInstance.Customer()
+                    // Rendering the customer form
+                    Customer.create({
+                        containerId: 'customer',
+                        fields: ['birthdate'],
+                        showHeader: false
+                    });
+                    showHeidelpayBirthDateModal();
+                }
+                if (isBirthDateAvailable() || heidelpayBirthDate) {
+                    if ({{useInvoiceFactoring}}) {
+                        heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceFactoring());
+                    } else {
+                        heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
+                    }
                 }
             }
-            if (mop.id === getBasketMOP() && mop.paymentKey === '{{invoiceGuaranteedB2B}}') {
-                if ({{useInvoiceB2BFactoring}}) {
-                    heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceFactoring());
-                } else {
-                    heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{invoiceGuaranteedB2B}}') {
+                if (!isBirthDateAvailable() && !heidelpayBirthDate) {
+                    var Customer = heidelpayInstance.Customer()
+                    // Rendering the customer form
+                    Customer.create({
+                        containerId: 'customer',
+                        fields: ['birthdate'],
+                        showHeader: false
+                    });
+                    showHeidelpayBirthDateModal();
+                }
+                if (isBirthDateAvailable() || heidelpayBirthDate) {
+                    if ({{useInvoiceB2BFactoring}}) {
+                        heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceFactoring());
+                    } else {
+                        heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
+                    }
                 }
             }
         }
+    }
+}
+
+function isBirthDateAvailable() {
+    let address = vueApp.$store.state.address.billingAddress;
+
+    for (let option of address.options) {
+        // date of birth
+        if (option.typeId === 9 && option.value !== '') {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+var heidelpayBirthDate = '';
+function validateBirthDate() {
+    const errors = document.getElementsByClassName('h-iconimg-error');
+    heidelpayBirthDate = document.getElementById('customer').getElementsByTagName('input')[0].value;
+
+    if (errors.length < 1) {
+        closeHeidelpayBirthDateModal();
+        prepareHeidelpayPayment();
     }
 }
 
@@ -56,7 +104,7 @@ function heidelpayPayment(placeOrderComponent, paymentInstance) {
                 console.log('Success: ', data)
                 fetch('/{{routeName}}/payment-type', {
                     method: 'POST', 
-                    body: JSON.stringify(data),
+                    body: JSON.stringify({data, heidelpayBirthDate}),
                     headers:{
                         'Content-Type': 'application/json'
                     }
@@ -83,6 +131,11 @@ function heidelpayPayment(placeOrderComponent, paymentInstance) {
                 window.CeresNotification.error(error);
             })
     }
+}
+
+function birthDateField()
+{
+    
 }
 
 function checkHeidelpayActive(e) {

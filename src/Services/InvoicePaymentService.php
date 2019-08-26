@@ -87,10 +87,13 @@ class InvoicePaymentService extends AbstractPaymentService
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelCharge', $data);
 
         $commentText = implode('<br />', [
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAmount') . $data['amount']
         ]);
         if (!empty($libResponse['merchantMessage'])) {
             $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.cancelChargeError'),
                 $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage'],
                 $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.clientMessage') . $libResponse['clientMessage']
             ]);
@@ -133,6 +136,7 @@ class InvoicePaymentService extends AbstractPaymentService
             return;
         }
         $commentText = implode('<br />', [
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.transferTo'),
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.iban') . $charge['iban'],
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.bic') . $charge['bic'],
@@ -155,9 +159,13 @@ class InvoicePaymentService extends AbstractPaymentService
             $order = $this->orderHelper->findOrderByExternalOrderId($externalOrderId);
             parent::changePaymentStatusCanceled($order);
 
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
+            ]);
             $this->createOrderComment(
                 $order->id,
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
+                $commentText
             );
     
             return true;

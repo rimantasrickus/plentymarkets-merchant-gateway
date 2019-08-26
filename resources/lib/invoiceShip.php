@@ -18,15 +18,17 @@ try {
     }
 
     return [
-        'merchantMessage' => $transaction->getMessage()->getCustomer(),
+        'merchantMessage' => $transaction->getMessage()->getCustomer()
     ];
 } catch (HeidelpayApiException $e) {
     return [
         'merchantMessage' => $e->getMerchantMessage(),
         'clientMessage' => $e->getClientMessage(),
+        'code' => $e->getCode()
     ];
 } catch (Exception $e) {
     return [
         'merchantMessage' => $e->getMessage(),
+        'code' => $e->getCode()
     ];
 }

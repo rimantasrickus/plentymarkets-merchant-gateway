@@ -6,9 +6,10 @@ use Plenty\Plugin\Controller;
 use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\Http\Response;
 use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Helpers\ApiKeysHelper;
 use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Repositories\PluginSettingRepository;
+use Plenty\Modules\Item\Variation\Contracts\VariationRepositoryContract;
 use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 
 /**
@@ -38,8 +39,8 @@ class WebhooksController extends Controller
 {
     use Loggable;
     
-    /** @var \HeidelpayMGW\Models\PluginSetting $settings */
-    private $settings;
+    /** @var ApiKeysHelper $apiKeysHelper  Returns Api keys depending if it's sandbox or production mode */
+    private $apiKeysHelper;
 
     /** @var LibraryCallContract $libContract */
     private $libContract;
@@ -50,16 +51,16 @@ class WebhooksController extends Controller
     /**
      * WebhooksController constructor
      *
-     * @param PluginSettingRepository $pluginSettingsRepo  Plugin settings repository
+     * @param ApiKeysHelper $apiKeysHelper Plugin settings repository
      * @param LibraryCallContract $libContract
      * @param PaymentHelper $paymentHelper  Helper class to work with payment data
      */
     public function __construct(
-        PluginSettingRepository $pluginSettingsRepo,
+        ApiKeysHelper $apiKeysHelper,
         LibraryCallContract $libContract,
         PaymentHelper $paymentHelper
     ) {
-        $this->settings = $pluginSettingsRepo->get();
+        $this->apiKeysHelper = $apiKeysHelper;
         $this->libContract = $libContract;
         $this->paymentHelper = $paymentHelper;
     }
@@ -74,11 +75,23 @@ class WebhooksController extends Controller
      */
     public function handleWebhook(Response $response, Request $request): Response
     {
+        $hook = json_decode($request->getContent(), true);
+        
+        $this->getLogger(__METHOD__)->debug(
+            'translation.incomingWebhook',
+            [
+                'hook' => $hook,
+            ]
+        );
+
+        if ($hook['publicKey'] !== $this->apiKeysHelper->getPublicKey()) {
+            return $response->forceStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
         $libResponse = $this->libContract->call(PluginConfiguration::PLUGIN_NAME.'::webhookResource', [
-            'privateKey' => $this->settings->privateKey,
+            'privateKey' => $this->apiKeysHelper->getPrivateKey(),
             'jsonRequest' => $request->getContent()
         ]);
-        $hook = json_decode($request->getContent(), true);
 
         if (!$this->paymentHelper->handleWebhook($hook, $libResponse)) {
             return $response->forceStatus(Response::HTTP_INTERNAL_SERVER_ERROR);

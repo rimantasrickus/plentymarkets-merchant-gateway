@@ -163,11 +163,12 @@ abstract class AbstractPaymentService
      */
     public function contactInformation(Address $address): array
     {
+        $heidelpayBirthDate = $this->sessionHelper->getValue('heidelpayBirthDate');
         return [
             'firstName' => $address->firstName,
             'lastName' => $address->lastName,
             'email' => $address->email,
-            'birthday' => $address->birthday,
+            'birthday' => $address->birthday === '' ? $heidelpayBirthDate : $address->birthday,
             'phone' => $address->phone,
             'mobile' => $address->personalNumber,
             'gender' => $address->gender
@@ -186,6 +187,7 @@ abstract class AbstractPaymentService
         $basket = $this->basketService->getBasket();
         $addresses = $this->basketService->getCustomerAddressData();
         $contact = $this->contactInformation($addresses['billing']);
+        
         $addresses['billing']['countryCode'] = $this->basketService->getCountryCode((int)$addresses['billing']->countryId);
         $addresses['billing']['stateName'] = $this->basketService->getCountryState((int)$addresses['billing']->countryId, (int)$addresses['billing']->stateId);
         $addresses['shipping']['countryCode'] = $this->basketService->getCountryCode((int)$addresses['shipping']->countryId);
@@ -440,10 +442,10 @@ abstract class AbstractPaymentService
         $orderAmount = $order->amounts->where('currency', '=', $paymentCurrency)->first();
         
         $paymentStatus = Payment::STATUS_AWAITING_APPROVAL;
-        if ($orderAmount->invoiceTotal == $amount && $amount != 0) {
+        if ($orderAmount->invoiceTotal === $amount && $amount !== 0.00) {
             $paymentStatus = Payment::STATUS_CAPTURED;
         }
-        if ($orderAmount->invoiceTotal > $amount && $amount != 0) {
+        if ($orderAmount->invoiceTotal > $amount && $amount !== 0.00) {
             $paymentStatus = Payment::STATUS_PARTIALLY_CAPTURED;
         }
 

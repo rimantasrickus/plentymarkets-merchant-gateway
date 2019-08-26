@@ -315,32 +315,35 @@ class PaymentHelper
      */
     public function handleWebhook(array $hook, array $libResponse): bool
     {
-        if ($hook['event'] == self::PAYMENT_PENDING) {
+        if ($hook['event'] === self::PAYMENT_PENDING) {
             return true;
         }
         if (empty($libResponse['paymentType'])) {
-            return false;
+            return true;
         }
         $paymentInfo = $this->paymentInformationRepo->getByPaymentType($libResponse['paymentType']);
         if (empty($paymentInfo) || empty($paymentInfo->orderId)) {
             return false;
         }
         
+        $updated = false;
         $paymentService = $this->getPaymentService((int)$paymentInfo->orderId);
         // payment completed logic
-        if ($hook['event'] == self::PAYMENT_COMPLETED) {
+        if ($hook['event'] === self::PAYMENT_COMPLETED) {
             $order = pluginApp(OrderHelper::class)->findOrderById((int)$paymentInfo->orderId);
             // don't duplicate amount
-            if ($order->paymentStatus != 'fullyPaid') {
+            if ($order->paymentStatus !== 'fullyPaid') {
                 $updated = $paymentService->updatePayedAmount((int)$paymentInfo->orderId, (int)($libResponse['total'] * 100), Payment::STATUS_CAPTURED);
+            } else {
+                $updated = true;
             }
         }
         // payment partially completed logic
-        if ($hook['event'] == self::PAYMENT_PARTLY) {
+        if ($hook['event'] === self::PAYMENT_PARTLY) {
             $updated = $paymentService->updatePayedAmount((int)$paymentInfo->orderId, (int)($libResponse['total'] * 100), Payment::STATUS_PARTIALLY_CAPTURED);
         }
         // payment canceled logic
-        if ($hook['event'] == self::PAYMENT_CANCELED) {
+        if ($hook['event'] === self::PAYMENT_CANCELED) {
             $updated = $paymentService->cancelPayment($paymentInfo->externalOrderId);
         }
         $this->getLogger(__METHOD__)->debug(

@@ -19,20 +19,22 @@ try {
             WebhookEvents::PAYMENT_CANCELED,
             WebhookEvents::PAYMENT_PARTLY,
             WebhookEvents::PAYMENT_PAYMENT_REVIEW,
-            WebhookEvents::PAYMENT_CHARGEBACK,
+            WebhookEvents::PAYMENT_CHARGEBACK
         ]
     );
     
     return [
-        'success' => true,
+        'success' => true
     ];
 } catch (HeidelpayApiException $e) {
     return [
         'merchantMessage' => $e->getMerchantMessage(),
         'clientMessage' => $e->getClientMessage(),
+        'code' => $e->getCode()
     ];
 } catch (Exception $e) {
     return [
         'merchantMessage' => $e->getMessage(),
+        'code' => $e->getCode()
     ];
 }

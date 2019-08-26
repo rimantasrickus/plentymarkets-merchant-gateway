@@ -105,11 +105,20 @@ class PluginSettingsController extends Controller
 
             $settings = $this->settingRepository->save($this->request->except('plentymarkets'));
             $webstore = $webstoreConfig->findByPlentyId(pluginApp(Application::class)->getPlentyId());
-            $libResponse = $lib->call(PluginConfiguration::PLUGIN_NAME.'::registerWebhook', [
+            $data = [
                 'privateKey' => $settings->privateKey,
                 'baseUrl' => ($webstore->domainSsl ?? $webstore->domain),
                 'routeName' => PluginConfiguration::PLUGIN_NAME,
-            ]);
+            ];
+            $libResponse = $lib->call(PluginConfiguration::PLUGIN_NAME.'::registerWebhook', $data);
+
+            $this->getLogger(__METHOD__)->debug(
+                'translation.registerWebhooks',
+                [
+                    'data' => $data,
+                    'libResponse' => $libResponse
+                ]
+            );
 
             if (!$libResponse['success']) {
                 $this->getLogger(__METHOD__)->error(

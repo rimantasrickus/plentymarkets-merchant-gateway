@@ -70,7 +70,7 @@ $paymentType = SdkRestApi::getParam('paymentType');
 // Basket
 $basketPlenty = SdkRestApi::getParam('basket');
 $basket = new Basket();
-$basket->setAmountTotal($basketPlenty['amountTotal'])
+$basket->setAmountTotalGross($basketPlenty['amountTotal'])
     ->setAmountTotalDiscount($basketPlenty['amountTotalDiscount'])
     ->setAmountTotalVat($basketPlenty['amountTotalVat'])
     ->setOrderId(SdkRestApi::getParam('orderId'))
@@ -130,20 +130,22 @@ try {
             'paymentId' => $transaction->getPayment()->getId(),
             'chargeId' => $transaction->getId(),
             'currency' => $transaction->getPayment()->getCurrency(),
-            'status' => $transaction->getPayment()->getStateName(),
+            'status' => $transaction->getPayment()->getStateName()
         ];
     }
 
     return [
-        'merchantMessage' => $transaction->getMessage()->getCustomer(),
+        'merchantMessage' => $transaction->getMessage()->getCustomer()
     ];
 } catch (HeidelpayApiException $e) {
     return [
         'merchantMessage' => $e->getMerchantMessage(),
         'clientMessage' => $e->getClientMessage(),
+        'code' => $e->getCode()
     ];
 } catch (Exception $e) {
     return [
         'merchantMessage' => $e->getMessage(),
+        'code' => $e->getCode()
     ];
 }
