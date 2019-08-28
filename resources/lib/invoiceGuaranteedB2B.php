@@ -103,12 +103,14 @@ $basketItem->setQuantity(1)
 $basket->addBasketItem($basketItem);
 
 //voucher
-$basketItem = new BasketItem();
-$basketItem->setQuantity(1)
-    ->setAmountGross($basketPlenty['amountTotalDiscount'])
-    ->setType(BasketItemTypes::VOUCHER)
-    ->setTitle($basketPlenty['discountTitle']);
-$basket->addBasketItem($basketItem);
+if ($basketPlenty['amountTotalDiscount'] > 0) {
+    $basketItem = new BasketItem();
+    $basketItem->setQuantity(1)
+        ->setAmountGross($basketPlenty['amountTotalDiscount'])
+        ->setType(BasketItemTypes::VOUCHER)
+        ->setTitle($basketPlenty['discountTitle']);
+    $basket->addBasketItem($basketItem);
+}
 
 //Metadata
 $metadataPlenty = SdkRestApi::getParam('metadata');
@@ -154,6 +156,7 @@ try {
     return [
         'merchantMessage' => $e->getMerchantMessage(),
         'clientMessage' => $e->getClientMessage(),
+        'errorId' => $e->getErrorId(),
         'code' => $e->getCode()
     ];
 } catch (Exception $e) {

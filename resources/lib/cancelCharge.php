@@ -11,9 +11,9 @@ try {
     $charges = $payment->getCharges();
     $amountLeft = SdkRestApi::getParam('amount');
     $cancelCharge = array();
-    for ($i = count($charges)-1; $i > 0; $i--) {
+    for ($i = count($charges)-1; $i >= 0; $i--) {
         if ($amountLeft >= $charges[$i]->getAmount()) {
-            $cancel = $heidelpay->cancelCharge($charge, $charges[$i]->getAmount(), SdkRestApi::getParam('reason') ?? null);
+            $cancel = $heidelpay->cancelCharge($charges[$i]->getId(), $charges[$i]->getAmount(), SdkRestApi::getParam('reason') ?? null);
             $cancelCharge[] = [
                 'shortId' => $cancel->getShortId(),
                 'amount' => $charges[$i]->getAmount(),
@@ -21,7 +21,7 @@ try {
                 'reason' => SdkRestApi::getParam('reason')
             ];
         } else {
-            $cancel = $heidelpay->cancelCharge($charge, $amountLeft, SdkRestApi::getParam('reason') ?? null);
+            $cancel = $heidelpay->cancelCharge($charges[$i]->getId(), $amountLeft, SdkRestApi::getParam('reason') ?? null);
             $cancelCharge[] = [
                 'shortId' => $cancel->getShortId(),
                 'amount' => $charges[$i]->getAmount(),
@@ -43,6 +43,7 @@ try {
     return [
         'merchantMessage' => $e->getMerchantMessage(),
         'clientMessage' => $e->getClientMessage(),
+        'errorId' => $e->getErrorId(),
         'code' => $e->getCode()
     ];
 } catch (Exception $e) {

@@ -26,6 +26,7 @@ try {
     return [
         'merchantMessage' => $e->getMerchantMessage(),
         'clientMessage' => $e->getClientMessage(),
+        'errorId' => $e->getErrorId(),
         'code' => $e->getCode()
     ];
 } catch (Exception $e) {
