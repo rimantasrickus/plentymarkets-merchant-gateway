@@ -22,6 +22,7 @@ This module is based on the heidelpay php-sdk (https://github.com/heidelpay/heid
 ## Configuration
 ### Basic configuration
 + Select the Plugin-tab and then "Plugin overview"
++ Select the heidelpay plugin to switch to the configuration overview.
 + Select `Default container links` tab. Select all elements in the list and save configuration.
 + For the plugin configuration please go to `System`->`Orders`->`Payment`->`Plugins`.
 
