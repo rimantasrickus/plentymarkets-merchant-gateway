@@ -2,7 +2,6 @@
 
 namespace HeidelpayMGW\Containers;
 
-use Plenty\Plugin\Log\Loggable;
 use Plenty\Plugin\Templates\Twig;
 use HeidelpayMGW\Helpers\ApiKeysHelper;
 use HeidelpayMGW\Helpers\PaymentHelper;
@@ -35,8 +34,6 @@ use HeidelpayMGW\Repositories\InvoiceGuaranteedB2BSettingRepository;
 */
 class BuyNowButtonContainer
 {
-    use Loggable;
-
     /**
      * Return rendered twig template with required data
      *

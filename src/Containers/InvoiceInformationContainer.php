@@ -4,8 +4,9 @@ namespace HeidelpayMGW\Containers;
 
 use Plenty\Plugin\Templates\Twig;
 
-use HeidelpayMGW\Helpers\SessionHelper;
+use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Repositories\PaymentInformationRepository;
 
 /**
 * Returns rendered InvoiceInformation twig template
@@ -36,26 +37,42 @@ class InvoiceInformationContainer
      * Return rendered twig template with required data
      *
      * @param Twig $twig  Twig templating engine
-     * @param SessionHelper $sessionHelper  Session helper to save information for latter use
+     * @param PaymentInformationRepository $paymentInfoRepository  Payment information repository
      *
      * @return string
      */
     public function call(
         Twig $twig,
-        SessionHelper $sessionHelper
+        PaymentInformationRepository $paymentInfoRepository,
+        $args
     ): string {
-        $invoiceInformation = $sessionHelper->getValue('paymentInformation')['transaction'];
-        $data = [
-            'paymentId' => $invoiceInformation['paymentId'] ?? '',
-            'bic' => $invoiceInformation['bic'] ?? '',
-            'iban' => $invoiceInformation['iban'] ?? '',
-            'shortId' => $invoiceInformation['shortId'] ?? '',
-            'holder' => $invoiceInformation['holder'] ?? ''
-        ];
 
-        return $twig->render(
-            PluginConfiguration::PLUGIN_NAME.'::content.InvoiceInformation',
-            $data
-        );
+        /** @var Order $order */
+        $order = $args[0];
+        if ($order instanceof Order) {
+            $order = $order->toArray();
+        }
+
+        if (is_array($order)) {
+            $paymentInformation = $paymentInfoRepository->getByOrderId($order['id']);
+            if (!empty($paymentInformation)
+                && ($paymentInformation->paymentMethod === PluginConfiguration::INVOICE
+                || $paymentInformation->paymentMethod === PluginConfiguration::INVOICE_GUARANTEED
+                || $paymentInformation->paymentMethod === PluginConfiguration::INVOICE_FACTORING)
+            ) {
+                return $twig->render(
+                    PluginConfiguration::PLUGIN_NAME.'::content.InvoiceInformation',
+                    [
+                        'paymentId' => $paymentInformation->transaction['paymentId'] ?? '',
+                        'bic' => $paymentInformation->transaction['bic'] ?? '',
+                        'iban' => $paymentInformation->transaction['iban'] ?? '',
+                        'descriptor' => $paymentInformation->transaction['descriptor'] ?? '',
+                        'holder' => $paymentInformation->transaction['holder'] ?? ''
+                    ]
+                );
+            }
+        }
+        
+        return '';
     }
 }

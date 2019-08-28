@@ -60,6 +60,8 @@ abstract class AbstractPaymentService
 {
     use Loggable;
 
+    const API_ERROR_TRANSACTION_SHIP_NOT_ALLOWED = 'API.360.000.004';
+
     /** @var ContactRepositoryContract $contactRepository  Plenty Contact repository */
     private $contactRepository;
 
@@ -163,11 +165,12 @@ abstract class AbstractPaymentService
      */
     public function contactInformation(Address $address): array
     {
+        $heidelpayBirthDate = $this->sessionHelper->getValue('heidelpayBirthDate');
         return [
             'firstName' => $address->firstName,
             'lastName' => $address->lastName,
             'email' => $address->email,
-            'birthday' => $address->birthday,
+            'birthday' => $address->birthday === '' ? $heidelpayBirthDate : $address->birthday,
             'phone' => $address->phone,
             'mobile' => $address->personalNumber,
             'gender' => $address->gender
@@ -186,6 +189,7 @@ abstract class AbstractPaymentService
         $basket = $this->basketService->getBasket();
         $addresses = $this->basketService->getCustomerAddressData();
         $contact = $this->contactInformation($addresses['billing']);
+        
         $addresses['billing']['countryCode'] = $this->basketService->getCountryCode((int)$addresses['billing']->countryId);
         $addresses['billing']['stateName'] = $this->basketService->getCountryState((int)$addresses['billing']->countryId, (int)$addresses['billing']->stateId);
         $addresses['shipping']['countryCode'] = $this->basketService->getCountryCode((int)$addresses['shipping']->countryId);
@@ -195,7 +199,7 @@ abstract class AbstractPaymentService
 
         return [
             'privateKey' => $this->apiKeysHelper->getPrivateKey(),
-            'baseUrl' => $this->getBaseUrl(),
+            'checkoutUrl' => $this->getCheckoutUrl(),
             'basket' => $this->getBasketForAPI($basket),
             'invoiceAddress' => $addresses['billing'],
             'deliveryAddress' => $addresses['shipping'],
@@ -239,23 +243,24 @@ abstract class AbstractPaymentService
                 'basketItemReferenceId' => $basketItem->variationId,
                 'quantity' => $basketItem->quantity,
                 'vat' => $basketItem->vat,
-                'amountGross' => number_format($basketItem->price, 2, '.', ''),
-                'amountVat' => number_format($amountVat, 2, '.', ''),
-                'amountPerUnit' => number_format(($basketItem->price/ $basketItem->quantity), 2, '.', ''),
-                'amountNet' => number_format($amountNet, 2, '.', ''),
+                'amountGross' => round($basketItem->price, 2),
+                'amountVat' => round($amountVat, 2),
+                'amountPerUnit' => round(($basketItem->price/ $basketItem->quantity), 2),
+                'amountNet' => round($amountNet, 2),
                 'title' => $itemName ?: $basketItem->variationId
             ];
         }
-
+        $amountTotalDiscount = round($basket->couponDiscount, 2) < 0 ? round($basket->couponDiscount, 2) * -1 : round($basket->couponDiscount, 2);
         return [
-            'amountTotal' => number_format($basket->basketAmount, 2, '.', ''),
-            'amountTotalDiscount' => number_format($basket->couponDiscount, 2, '.', ''),
-            'amountTotalVat' => number_format($amountTotalVat, 2, '.', ''),
+            'amountTotal' => round($basket->basketAmount, 2),
+            'amountTotalDiscount' => $amountTotalDiscount,
+            'amountTotalVat' => round($amountTotalVat, 2),
             'currencyCode' => $basket->currency,
-            'shippingAmount' => number_format($basket->shippingAmount, 2, '.', ''),
-            'shippingAmountNet' => number_format($basket->shippingAmountNet, 2, '.', ''),
+            'shippingAmount' => round($basket->shippingAmount, 2),
+            'shippingAmountNet' => round($basket->shippingAmountNet, 2),
             'shippingVat' => $basket->basketItems[0]->vat,
             'shippingTitle' => 'Shipping',
+            'discountTitle' => 'Voucher',
             'basketItems' => $basketItems
         ];
     }
@@ -440,10 +445,10 @@ abstract class AbstractPaymentService
         $orderAmount = $order->amounts->where('currency', '=', $paymentCurrency)->first();
         
         $paymentStatus = Payment::STATUS_AWAITING_APPROVAL;
-        if ($orderAmount->invoiceTotal == $amount && $amount != 0) {
+        if ($orderAmount->invoiceTotal === $amount && $amount !== 0.00) {
             $paymentStatus = Payment::STATUS_CAPTURED;
         }
-        if ($orderAmount->invoiceTotal > $amount && $amount != 0) {
+        if ($orderAmount->invoiceTotal > $amount && $amount !== 0.00) {
             $paymentStatus = Payment::STATUS_PARTIALLY_CAPTURED;
         }
 
@@ -505,6 +510,16 @@ abstract class AbstractPaymentService
 
         //https or http
         return ($webstore->domainSsl ?? $webstore->domain);
+    }
+
+    /**
+     * Get base url of Plentymarkets shop
+     *
+     * @return string  Plentymarkets shop base URL
+     */
+    public function getCheckoutUrl()
+    {
+        return  $this->getBaseUrl().'/checkout';
     }
 
     /**

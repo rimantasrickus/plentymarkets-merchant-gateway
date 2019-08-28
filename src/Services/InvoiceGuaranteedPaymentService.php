@@ -88,12 +88,12 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
     {
         $data = parent::prepareCancelChargeRequest($paymentInformation, $order);
 
-        if ($paymentInformation->paymentMethod == PluginConfiguration::INVOICE_FACTORING) {
+        if ($paymentInformation->paymentMethod === PluginConfiguration::INVOICE_FACTORING) {
             $invoiceGuaranteedSettingRepo = pluginApp(InvoiceGuaranteedSettingRepository::class);
             $reason = '';
             foreach ($order->orderItems as $item) {
                 foreach ($item->properties as $property) {
-                    if ($property->typeId == OrderPropertyType::RETURNS_REASON) {
+                    if ($property->typeId === OrderPropertyType::RETURNS_REASON) {
                         $reason = $invoiceGuaranteedSettingRepo->getReturnCode($property->value);
                     }
                 }
@@ -104,11 +104,15 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelCharge', $data);
 
         $commentText = implode('<br />', [
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAmount') . $data['amount']
         ]);
         if (!empty($libResponse['merchantMessage'])) {
-            $commentText = $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage'];
-
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.cancelChargeError'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
+            ]);
             $this->getLogger(__METHOD__)->error(
                 PluginConfiguration::PLUGIN_NAME.'::translation.cancelChargeError',
                 [
@@ -147,11 +151,12 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
             return;
         }
         $commentText = implode('<br />', [
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.transferTo'),
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.iban') . $charge['iban'],
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.bic') . $charge['bic'],
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.holder') . $charge['holder'],
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.shortId') . $charge['shortId']
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.descriptor') . $charge['descriptor']
         ]);
         $this->createOrderComment($orderId, $commentText);
     }
@@ -168,10 +173,14 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
         try {
             $order = $this->orderHelper->findOrderByExternalOrderId($externalOrderId);
             parent::changePaymentStatusCanceled($order);
-
+            
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
+            ]);
             $this->createOrderComment(
                 $order->id,
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
+                $commentText
             );
     
             return true;
@@ -200,7 +209,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
         $order = $this->orderHelper->findOrderById($orderId);
         $invoiceId = '';
         foreach ($order->documents as $document) {
-            if ($document->type ==  Document::INVOICE) {
+            if ($document->type ===  Document::INVOICE) {
                 $invoiceId = $document->numberWithPrefix;
             }
         }
@@ -210,17 +219,35 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
             'invoiceId' => $invoiceId
         ]);
 
-        $commentText = $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successShip');
+        $this->getLogger(__METHOD__)->debug(
+            'translation.shipmentCall',
+            [
+                'orderId' => $orderId,
+                'paymentId' => $paymentInformation->transaction['paymentId'],
+                'invoiceId' => $invoiceId,
+                'libResponse' => $libResponse
+            ]
+        );
+
+        $commentText = implode('<br />', [
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successShip')
+        ]);
+
         
         if (!$libResponse['success']) {
             $this->getLogger(__METHOD__)->error(
-                'translation.errorShip',
+                PluginConfiguration::PLUGIN_NAME.'translation.errorShip',
                 [
                     'error' => $libResponse
                 ]
             );
 
-            $commentText = $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage'];
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.errorShip'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
+            ]);
         }
 
         $this->createOrderComment($orderId, $commentText);

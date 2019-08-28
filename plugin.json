@@ -27,7 +27,7 @@
     "serviceProvider": "HeidelpayMGW\\Providers\\PluginServiceProvider",
     "require": ["IO", "Ceres"],
     "dependencies":{
-        "heidelpay/heidelpay-php":"1.1.6.0"
+        "heidelpay/heidelpay-php":"1.2.0.0"
     },      
     "runOnBuild": [
         "HeidelpayMGW\\Migrations\\CreatePluginSettingTable",
@@ -46,6 +46,13 @@
             "defaultLayoutContainer": "Ceres::OrderConfirmation.AdditionalPaymentInformation"
         },
         {
+            "key"           :"HeidelpayMGW\\Containers\\InvoiceInformationContainer",
+            "name"          :"InvoiceInformationContainer",
+            "description"   :"Display additional data in order confirmation page",
+            "multiple"      : false,
+            "defaultLayoutContainer": "Ceres::MyAccount.OrderHistoryPaymentInformation"
+        },
+        {
             "key"           :"HeidelpayMGW\\Containers\\HeidelpayScriptsContainer",
             "name"          :"HeidelpayScriptsContainer",
             "description"   :"heidelpay MGW scripts",
@@ -58,6 +65,13 @@
             "description"   :"heidelpay MGW BuyNow button",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.PlaceOrder"
+        },
+        {
+            "key"           :"HeidelpayMGW\\Containers\\BirhtDateContainer",
+            "name"          :"BirhtDateContainer",
+            "description"   :"heidelpay MGW Date of birth modal",
+            "multiple"      : false,
+            "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         }
     ]
 }
