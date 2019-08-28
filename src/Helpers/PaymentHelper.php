@@ -413,7 +413,7 @@ class PaymentHelper
                 $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.iban', [], $language) . $paymentInformation->transaction['iban'],
                 $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.bic', [], $language) . $paymentInformation->transaction['bic'],
                 $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.holder', [], $language) . $paymentInformation->transaction['holder'],
-                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.shortId', [], $language) . $paymentInformation->transaction['shortId'],
+                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.descriptor', [], $language) . $paymentInformation->transaction['descriptor'],
             ]);
             /** @var OrderPdfGeneration $orderPdfGeneration */
             $orderPdfGeneration           = pluginApp(OrderPdfGeneration::class);

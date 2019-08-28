@@ -8,9 +8,14 @@ use heidelpayPHP\Heidelpay;
 try {
     $heidelpay = new Heidelpay(SdkRestApi::getParam('privateKey'));
 
-    $heidelpay->deleteAllWebhooks();
+    foreach ($heidelpay->fetchAllWebhooks() as $webhook) {
+        /** @var Webhook $webhook */
+        if ($webhook->getUrl() === SdkRestApi::getParam('webhookUrl')) {
+            $heidelpay->deleteWebhook($webhook);
+        }
+    }
     $webhook = $heidelpay->registerMultipleWebhooks(
-        SdkRestApi::getParam('baseUrl').'/'.SdkRestApi::getParam('routeName').'/webhooks',
+        SdkRestApi::getParam('webhookUrl'),
         [
             WebhookEvents::CHARGE,
             WebhookEvents::CHARGEBACK,
@@ -30,6 +35,7 @@ try {
     return [
         'merchantMessage' => $e->getMerchantMessage(),
         'clientMessage' => $e->getClientMessage(),
+        'errorId' => $e->getErrorId(),
         'code' => $e->getCode()
     ];
 } catch (Exception $e) {

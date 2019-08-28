@@ -51,9 +51,6 @@ $deliveryAddress->setName($name)
 $contactPlenty = SdkRestApi::getParam('contact');
 $customer = CustomerFactory::createCustomer($contactPlenty['firstName'], $contactPlenty['lastName']);
 $customer->setBirthDate($contactPlenty['birthday']);
-if (!empty($invoiceAddressPlenty['name1'])) {
-    $customer->setCompany($invoiceAddressPlenty['name1']);
-}
 if (!empty($contactPlenty['email'])) {
     $customer->setEmail($contactPlenty['email']);
 }
@@ -64,10 +61,10 @@ if (!empty($contactPlenty['mobile'])) {
     $customer->setMobile($contactPlenty['mobile']);
 }
 $salutation = Salutations::UNKNOWN;
-if ($contactPlenty['gender'] == 'male') {
+if ($contactPlenty['gender'] === 'male') {
     $salutation = Salutations::MR;
 }
-if ($contactPlenty['gender'] == 'female') {
+if ($contactPlenty['gender'] === 'female') {
     $salutation = Salutations::MRS;
 }
 $customer->setSalutation($salutation);
@@ -87,10 +84,10 @@ $metadata->addMetadata('pluginVersion', $metadataPlenty['pluginVersion']);
 $metadata->addMetadata('pluginType', $metadataPlenty['pluginType']);
 try {
     $transaction = $heidelpay->charge(
-        number_format($basketPlenty['amountTotal'], 2, '.', ''),
+        $basketPlenty['amountTotal'],
         $basketPlenty['currencyCode'],
         $paymentType['id'],
-        SdkRestApi::getParam('baseUrl').'/checkout',
+        SdkRestApi::getParam('checkoutUrl'),
         $customer,
         $orderId = SdkRestApi::getParam('orderId'),
         $metadata
@@ -103,6 +100,7 @@ try {
             'iban' => $transaction->getIban(),
             'bic' => $transaction->getBic(),
             'shortId' => $transaction->getShortId(),
+            'descriptor' => $transaction->getDescriptor(),
             'holder' => $transaction->getHolder(),
             'amount' => $transaction->getAmount(),
             'paymentId' => $transaction->getPayment()->getId(),
@@ -113,12 +111,14 @@ try {
     }
 
     return [
-        'merchantMessage' => $transaction->getMessage()->getCustomer()
+        'merchantMessage' => $transaction->getMessage()->getCustomer(),
+        'messageCode' => $transaction->getMessage()->getCode()
     ];
 } catch (HeidelpayApiException $e) {
     return [
         'merchantMessage' => $e->getMerchantMessage(),
         'clientMessage' => $e->getClientMessage(),
+        'errorId' => $e->getErrorId(),
         'code' => $e->getCode()
     ];
 } catch (Exception $e) {

@@ -156,7 +156,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.iban') . $charge['iban'],
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.bic') . $charge['bic'],
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.holder') . $charge['holder'],
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.shortId') . $charge['shortId']
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.descriptor') . $charge['descriptor']
         ]);
         $this->createOrderComment($orderId, $commentText);
     }

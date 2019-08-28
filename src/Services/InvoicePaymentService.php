@@ -8,6 +8,7 @@ use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\SessionHelper;
 use Plenty\Plugin\Translation\Translator;
 use HeidelpayMGW\Models\PaymentInformation;
+use Plenty\Modules\Document\Models\Document;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 
@@ -141,7 +142,7 @@ class InvoicePaymentService extends AbstractPaymentService
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.iban') . $charge['iban'],
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.bic') . $charge['bic'],
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.holder') . $charge['holder'],
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.shortId') . $charge['shortId']
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.descriptor') . $charge['descriptor']
         ]);
         $this->createOrderComment($orderId, $commentText);
     }
@@ -192,11 +193,60 @@ class InvoicePaymentService extends AbstractPaymentService
      */
     public function ship(PaymentInformation $paymentInformation, int $orderId): array
     {
-        // no need to do anything here so return
+        $order = $this->orderHelper->findOrderById($orderId);
+        $invoiceId = '';
+        foreach ($order->documents as $document) {
+            if ($document->type ===  Document::INVOICE) {
+                $invoiceId = $document->numberWithPrefix;
+            }
+        }
+        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceShip', [
+            'privateKey' => $this->apiKeysHelper->getPrivateKey(),
+            'paymentId' => $paymentInformation->transaction['paymentId'],
+            'invoiceId' => $invoiceId
+        ]);
 
-        return [
-            'paymentInformation' => $paymentInformation,
-            'orderId' => $orderId
-        ];
+        $this->getLogger(__METHOD__)->debug(
+            'translation.shipmentCall',
+            [
+                'orderId' => $orderId,
+                'paymentId' => $paymentInformation->transaction['paymentId'],
+                'invoiceId' => $invoiceId,
+                'libResponse' => $libResponse
+            ]
+        );
+
+        // since we know that most likely we get this error for invoice (unless something changes in the future) we just return
+        if ($libResponse['code'] === parent::API_ERROR_TRANSACTION_SHIP_NOT_ALLOWED) {
+            return [
+                'paymentInformation' => $paymentInformation,
+                'orderId' => $orderId
+            ];
+        }
+
+        $commentText = implode('<br />', [
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successShip')
+        ]);
+
+        
+        if (!$libResponse['success']) {
+            $this->getLogger(__METHOD__)->error(
+                PluginConfiguration::PLUGIN_NAME.'translation.errorShip',
+                [
+                    'error' => $libResponse
+                ]
+            );
+
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.errorShip'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
+            ]);
+        }
+
+        $this->createOrderComment($orderId, $commentText);
+
+        return $libResponse;
     }
 }

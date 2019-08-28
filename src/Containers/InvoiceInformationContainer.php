@@ -66,7 +66,7 @@ class InvoiceInformationContainer
                         'paymentId' => $paymentInformation->transaction['paymentId'] ?? '',
                         'bic' => $paymentInformation->transaction['bic'] ?? '',
                         'iban' => $paymentInformation->transaction['iban'] ?? '',
-                        'shortId' => $paymentInformation->transaction['shortId'] ?? '',
+                        'descriptor' => $paymentInformation->transaction['descriptor'] ?? '',
                         'holder' => $paymentInformation->transaction['holder'] ?? ''
                     ]
                 );

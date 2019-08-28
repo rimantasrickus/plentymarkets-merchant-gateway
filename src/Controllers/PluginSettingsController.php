@@ -100,15 +100,12 @@ class PluginSettingsController extends Controller
         try {
             /** @var LibraryCallContract $lib */
             $lib = pluginApp(LibraryCallContract::class);
-            /** @var WebstoreConfigurationRepositoryContract $webstoreConfig */
-            $webstoreConfig = pluginApp(WebstoreConfigurationRepositoryContract::class);
-
+            
             $settings = $this->settingRepository->save($this->request->except('plentymarkets'));
-            $webstore = $webstoreConfig->findByPlentyId(pluginApp(Application::class)->getPlentyId());
+            
             $data = [
                 'privateKey' => $settings->privateKey,
-                'baseUrl' => ($webstore->domainSsl ?? $webstore->domain),
-                'routeName' => PluginConfiguration::PLUGIN_NAME,
+                'webhookUrl' => $this->getWebhookUrl(),
             ];
             $libResponse = $lib->call(PluginConfiguration::PLUGIN_NAME.'::registerWebhook', $data);
 
@@ -151,5 +148,19 @@ class PluginSettingsController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Returns URL to use when registering webhooks
+     *
+     * @return string
+     */
+    private function getWebhookUrl(): string
+    {
+        /** @var WebstoreConfigurationRepositoryContract $webstoreConfig */
+        $webstoreConfig = pluginApp(WebstoreConfigurationRepositoryContract::class);
+        $webstore = $webstoreConfig->findByPlentyId(pluginApp(Application::class)->getPlentyId());
+        
+        return ($webstore->domainSsl ?? $webstore->domain).PluginConfiguration::PLUGIN_NAME.'/webhooks';
     }
 }
