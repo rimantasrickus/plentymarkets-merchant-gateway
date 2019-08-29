@@ -242,23 +242,27 @@ class PaymentHelper
     {
         if (empty($mopId)) {
             $order = pluginApp(OrderHelper::class)->findOrderById($orderId);
-            $mopId = $order->methodOfPaymentId;
+            $mopId = (int)$order->methodOfPaymentId;
         }
         $pluginMopList = $this->getPaymentMethodList();
 
         foreach ($pluginMopList as $mop) {
-            if ($mop['id'] == $mopId) {
-                if ($mop['paymentKey'] == PluginConfiguration::PAYMENT_KEY_INVOICE) {
+            if ($mop['id'] === $mopId) {
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_INVOICE) {
                     return pluginApp(InvoicePaymentService::class);
                 }
-                if ($mop['paymentKey'] == PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED) {
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED) {
                     return pluginApp(InvoiceGuaranteedPaymentService::class);
                 }
-                if ($mop['paymentKey'] == PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B) {
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B) {
                     return pluginApp(InvoiceGuaranteedPaymentServiceB2B::class);
                 }
             }
         }
+
+        /** @var Translator $translator */
+        $translator = pluginApp(Translator::class);
+        throw new \Exception($translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentServiceException'));
     }
 
     /**

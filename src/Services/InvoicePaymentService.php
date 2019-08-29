@@ -184,7 +184,6 @@ class InvoicePaymentService extends AbstractPaymentService
 
     /**
      * Make API call ship to finalize transaction
-     * Since we don't need to make ship call, we do nothing
      *
      * @param PaymentInformation $paymentInformation  Heidelpay payment information
      * @param integer $orderId  Plenty Order ID
@@ -193,60 +192,6 @@ class InvoicePaymentService extends AbstractPaymentService
      */
     public function ship(PaymentInformation $paymentInformation, int $orderId): array
     {
-        $order = $this->orderHelper->findOrderById($orderId);
-        $invoiceId = '';
-        foreach ($order->documents as $document) {
-            if ($document->type ===  Document::INVOICE) {
-                $invoiceId = $document->numberWithPrefix;
-            }
-        }
-        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceShip', [
-            'privateKey' => $this->apiKeysHelper->getPrivateKey(),
-            'paymentId' => $paymentInformation->transaction['paymentId'],
-            'invoiceId' => $invoiceId
-        ]);
-
-        $this->getLogger(__METHOD__)->debug(
-            'translation.shipmentCall',
-            [
-                'orderId' => $orderId,
-                'paymentId' => $paymentInformation->transaction['paymentId'],
-                'invoiceId' => $invoiceId,
-                'libResponse' => $libResponse
-            ]
-        );
-
-        // since we know that most likely we get this error for invoice (unless something changes in the future) we just return
-        if ($libResponse['code'] === parent::API_ERROR_TRANSACTION_SHIP_NOT_ALLOWED) {
-            return [
-                'paymentInformation' => $paymentInformation,
-                'orderId' => $orderId
-            ];
-        }
-
-        $commentText = implode('<br />', [
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successShip')
-        ]);
-
-        
-        if (!$libResponse['success']) {
-            $this->getLogger(__METHOD__)->error(
-                PluginConfiguration::PLUGIN_NAME.'translation.errorShip',
-                [
-                    'error' => $libResponse
-                ]
-            );
-
-            $commentText = implode('<br />', [
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.errorShip'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
-            ]);
-        }
-
-        $this->createOrderComment($orderId, $commentText);
-
-        return $libResponse;
+        return parent::ship($paymentInformation, $orderId);
     }
 }

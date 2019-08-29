@@ -67,8 +67,8 @@
             "defaultLayoutContainer": "Ceres::Checkout.PlaceOrder"
         },
         {
-            "key"           :"HeidelpayMGW\\Containers\\BirhtDateContainer",
-            "name"          :"BirhtDateContainer",
+            "key"           :"HeidelpayMGW\\Containers\\BirthDateContainer",
+            "name"          :"BirthDateContainer",
             "description"   :"heidelpay MGW Date of birth modal",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
