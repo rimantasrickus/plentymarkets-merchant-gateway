@@ -93,7 +93,18 @@ class WebhooksController extends Controller
             'jsonRequest' => $request->getContent()
         ]);
 
-        if (!$this->paymentHelper->handleWebhook($hook, $libResponse)) {
+        try {
+            if (!$this->paymentHelper->handleWebhook($hook, $libResponse)) {
+                return $response->forceStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        } catch (\Exception $e) {
+            $this->getLogger(__METHOD__)->exception(
+                'translation.exception',
+                [
+                    'error' => $e->getMessage()
+                ]
+            );
+
             return $response->forceStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

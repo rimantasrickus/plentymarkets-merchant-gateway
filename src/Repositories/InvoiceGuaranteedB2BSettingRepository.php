@@ -57,5 +57,7 @@ class InvoiceGuaranteedB2BSettingRepository extends BaseSettingRepository
         if ($model->reasonCodeCredit === $returnId) {
             return 'CREDIT';
         }
+
+        return 'CANCEL';
     }
 }

@@ -8,29 +8,55 @@ try {
     $heidelpay = new Heidelpay(SdkRestApi::getParam('privateKey'));
     
     $payment = $heidelpay->fetchPayment(SdkRestApi::getParam('paymentId'));
-    $charges = $payment->getCharges();
-    $amountLeft = SdkRestApi::getParam('amount');
-    $cancelCharge = array();
-    for ($i = count($charges)-1; $i >= 0; $i--) {
-        if ($amountLeft >= $charges[$i]->getAmount()) {
-            $cancel = $heidelpay->cancelCharge($charges[$i]->getId(), $charges[$i]->getAmount(), SdkRestApi::getParam('reason') ?? null);
-            $cancelCharge[] = [
-                'shortId' => $cancel->getShortId(),
-                'amount' => $charges[$i]->getAmount(),
-                'paymentId' => SdkRestApi::getParam('paymentId'),
-                'reason' => SdkRestApi::getParam('reason')
-            ];
-        } else {
-            $cancel = $heidelpay->cancelCharge($charges[$i]->getId(), $amountLeft, SdkRestApi::getParam('reason') ?? null);
-            $cancelCharge[] = [
-                'shortId' => $cancel->getShortId(),
-                'amount' => $charges[$i]->getAmount(),
-                'paymentId' => SdkRestApi::getParam('paymentId'),
-                'reason' => SdkRestApi::getParam('reason')
-            ];
+    $charges = array_reverse($payment->getCharges());
+    $amountToCancel = SdkRestApi::getParam('amount');
+    
+    if (count($charges) === 0) {
+        $authorize = $payment->getAuthorization();
+        if ($authorize !== null) {
+            $cancel = $authorize->cancel($amountToCancel);
         }
-        $amountLeft -= $charges[$i]->getAmount();
-        if ($amountLeft <= 0) {
+        return [
+            'success' => true,
+            'cancelCharges' => [
+                'shortId' => $cancel->getShortId(),
+                'amount' => $amountToCancel,
+                'paymentId' => SdkRestApi::getParam('paymentId'),
+                'reason' => SdkRestApi::getParam('reason')
+            ]
+        ];
+    }
+
+    $cancelCharge = array();
+    /** @var Charge $charge */
+    foreach ($charges as $charge) {
+        if ($amountToCancel >= $charge->getAmount()) {
+            try {
+                $cancel = $charge->cancel(null, SdkRestApi::getParam('reason'));
+                $cancelCharge[] = [
+                    'shortId' => $cancel->getShortId(),
+                    'amount' => $charge->getAmount(),
+                    'paymentId' => SdkRestApi::getParam('paymentId'),
+                    'reason' => SdkRestApi::getParam('reason')
+                ];
+            } catch (HeidelpayApiException $e) {
+                continue;
+            }
+        } else {
+            try {
+                $cancel = $charge->cancel($amountToCancel, SdkRestApi::getParam('reason'));
+                $cancelCharge[] = [
+                    'shortId' => $cancel->getShortId(),
+                    'amount' => $amountToCancel,
+                    'paymentId' => SdkRestApi::getParam('paymentId'),
+                    'reason' => SdkRestApi::getParam('reason')
+                ];
+            } catch (HeidelpayApiException $e) {
+                continue;
+            }
+        }
+        $amountToCancel -= $charge->getAmount();
+        if ($amountToCancel <= 0) {
             break;
         }
     }

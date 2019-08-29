@@ -5,7 +5,7 @@ namespace HeidelpayMGW\Containers;
 use Plenty\Plugin\Templates\Twig;
 
 /**
-* Returns rendered BirhtDate twig template
+* Returns rendered BirthDate twig template
 *
 * Copyright (C) 2019 heidelpay GmbH
 *
@@ -27,7 +27,7 @@ use Plenty\Plugin\Templates\Twig;
 *
 * @package  heidelpayMGW/containers
 */
-class BirhtDateContainer
+class BirthDateContainer
 {
     /**
      * Return rendered twig template with required data
@@ -38,6 +38,6 @@ class BirhtDateContainer
      */
     public function call(Twig $twig): string
     {
-        return $twig->render('HeidelpayMGW::content.BirhtDate', []);
+        return $twig->render('HeidelpayMGW::content.BirthDate', []);
     }
 }

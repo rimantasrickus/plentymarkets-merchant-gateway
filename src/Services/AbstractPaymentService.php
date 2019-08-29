@@ -618,5 +618,64 @@ abstract class AbstractPaymentService
      *
      * @return array
      */
-    abstract public function ship(PaymentInformation $paymentInformation, int $orderId): array;
+    public function ship(PaymentInformation $paymentInformation, int $orderId): array
+    {
+        $order = $this->orderHelper->findOrderById($orderId);
+        $invoiceId = '';
+        foreach ($order->documents as $document) {
+            if ($document->type ===  Document::INVOICE) {
+                $invoiceId = $document->numberWithPrefix;
+            }
+        }
+        /** @var LibraryCallContract $libCall */
+        $libCall = pluginApp(LibraryCallContract::class);
+        $libResponse =$libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceShip', [
+            'privateKey' => $this->apiKeysHelper->getPrivateKey(),
+            'paymentId' => $paymentInformation->transaction['paymentId'],
+            'invoiceId' => $invoiceId
+        ]);
+
+        $this->getLogger(__METHOD__)->debug(
+            'translation.shipmentCall',
+            [
+                'orderId' => $orderId,
+                'paymentId' => $paymentInformation->transaction['paymentId'],
+                'invoiceId' => $invoiceId,
+                'libResponse' => $libResponse
+            ]
+        );
+
+        // since we know that most likely we get this error for invoice (unless something changes in the future) we just return
+        if ($libResponse['code'] === self::API_ERROR_TRANSACTION_SHIP_NOT_ALLOWED) {
+            return [
+                'paymentInformation' => $paymentInformation,
+                'orderId' => $orderId
+            ];
+        }
+
+        $commentText = implode('<br />', [
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successShip')
+        ]);
+
+        
+        if (!$libResponse['success']) {
+            $this->getLogger(__METHOD__)->error(
+                PluginConfiguration::PLUGIN_NAME.'translation.errorShip',
+                [
+                    'error' => $libResponse
+                ]
+            );
+
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.errorShip'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
+            ]);
+        }
+
+        $this->createOrderComment($orderId, $commentText);
+
+        return $libResponse;
+    }
 }
