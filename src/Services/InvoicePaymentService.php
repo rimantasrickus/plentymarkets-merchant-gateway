@@ -8,7 +8,6 @@ use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\SessionHelper;
 use Plenty\Plugin\Translation\Translator;
 use HeidelpayMGW\Models\PaymentInformation;
-use Plenty\Modules\Document\Models\Document;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 

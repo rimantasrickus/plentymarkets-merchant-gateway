@@ -11,9 +11,11 @@ use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Helpers\SessionHelper;
 use HeidelpayMGW\Services\BasketService;
 use Plenty\Modules\Basket\Models\Basket;
+use Plenty\Plugin\Translation\Translator;
 use Plenty\Modules\Comment\Models\Comment;
 use Plenty\Modules\Payment\Models\Payment;
 use HeidelpayMGW\Models\PaymentInformation;
+use Plenty\Modules\Document\Models\Document;
 use Plenty\Modules\Account\Address\Models\Address;
 use Plenty\Modules\Account\Contact\Models\Contact;
 use Plenty\Modules\Payment\Models\PaymentProperty;
@@ -23,6 +25,7 @@ use Plenty\Modules\Order\Property\Models\OrderProperty;
 use Plenty\Modules\Payment\Models\PaymentOrderRelation;
 use Plenty\Modules\Payment\Models\PaymentContactRelation;
 use Plenty\Modules\Order\Property\Models\OrderPropertyType;
+use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 use Plenty\Modules\Comment\Contracts\CommentRepositoryContract;
 use Plenty\Modules\Payment\Contracts\PaymentRepositoryContract;
 use Plenty\Modules\Account\Contact\Contracts\ContactRepositoryContract;
@@ -653,9 +656,11 @@ abstract class AbstractPaymentService
             ];
         }
 
+        /** @var Translator $translator */
+        $translator = pluginApp(Translator::class);
         $commentText = implode('<br />', [
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successShip')
+            $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+            $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successShip')
         ]);
 
         
@@ -668,9 +673,9 @@ abstract class AbstractPaymentService
             );
 
             $commentText = implode('<br />', [
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.errorShip'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
+                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.errorShip'),
+                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
             ]);
         }
 
