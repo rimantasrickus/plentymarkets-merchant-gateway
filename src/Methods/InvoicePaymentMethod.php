@@ -6,7 +6,7 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
 use HeidelpayMGW\Repositories\InvoiceSettingRepository;
 
 /**
-* Invoice guaranteed B2B payment method class
+* Invoice payment method class
 *
 * Copyright (C) 2019 heidelpay GmbH
 *
@@ -30,6 +30,8 @@ use HeidelpayMGW\Repositories\InvoiceSettingRepository;
 */
 class InvoicePaymentMethod extends BasePaymentMethod
 {
+    const AVAILABLE_COUNTRIES = ['DE', 'AT'];
+
     /**
      * InvoicePaymentMethod constructor
      * Provide our settings repository to base payment method
@@ -49,6 +51,10 @@ class InvoicePaymentMethod extends BasePaymentMethod
         if ($this->basketService->isBasketB2B()) {
             return false;
         }
+        if ($this->isCountryRestricted()) {
+            return false;
+        }
+        
         return parent::isActive();
     }
 
@@ -60,5 +66,20 @@ class InvoicePaymentMethod extends BasePaymentMethod
     public function getDescription(): string
     {
         return PluginConfiguration::INVOICE_FRONTEND_NAME;
+    }
+
+    /**
+     * Check if country of the address is in available countries list
+     *
+     * @return bool  True if not in the white list
+     */
+    private function isCountryRestricted(): bool
+    {
+        $address = $this->basketService->getCustomerAddressData()['billing'];
+        if (empty(self::AVAILABLE_COUNTRIES) || in_array($address->country->isoCode2, self::AVAILABLE_COUNTRIES)) {
+            return false;
+        }
+
+        return true;
     }
 }

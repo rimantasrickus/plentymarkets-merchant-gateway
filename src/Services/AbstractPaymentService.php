@@ -15,11 +15,15 @@ use Plenty\Plugin\Translation\Translator;
 use Plenty\Modules\Comment\Models\Comment;
 use Plenty\Modules\Payment\Models\Payment;
 use HeidelpayMGW\Models\PaymentInformation;
+use Plenty\Modules\Basket\Models\BasketItem;
 use Plenty\Modules\Document\Models\Document;
+use Plenty\Modules\Order\Models\OrderAmount;
+use HeidelpayMGW\Services\PlentyPaymentService;
 use Plenty\Modules\Account\Address\Models\Address;
 use Plenty\Modules\Account\Contact\Models\Contact;
 use Plenty\Modules\Payment\Models\PaymentProperty;
 use HeidelpayMGW\Configuration\PluginConfiguration;
+use Plenty\Modules\Item\Variation\Models\Variation;
 use Plenty\Modules\Authorization\Services\AuthHelper;
 use Plenty\Modules\Order\Property\Models\OrderProperty;
 use Plenty\Modules\Payment\Models\PaymentOrderRelation;
@@ -129,9 +133,11 @@ abstract class AbstractPaymentService
      */
     public function prepareCancelChargeRequest(PaymentInformation $paymentInformation, Order $order): array
     {
+        /** @var float $returnAmount */
         $returnAmount = $order->amounts
             ->where('currency', '=', $paymentInformation->transaction['currency'])
             ->first()->invoiceTotal;
+        /** @var float $paidAmount */
         $paidAmount = $order->parentOrder->amounts
             ->where('currency', '=', $paymentInformation->transaction['currency'])
             ->first()->paidAmount;
@@ -168,7 +174,9 @@ abstract class AbstractPaymentService
      */
     public function contactInformation(Address $address): array
     {
+        /** @var string $heidelpayBirthDate */
         $heidelpayBirthDate = $this->sessionHelper->getValue('heidelpayBirthDate');
+
         return [
             'firstName' => $address->firstName,
             'lastName' => $address->lastName,
@@ -189,14 +197,18 @@ abstract class AbstractPaymentService
      */
     public function prepareChargeRequest(array $payment)
     {
+        /** @var Basket $basket */
         $basket = $this->basketService->getBasket();
+        /** @var array $addresses */
         $addresses = $this->basketService->getCustomerAddressData();
+        /** @var array $contact */
         $contact = $this->contactInformation($addresses['billing']);
         
         $addresses['billing']['countryCode'] = $this->basketService->getCountryCode((int)$addresses['billing']->countryId);
         $addresses['billing']['stateName'] = $this->basketService->getCountryState((int)$addresses['billing']->countryId, (int)$addresses['billing']->stateId);
         $addresses['shipping']['countryCode'] = $this->basketService->getCountryCode((int)$addresses['shipping']->countryId);
         $addresses['shipping']['stateName'] = $this->basketService->getCountryState((int)$addresses['shipping']->countryId, (int)$addresses['shipping']->stateId);
+        /** @var string $externalOrderId */
         $externalOrderId = $this->generateExternalOrderId($basket->id);
         $this->sessionHelper->setValue('externalOrderId', $externalOrderId);
 
@@ -208,7 +220,7 @@ abstract class AbstractPaymentService
             'deliveryAddress' => $addresses['shipping'],
             'contact' => $contact,
             'orderId' => $externalOrderId,
-            'paymentType' => $payment,
+            'paymentResource' => $payment,
             'metadata' => [
                 'shopType' => 'Plentymarkets',
                 'shopVersion' => '7',
@@ -233,11 +245,17 @@ abstract class AbstractPaymentService
         $sessionStorageFactory = pluginApp(FrontendSessionStorageFactoryContract::class);
         $basketItems = array();
         $amountTotalVat = 0.0;
+        /** @var BasketItem $basketItem */
         foreach ($basket->basketItems as $basketItem) {
+            /** @var Variation $variation */
             $variation = $variationRepo->findById($basketItem->variationId);
-            $amountNet = $basketItem->price / ($basketItem->vat / 100 + 1);
+            /** @var float $amountNet */
+            $amountNet = $basketItem->price / (($basketItem->vat / 100) + 1);
+            /** @var float $amountVat */
             $amountVat = $basketItem->price - $amountNet;
+            /** @var float $amountTotalVat */
             $amountTotalVat += $amountVat;
+            /** @var string $itemName */
             $itemName = $variation->name;
             if (empty($itemName)) {
                 $itemName = $variation->itemTexts->where('lang', '=', $sessionStorageFactory->getLocaleSettings()->language)->first()->name;
@@ -253,7 +271,9 @@ abstract class AbstractPaymentService
                 'title' => $itemName ?: $basketItem->variationId
             ];
         }
+        /** @var float $amountTotalDiscount */
         $amountTotalDiscount = round($basket->couponDiscount, 2) < 0 ? round($basket->couponDiscount, 2) * -1 : round($basket->couponDiscount, 2);
+        
         return [
             'amountTotal' => round($basket->basketAmount, 2),
             'amountTotalDiscount' => $amountTotalDiscount,
@@ -276,10 +296,10 @@ abstract class AbstractPaymentService
      *
      * @return void
      */
-    public function updateOrder(int $orderId, string $externalOrderId)
+    public function addExternalOrderId(int $orderId, string $externalOrderId)
     {
+        /** @var Order $order */
         $order = $this->orderHelper->findOrderById($orderId);
-
         /** @var OrderProperty $externalOrder */
         $externalOrder = pluginApp(OrderProperty::class);
         $externalOrder->typeId = OrderPropertyType::EXTERNAL_ORDER_ID;
@@ -296,7 +316,7 @@ abstract class AbstractPaymentService
      * @param string $referenceNumber  Heidelpay short ID
      * @param int $mopId  Method of payment ID
      *
-     * @return void
+     * @return Payment|null  Returns Plenty payment if success
      */
     public function addPaymentToOrder(
         int $orderId,
@@ -306,11 +326,12 @@ abstract class AbstractPaymentService
         string $currency
     ) {
         try {
+            /** @var Order $order */
             $order = $this->orderHelper->findOrderById($orderId);
-
+            /** @var Payment $payment */
             $payment = $this->createPlentyPayment($mopId, $referenceNumber, $order, $amount, $currency);
             if ($payment instanceof Payment) {
-                $this->assignPaymentToOrder($payment, $order);
+                $this->assignPaymentToOrder($payment, $order->id);
 
                 return $payment;
             }
@@ -322,22 +343,29 @@ abstract class AbstractPaymentService
                 ]
             );
         }
+
+        return null;
     }
 
     /**
-     * Assign Paymet to Order
+     * Assign Payment to Order
      *
      * @param Payment $payment  Plenty Payment
-     * @param Order $order  Plenty Order
+     * @param int $orderId  Plenty Order ID
      *
      * @return PaymentOrderRelation  Plenty PaymentOrderRelation
      */
-    public function assignPaymentToOrder(Payment $payment, Order $order): PaymentOrderRelation
+    public function assignPaymentToOrder(Payment $payment, int $orderId): PaymentOrderRelation
     {
+        /** @var PaymentOrderRelationRepositoryContract $paymentOrderRelationRepo */
         $paymentOrderRelationRepo = pluginApp(PaymentOrderRelationRepositoryContract::class);
+        /** @var Order $order */
+        $order = $this->orderHelper->findOrderById($orderId);
+
         return $this->authHelper->processUnguarded(
             function () use ($paymentOrderRelationRepo, $payment, $order) {
                 $paymentOrderRelationRepo->deleteOrderRelation($payment);
+                
                 return  $paymentOrderRelationRepo->createOrderRelation($payment, $order);
             }
         );
@@ -353,18 +381,17 @@ abstract class AbstractPaymentService
      */
     public function assignPaymentToContact(Payment $payment, int $orderId): bool
     {
-        $order = $this->authHelper->processUnguarded(
-            function () use ($orderId) {
-                return  $this->orderHelper->findOrderById($orderId);
-            }
-        );
+        /** @var Order $order */
+        $order = $this->orderHelper->findOrderById($orderId);
 
         if (isset($order->relations)) {
+            /** @var int $contactId */
             $contactId = $order->relations
                 ->where('referenceType', OrderRelationReference::REFERENCE_TYPE_CONTACT)
                 ->first()->referenceId;
 
             if (!empty($contactId)) {
+                /** @var Contact $contact */
                 $contact = $this->authHelper->processUnguarded(
                     function () use ($contactId) {
                         return  $this->contactRepository->findContactById($contactId);
@@ -373,6 +400,7 @@ abstract class AbstractPaymentService
                 if ($contact instanceof Contact) {
                     /** @var PaymentContactRelationRepositoryContract $paymentContactRelationRepo */
                     $paymentContactRelationRepo = pluginApp(PaymentContactRelationRepositoryContract::class);
+                    /** @var PaymentContactRelation $paymentContactRelation */
                     $paymentContactRelation = $this->authHelper->processUnguarded(
                         function () use ($paymentContactRelationRepo, $payment, $contact) {
                             return  $paymentContactRelationRepo->createContactRelation($payment, $contact);
@@ -417,6 +445,7 @@ abstract class AbstractPaymentService
 
             /** @var PaymentRepositoryContract $paymentRepository */
             $paymentRepository = pluginApp(PaymentRepositoryContract::class);
+            /** @var Payment $payment */
             $payment = $this->authHelper->processUnguarded(
                 function () use ($paymentRepository, $payment) {
                     return  $paymentRepository->createPayment($payment);
@@ -432,6 +461,8 @@ abstract class AbstractPaymentService
                 ]
             );
         }
+        
+        return null;
     }
 
     /**
@@ -445,8 +476,9 @@ abstract class AbstractPaymentService
      */
     private function getPaymentStatus(Order $order, float $amount, string $paymentCurrency): int
     {
+        /** @var OrderAmount $orderAmount */
         $orderAmount = $order->amounts->where('currency', '=', $paymentCurrency)->first();
-        
+        /** @var int $paymentStatus */
         $paymentStatus = Payment::STATUS_AWAITING_APPROVAL;
         if ($orderAmount->invoiceTotal === $amount && $amount !== 0.00) {
             $paymentStatus = Payment::STATUS_CAPTURED;
@@ -534,34 +566,22 @@ abstract class AbstractPaymentService
      *
      * @return bool  Was updated or not
      */
-    public function updatePayedAmount(int $orderId, int $amount, int $paymentStatus): bool
+    public function updatePlentyPaymentPaidAmount(int $orderId, int $amount, int $paymentStatus): bool
     {
         try {
-            /** @var PaymentRepositoryContract $paymentRepository */
-            $paymentRepository = pluginApp(PaymentRepositoryContract::class);
-            $payments = $this->authHelper->processUnguarded(
-                function () use ($orderId, $paymentRepository) {
-                    return $paymentRepository->getPaymentsByOrderId($orderId);
-                }
+            /** @var PlentyPaymentService $plentyPaymentService */
+            $plentyPaymentService = pluginApp(PlentyPaymentService::class);
+            /** @var array $payments */
+            $payments = $plentyPaymentService->getPlentyPayments($orderId);
+
+            $this->updatePlentyPayment(
+                (array)$payments,
+                $orderId,
+                $paymentStatus,
+                false,
+                $amount,
+                true
             );
-            
-            /** @var PaymentHelper $paymentHelper */
-            $paymentHelper = pluginApp(PaymentHelper::class);
-            foreach ($payments as $payment) {
-                if ($paymentHelper->isHeidelpayMGWMOP($payment->mopId)) {
-                    $payment->amount = $amount / 100;
-                    $payment->status = $paymentStatus;
-                    $payment->hash = $orderId.'-'.time();
-                    $payment->updateOrderPaymentStatus = true;
-                    
-                    $this->authHelper->processUnguarded(
-                        function () use ($payment, $paymentRepository) {
-                            return  $paymentRepository->updatePayment($payment);
-                        }
-                    );
-                    $this->assignPaymentToContact($payment, $orderId);
-                }
-            }
     
             return true;
         } catch (\Exception $e) {
@@ -571,9 +591,9 @@ abstract class AbstractPaymentService
                     'message' => $e->getMessage()
                 ]
             );
-
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -583,7 +603,7 @@ abstract class AbstractPaymentService
      *
      * @return bool  Was payment status changed
      */
-    abstract public function cancelPayment(string $externalOrderId): bool;
+    abstract public function cancelPlentyPayment(string $externalOrderId): bool;
 
     /**
      * Change payment status to canceled
@@ -594,21 +614,59 @@ abstract class AbstractPaymentService
      */
     public function changePaymentStatusCanceled(Order $order)
     {
+        $this->updatePlentyPayment(
+            (array)$order->payments,
+            $order->id,
+            Payment::STATUS_CANCELED,
+            true
+        );
+    }
+
+    /**
+     * Update Plentymarkets Order payments
+     *
+     * @param array $payments  Order payments
+     * @param int $orderId  Order ID
+     * @param int $paymentStatus  Payment status
+     * @param bool $assignPaymentToOrder  Assign payment to Order
+     * @param int $amount  Amount in cents
+     * @param bool $updateOrderPaymentStatus  Update payment status
+     *
+     * @return void
+     */
+    private function updatePlentyPayment(
+        array $payments,
+        int $orderId,
+        int $paymentStatus,
+        bool $assignPaymentToOrder = false,
+        int $amount = null,
+        bool $updateOrderPaymentStatus = false
+    ) {
         /** @var PaymentRepositoryContract $paymentRepository */
         $paymentRepository = pluginApp(PaymentRepositoryContract::class);
         /** @var PaymentHelper $paymentHelper */
         $paymentHelper = pluginApp(PaymentHelper::class);
-        foreach ($order->payments as $payment) {
+        /** @var Payment $payment */
+        foreach ($payments as $payment) {
             if ($paymentHelper->isHeidelpayMGWMOP($payment->mopId)) {
-                $payment->status = Payment::STATUS_CANCELED;
-                $payment->hash = $order->id.'-'.time();
+                $payment->status = $paymentStatus;
+                $payment->hash = $orderId.'-'.time();
+                if (!empty($amount)) {
+                    $payment->amount = $amount / 100;
+                }
+                if ($updateOrderPaymentStatus) {
+                    $payment->updateOrderPaymentStatus = true;
+                }
+
                 $this->authHelper->processUnguarded(
                     function () use ($payment, $paymentRepository) {
                         return  $paymentRepository->updatePayment($payment->toArray());
                     }
                 );
-                $this->assignPaymentToOrder($payment, $order);
-                $this->assignPaymentToContact($payment, $order->id);
+                if ($assignPaymentToOrder) {
+                    $this->assignPaymentToOrder($payment, $orderId);
+                }
+                $this->assignPaymentToContact($payment, $orderId);
             }
         }
     }
@@ -623,6 +681,7 @@ abstract class AbstractPaymentService
      */
     public function ship(PaymentInformation $paymentInformation, int $orderId): array
     {
+        /** @var Order $order */
         $order = $this->orderHelper->findOrderById($orderId);
         $invoiceId = '';
         foreach ($order->documents as $document) {
@@ -632,7 +691,8 @@ abstract class AbstractPaymentService
         }
         /** @var LibraryCallContract $libCall */
         $libCall = pluginApp(LibraryCallContract::class);
-        $libResponse =$libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceShip', [
+        /** @var array $libResponse */
+        $libResponse = $libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceShip', [
             'privateKey' => $this->apiKeysHelper->getPrivateKey(),
             'paymentId' => $paymentInformation->transaction['paymentId'],
             'invoiceId' => $invoiceId
@@ -658,6 +718,7 @@ abstract class AbstractPaymentService
 
         /** @var Translator $translator */
         $translator = pluginApp(Translator::class);
+        /** @var string $commentText */
         $commentText = implode('<br />', [
             $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
             $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successShip')

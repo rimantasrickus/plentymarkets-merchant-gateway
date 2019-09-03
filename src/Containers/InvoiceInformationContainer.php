@@ -54,6 +54,7 @@ class InvoiceInformationContainer
         }
 
         if (is_array($order)) {
+            /** @var PaymentInformation $paymentInformation */
             $paymentInformation = $paymentInfoRepository->getByOrderId($order['id']);
             if (!empty($paymentInformation)
                 && ($paymentInformation->paymentMethod === PluginConfiguration::INVOICE

@@ -13,7 +13,7 @@ try {
     if ($resource instanceof Payment) {
         $data = [
             'paymentId' => $resource->getId(),
-            'paymentType' => $resource->getPaymentType()->getId(),
+            'paymentResourceId' => $resource->getPaymentType()->getId(),
             'currency' => $resource->getCurrency(),
             'total' => $resource->getAmount()->getTotal(),
             'charged' => $resource->getAmount()->getCharged(),
