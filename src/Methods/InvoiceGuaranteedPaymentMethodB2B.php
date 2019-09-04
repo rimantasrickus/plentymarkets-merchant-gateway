@@ -51,9 +51,6 @@ class InvoiceGuaranteedPaymentMethodB2B extends BasePaymentMethod
         if (!$this->basketService->isBasketB2B()) {
             return false;
         }
-        if ($this->isCountryRestricted()) {
-            return false;
-        }
         
         return parent::isActive();
     }
@@ -66,20 +63,5 @@ class InvoiceGuaranteedPaymentMethodB2B extends BasePaymentMethod
     public function getDescription(): string
     {
         return PluginConfiguration::INVOICE_GUARANTEED_FRONTEND_NAME_B2B;
-    }
-
-    /**
-     * Check if country of the address is in available countries list
-     *
-     * @return bool  True if not in the white list
-     */
-    private function isCountryRestricted(): bool
-    {
-        $address = $this->basketService->getCustomerAddressData()['billing'];
-        if (empty(self::AVAILABLE_COUNTRIES) || in_array($address->country->isoCode2, self::AVAILABLE_COUNTRIES)) {
-            return false;
-        }
-
-        return true;
     }
 }

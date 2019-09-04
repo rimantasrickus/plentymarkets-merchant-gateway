@@ -32,6 +32,8 @@ use Plenty\Modules\Payment\Method\Contracts\PaymentMethodService;
 */
 class BasePaymentMethod extends PaymentMethodService
 {
+    const AVAILABLE_COUNTRIES = [];
+
     /** @var mixed $settings  Settings model of a payment method */
     private $settings;
 
@@ -65,6 +67,9 @@ class BasePaymentMethod extends PaymentMethodService
             return false;
         }
         if ($this->settings->basketMaxTotal > 0.00 && $basket->basketAmount > $this->settings->basketMaxTotal) {
+            return false;
+        }
+        if ($this->isCountryRestricted()) {
             return false;
         }
 
@@ -112,5 +117,20 @@ class BasePaymentMethod extends PaymentMethodService
     public function getDescription(): string
     {
         return'';
+    }
+
+    /**
+     * Check if country of the address is in available countries list
+     *
+     * @return bool  True if not in the white list
+     */
+    private function isCountryRestricted(): bool
+    {
+        $address = $this->basketService->getCustomerAddressData()['billing'];
+        if (empty(static::AVAILABLE_COUNTRIES) || in_array($address->country->isoCode2, static::AVAILABLE_COUNTRIES)) {
+            return false;
+        }
+
+        return true;
     }
 }
