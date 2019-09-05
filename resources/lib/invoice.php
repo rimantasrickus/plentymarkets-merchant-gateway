@@ -70,7 +70,7 @@ if ($contactPlenty['gender'] === 'female') {
 $customer->setSalutation($salutation);
 $customer->setBillingAddress($invoiceAddress);
 $customer->setShippingAddress($deliveryAddress);
-$paymentType = SdkRestApi::getParam('paymentType');
+$paymentResource = SdkRestApi::getParam('paymentResource');
 
 // Basket
 $basketPlenty = SdkRestApi::getParam('basket');
@@ -86,7 +86,7 @@ try {
     $transaction = $heidelpay->charge(
         $basketPlenty['amountTotal'],
         $basketPlenty['currencyCode'],
-        $paymentType['id'],
+        $paymentResource['id'],
         SdkRestApi::getParam('checkoutUrl'),
         $customer,
         $orderId = SdkRestApi::getParam('orderId'),

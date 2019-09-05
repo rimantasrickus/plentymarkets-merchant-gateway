@@ -9,7 +9,6 @@ use HeidelpayMGW\Helpers\Loggable;
 use HeidelpayMGW\Helpers\ApiKeysHelper;
 use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use Plenty\Modules\Item\Variation\Contracts\VariationRepositoryContract;
 use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 
 /**
@@ -75,6 +74,7 @@ class WebhooksController extends Controller
      */
     public function handleWebhook(Response $response, Request $request): Response
     {
+        /** @var array $hook */
         $hook = json_decode($request->getContent(), true);
         
         $this->getLogger(__METHOD__)->debug(
@@ -88,6 +88,7 @@ class WebhooksController extends Controller
             return $response->forceStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        /** @var array $libResponse */
         $libResponse = $this->libContract->call(PluginConfiguration::PLUGIN_NAME.'::webhookResource', [
             'privateKey' => $this->apiKeysHelper->getPrivateKey(),
             'jsonRequest' => $request->getContent()

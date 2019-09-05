@@ -32,9 +32,9 @@ use Plenty\Modules\Payment\Method\Contracts\PaymentMethodService;
 */
 class BasePaymentMethod extends PaymentMethodService
 {
-    const AVAILABLE_COUNTRIES = ['DE', 'AU'];
+    const AVAILABLE_COUNTRIES = [];
 
-    /** @var \HeidelpayMGW\Models\PluginSetting $settings */
+    /** @var mixed $settings  Settings model of a payment method */
     private $settings;
 
     /** @var BasketService $basketService */
@@ -127,7 +127,7 @@ class BasePaymentMethod extends PaymentMethodService
     private function isCountryRestricted(): bool
     {
         $address = $this->basketService->getCustomerAddressData()['billing'];
-        if (in_array($address->country->isoCode2, self::AVAILABLE_COUNTRIES)) {
+        if (empty(static::AVAILABLE_COUNTRIES) || in_array($address->country->isoCode2, static::AVAILABLE_COUNTRIES)) {
             return false;
         }
 

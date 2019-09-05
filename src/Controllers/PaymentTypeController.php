@@ -51,11 +51,14 @@ class PaymentTypeController extends Controller
      */
     public function heidelpayMGWPaymentType(Response $response, Request $request, SessionHelper $sessionHelper): BaseResponse
     {
+        /** @var array $frontendData */
         $frontendData = $request->except('plentyMarkets');
+        /** @var array $data */
         $data = $frontendData['data'];
+        /** @var string $heidelpayBirthDate */
         $heidelpayBirthDate = $frontendData['heidelpayBirthDate'];
 
-        $sessionHelper->setValue('paymentType', $data);
+        $sessionHelper->setValue('paymentResource', $data);
         $sessionHelper->setValue('heidelpayBirthDate', $heidelpayBirthDate);
 
         return $response->json([

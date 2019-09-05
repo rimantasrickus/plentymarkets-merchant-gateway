@@ -77,16 +77,17 @@ class PaymentInformationRepository
     }
 
     /**
-     * Returns PaymentInformation model by HeidelpayMGW Payment ID.
+     * Returns PaymentInformation model by Payment resource ID.
      *
-     * @param string $paymentType  Heidelpay payment type
+     * @param string $paymentResourceId  Heidelpay payment type
      *
-     * @return PaymentInformation|null
+     * @return PaymentInformation|null  Returns PaymentInformation with information such as OrderId, ExternalOrderId,
+     *                                  PaymentResourceId, payment transaction information, like shortId, amount and so on.
      */
-    public function getByPaymentType(string $paymentType)
+    public function getByResourceId(string $paymentResourceId)
     {
         $model = $this->database->query(PaymentInformation::class)
-            ->where('paymentType', '=', $paymentType)
+            ->where('paymentType', '=', $paymentResourceId)
             ->get()[0];
 
         return $model;
@@ -111,14 +112,14 @@ class PaymentInformationRepository
     /**
      * Updates PaymentInformation model by adding Order ID
      *
-     * @param string $paymentType
+     * @param string $paymentResourceId
      * @param array $data
      *
      * @return PaymentInformation|null
      */
-    public function updateOrderId(string $paymentType, string $orderId)
+    public function updateOrderId(string $paymentResourceId, string $orderId)
     {
-        $model = $this->getByPaymentType($paymentType);
+        $model = $this->getByResourceId($paymentResourceId);
         if (!empty($model)) {
             $model->orderId = $orderId;
             $this->database->save($model);
@@ -130,14 +131,14 @@ class PaymentInformationRepository
     /**
      * Updates PaymentInformation model
      *
-     * @param string $paymentType
+     * @param string $paymentResourceId
      * @param array $data
      *
      * @return PaymentInformation|null
      */
-    public function update(string $paymentType, array $data)
+    public function update(string $paymentResourceId, array $data)
     {
-        $model = $this->getByPaymentType($paymentType);
+        $model = $this->getByResourceId($paymentResourceId);
         if (!empty($model)) {
             $model->set($data);
             $this->database->save($model);

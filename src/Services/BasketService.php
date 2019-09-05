@@ -152,12 +152,10 @@ class BasketService
      */
     private function getAddressById(int $addressId)
     {
-        $address = $this->authHelper->processUnguarded(
+        return $this->authHelper->processUnguarded(
             function () use ($addressId) {
                 return $this->addressRepo->findAddressById($addressId);
             }
         );
-        
-        return $address;
     }
 }

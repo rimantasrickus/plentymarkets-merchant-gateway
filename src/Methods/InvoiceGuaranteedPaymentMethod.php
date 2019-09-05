@@ -30,6 +30,8 @@ use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
 */
 class InvoiceGuaranteedPaymentMethod extends BasePaymentMethod
 {
+    const AVAILABLE_COUNTRIES = ['DE', 'AT'];
+    
     /**
      * InvoiceGuaranteedPaymentMethod constructor
      * Provide our settings repository to base payment method
@@ -49,6 +51,7 @@ class InvoiceGuaranteedPaymentMethod extends BasePaymentMethod
         if ($this->basketService->isBasketB2B()) {
             return false;
         }
+        
         return parent::isActive();
     }
 
