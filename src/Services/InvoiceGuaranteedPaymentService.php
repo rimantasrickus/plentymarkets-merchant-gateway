@@ -248,6 +248,11 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
                 $invoiceId = $document->numberWithPrefix;
             }
         }
+
+        if (empty($invoiceId)) {
+            throw new \Exception($this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.noInvoice'));
+        }
+
         /** @var array $libResponse */
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceShip', [
             'privateKey' => $this->apiKeysHelper->getPrivateKey(),
