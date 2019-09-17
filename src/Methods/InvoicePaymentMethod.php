@@ -6,7 +6,7 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
 use HeidelpayMGW\Repositories\InvoiceSettingRepository;
 
 /**
-* Invoice guaranteed B2B payment method class
+* Invoice payment method class
 *
 * Copyright (C) 2019 heidelpay GmbH
 *
@@ -30,6 +30,8 @@ use HeidelpayMGW\Repositories\InvoiceSettingRepository;
 */
 class InvoicePaymentMethod extends BasePaymentMethod
 {
+    const AVAILABLE_COUNTRIES = ['DE', 'AT'];
+
     /**
      * InvoicePaymentMethod constructor
      * Provide our settings repository to base payment method
@@ -49,6 +51,7 @@ class InvoicePaymentMethod extends BasePaymentMethod
         if ($this->basketService->isBasketB2B()) {
             return false;
         }
+        
         return parent::isActive();
     }
 

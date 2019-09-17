@@ -5,9 +5,12 @@ namespace HeidelpayMGW\Providers;
 use HeidelpayMGW\Helpers\Loggable;
 use Plenty\Plugin\ServiceProvider;
 use Plenty\Plugin\Events\Dispatcher;
+use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Helpers\SessionHelper;
+use Plenty\Plugin\Translation\Translator;
 use Plenty\Modules\Order\Models\OrderType;
+use HeidelpayMGW\Models\PaymentInformation;
 use Plenty\Modules\Document\Models\Document;
 use HeidelpayMGW\Methods\InvoicePaymentMethod;
 use HeidelpayMGW\Configuration\PluginConfiguration;
@@ -98,54 +101,68 @@ class PluginServiceProvider extends ServiceProvider
             $this->paymentMethodEvents()
         );
 
+        $logger = $this->getLogger(__METHOD__);
         //Listen for the event that gets the payment method content before Order creation
         $eventDispatcher->listen(
             GetPaymentMethodContent::class,
-            function (GetPaymentMethodContent $event) use ($sessionHelper, $paymentHelper) {
+            function (GetPaymentMethodContent $event) use ($sessionHelper, $paymentHelper, $logger) {
                 try {
                     //skip not HeidelpayMGW payment
                     if (!$paymentHelper->isHeidelpayMGWMOP($event->getMop())) {
                         return;
                     }
-
-                    $paymentType = $sessionHelper->getValue('paymentType');
-                    if (!empty($paymentType)) {
+                    /** @var array $paymentResource */
+                    $paymentResource = $sessionHelper->getValue('paymentResource');
+                    if (!empty($paymentResource)) {
                         //make a charge
-                        $response = $paymentHelper->executeCharge($paymentType, $event->getMop());
+                        /** @var array $response */
+                        $response = $paymentHelper->executeCharge($paymentResource, $event->getMop());
                         
                         $event->setValue($response['value']);
                         return $event->setType($response['type']);
                     }
                 } catch (\Exception $e) {
-                    $this->getLogger(__METHOD__)->exception(
+                    $logger->exception(
                         'translation.exception',
                         [
                             'error' => $e->getMessage()
                         ]
                     );
-
-                    $event->setValue('Unexpected error.');
-                    return $event->setType(GetPaymentMethodContent::RETURN_TYPE_ERROR);
                 }
+
+                $logger->exception(
+                    'translation.noPaymentResource',
+                    [
+                        'methodOfPayment' => $event->getMop(),
+                        'paymentResource' => $sessionHelper->getValue('paymentResource')
+                    ]
+                );
+                
+                /** @var Translator $translator */
+                $translator = pluginApp(Translator::class);
+
+                $event->setValue($translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.unexpectedError'));
+                return $event->setType(GetPaymentMethodContent::RETURN_TYPE_ERROR);
             }
         );
 
         //Listen for the event that executes the payment after Order creat
         $eventDispatcher->listen(
             ExecutePayment::class,
-            function (ExecutePayment $event) use ($paymentHelper, $sessionHelper, $paymentInformationRepository) {
+            function (ExecutePayment $event) use ($paymentHelper, $sessionHelper, $paymentInformationRepository, $logger) {
                 try {
                     //if payment method not ours, we don't care
                     if (!$paymentHelper->isHeidelpayMGWMOP($event->getMop())) {
                         return $event->setType(GetPaymentMethodContent::RETURN_TYPE_CONTINUE);
                     }
-                    $payment = $sessionHelper->getValue('paymentInformation');
-                    if (!empty($payment)) {
-                        $paymentInformationRepository->updateOrderId($payment['paymentType'], (string)$event->getOrderId());
-                        $paymentHelper->handlePayment($payment, $event->getOrderId(), $event->getMop());
+                    /** @var array $paymentResource */
+                    $paymentResource = $sessionHelper->getValue('paymentInformation');
+                    if (!empty($paymentResource)) {
+                        $paymentInformationRepository->updateOrderId($paymentResource['paymentType'], (string)$event->getOrderId());
+                        $paymentHelper->handlePayment($paymentResource, $event->getOrderId(), $event->getMop());
                     }
                 } catch (\Exception $e) {
-                    $this->getLogger(__METHOD__)->exception(
+                    $logger->exception(
                         'translation.exception',
                         [
                             'error' => $e->getMessage()
@@ -161,15 +178,21 @@ class PluginServiceProvider extends ServiceProvider
         //Handle document generation
         $eventDispatcher->listen(
             OrderPdfGenerationEvent::class,
-            static function (OrderPdfGenerationEvent $event) use ($paymentHelper, $paymentInformationRepository) {
+            static function (OrderPdfGenerationEvent $event) use ($paymentHelper, $paymentInformationRepository, $logger) {
                 try {
+                    /** @var Order $order */
                     $order = $event->getOrder();
+                    /** @var string $docType */
                     $docType = $event->getDocType();
+                    /** @var string $mopId */
                     $mopId = $order->methodOfPaymentId;
-                    if (!$paymentHelper->isHeidelpayMGWMOP($mopId)) {
+                    if (!$paymentHelper->isHeidelpayMGWMOP((int)$mopId)) {
                         return;
                     }
+
+                    //get sales Order ID; when generating return note sales Order will be parentOrder
                     $orderId = $order->typeId === OrderType::TYPE_RETURN ? $order->parentOrder->id : $order->id;
+                    /** @var PaymentInformation $paymentInformation */
                     $paymentInformation = $paymentInformationRepository->getByOrderId($orderId);
                     if (empty($paymentInformation)) {
                         return;
@@ -195,12 +218,14 @@ class PluginServiceProvider extends ServiceProvider
                             break;
                     }
                 } catch (\Exception $e) {
-                    $this->getLogger(__METHOD__)->exception(
+                    $logger->exception(
                         'translation.exception',
                         [
                             'error' => $e->getMessage()
                         ]
                     );
+
+                    throw $e;
                 }
             }
         );

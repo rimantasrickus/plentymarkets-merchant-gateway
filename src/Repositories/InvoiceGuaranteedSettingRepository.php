@@ -48,14 +48,16 @@ class InvoiceGuaranteedSettingRepository extends BaseSettingRepository
     {
         $model = $this->get();
 
-        if ($model->reasonCodeCancel == $returnId) {
+        if ($model->reasonCodeCancel === $returnId) {
             return 'CANCEL';
         }
-        if ($model->reasonCodeReturn == $returnId) {
+        if ($model->reasonCodeReturn === $returnId) {
             return 'RETURN';
         }
-        if ($model->reasonCodeCredit == $returnId) {
+        if ($model->reasonCodeCredit === $returnId) {
             return 'CREDIT';
         }
+
+        return 'CANCEL';
     }
 }

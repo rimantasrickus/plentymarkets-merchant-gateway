@@ -11,6 +11,29 @@ use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 
+/**
+ * Invoice payment service class
+ *
+ * Copyright (C) 2019 heidelpay GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @link https://docs.heidelpay.com/
+ *
+ * @package  heidelpayMGW/services
+ *
+ * @author Rimantas <development@heidelpay.com>
+ */
 class InvoicePaymentService extends AbstractPaymentService
 {
     use Loggable;
@@ -58,8 +81,9 @@ class InvoicePaymentService extends AbstractPaymentService
      */
     public function charge(array $payment): array
     {
+        /** @var array $data */
         $data = parent::prepareChargeRequest($payment);
-
+        /** @var array $libResponse */
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoice', $data);
 
         $this->getLogger(__METHOD__)->debug(
@@ -83,14 +107,19 @@ class InvoicePaymentService extends AbstractPaymentService
      */
     public function cancelCharge(PaymentInformation $paymentInformation, Order $order): array
     {
+        /** @var array $data */
         $data = parent::prepareCancelChargeRequest($paymentInformation, $order);
+        /** @var array $libResponse */
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelCharge', $data);
-
+        /** @var string $commentText */
         $commentText = implode('<br />', [
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAmount') . $data['amount']
         ]);
         if (!empty($libResponse['merchantMessage'])) {
             $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.cancelChargeError'),
                 $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage'],
                 $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.clientMessage') . $libResponse['clientMessage']
             ]);
@@ -124,20 +153,22 @@ class InvoicePaymentService extends AbstractPaymentService
      *
      * @return void
      */
-    public function updateOrder(int $orderId, string $externalOrderId)
+    public function addExternalOrderId(int $orderId, string $externalOrderId)
     {
-        parent::updateOrder($orderId, $externalOrderId);
-
-        $charge = $this->sessionHelper->getValue('paymentInformation')['transaction'];
-        if (empty($charge)) {
+        parent::addExternalOrderId($orderId, $externalOrderId);
+        /** @var array $transaction */
+        $transaction = $this->sessionHelper->getValue('paymentInformation')['transaction'];
+        if (empty($transaction)) {
             return;
         }
+        /** @var string $commentText */
         $commentText = implode('<br />', [
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.transferTo'),
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.iban') . $charge['iban'],
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.bic') . $charge['bic'],
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.holder') . $charge['holder'],
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.shortId') . $charge['shortId']
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.iban') . $transaction['iban'],
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.bic') . $transaction['bic'],
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.holder') . $transaction['holder'],
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.descriptor') . $transaction['descriptor']
         ]);
         $this->createOrderComment($orderId, $commentText);
     }
@@ -149,15 +180,20 @@ class InvoicePaymentService extends AbstractPaymentService
      *
      * @return bool  Was payment status changed
      */
-    public function cancelPayment(string $externalOrderId): bool
+    public function cancelPlentyPayment(string $externalOrderId): bool
     {
         try {
+            /** @var Order $order */
             $order = $this->orderHelper->findOrderByExternalOrderId($externalOrderId);
             parent::changePaymentStatusCanceled($order);
-
+            /** @var string $commentText */
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
+            ]);
             $this->createOrderComment(
                 $order->id,
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
+                $commentText
             );
     
             return true;
@@ -175,7 +211,6 @@ class InvoicePaymentService extends AbstractPaymentService
 
     /**
      * Make API call ship to finalize transaction
-     * Since we don't need to make ship call, we do nothing
      *
      * @param PaymentInformation $paymentInformation  Heidelpay payment information
      * @param integer $orderId  Plenty Order ID
@@ -184,11 +219,6 @@ class InvoicePaymentService extends AbstractPaymentService
      */
     public function ship(PaymentInformation $paymentInformation, int $orderId): array
     {
-        // no need to do anything here so return
-
-        return [
-            'paymentInformation' => $paymentInformation,
-            'orderId' => $orderId
-        ];
+        return parent::ship($paymentInformation, $orderId);
     }
 }

@@ -2,21 +2,18 @@
 set_time_limit(0);
 
 use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Services\ResourceService;
 use heidelpayPHP\Resources\Payment;
 use heidelpayPHP\Heidelpay;
 
 try {
     $heidelpay = new Heidelpay(SdkRestApi::getParam('privateKey'));
-    $resourceService = new ResourceService($heidelpay);
-    $event = json_decode(SdkRestApi::getParam('jsonRequest'), true);
-    $resource = $resourceService->fetchResourceByUrl($event['retrieveUrl']);
+    $resource = $heidelpay->fetchResourceFromEvent(SdkRestApi::getParam('jsonRequest'));
     
     $data = array();
     if ($resource instanceof Payment) {
         $data = [
             'paymentId' => $resource->getId(),
-            'paymentType' => $resource->getPaymentType()->getId(),
+            'paymentResourceId' => $resource->getPaymentType()->getId(),
             'currency' => $resource->getCurrency(),
             'total' => $resource->getAmount()->getTotal(),
             'charged' => $resource->getAmount()->getCharged(),
@@ -31,9 +28,12 @@ try {
     return [
         'merchantMessage' => $e->getMerchantMessage(),
         'clientMessage' => $e->getClientMessage(),
+        'errorId' => $e->getErrorId(),
+        'code' => $e->getCode()
     ];
 } catch (Exception $e) {
     return [
         'merchantMessage' => $e->getMessage(),
+        'code' => $e->getCode()
     ];
 }
