@@ -161,6 +161,6 @@ class PluginSettingsController extends Controller
         $webstoreConfig = pluginApp(WebstoreConfigurationRepositoryContract::class);
         $webstore = $webstoreConfig->findByPlentyId(pluginApp(Application::class)->getPlentyId());
         
-        return ($webstore->domainSsl ?? $webstore->domain).PluginConfiguration::PLUGIN_NAME.'/webhooks';
+        return ($webstore->domainSsl ?? $webstore->domain).'/'.PluginConfiguration::PLUGIN_NAME.'/webhooks';
     }
 }
