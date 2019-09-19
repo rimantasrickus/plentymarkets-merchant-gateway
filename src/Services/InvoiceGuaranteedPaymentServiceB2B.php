@@ -251,6 +251,8 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
      * @param PaymentInformation $paymentInformation  Heidelpay payment information
      * @param integer $orderId  Plenty Order ID
      *
+     * @throws Exception
+     *
      * @return array
      */
     public function ship(PaymentInformation $paymentInformation, int $orderId): array
