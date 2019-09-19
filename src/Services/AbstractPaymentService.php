@@ -539,7 +539,7 @@ abstract class AbstractPaymentService
      *
      * @return string  Plentymarkets shop base URL
      */
-    public function getBaseUrl()
+    public function getBaseUrl(): string
     {
         $webstore = $this->webstoreConfigurationRepository->findByPlentyId(pluginApp(Application::class)->getPlentyId());
 
@@ -552,7 +552,7 @@ abstract class AbstractPaymentService
      *
      * @return string  Plentymarkets shop base URL
      */
-    public function getCheckoutUrl()
+    public function getCheckoutUrl(): string
     {
         return  $this->getBaseUrl().'/checkout';
     }
@@ -660,7 +660,7 @@ abstract class AbstractPaymentService
 
                 $this->authHelper->processUnguarded(
                     function () use ($payment, $paymentRepository) {
-                        return  $paymentRepository->updatePayment($payment->toArray());
+                        return  $paymentRepository->updatePayment($payment);
                     }
                 );
                 if ($assignPaymentToOrder) {
