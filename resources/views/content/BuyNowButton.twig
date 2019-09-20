@@ -69,6 +69,93 @@ function prepareHeidelpayPayment() {
                     }
                 }
             }
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{creditCard}}') {
+                showHeidelpayCCModal();
+
+                let card = heidelpayInstance.Card();
+                // Rendering input fields
+                card.create('number', {
+                    containerId: 'card-element-id-number',
+                    onlyIframe: false
+                });
+                card.create('expiry', {
+                    containerId: 'card-element-id-expiry',
+                    onlyIframe: false
+                });
+                card.create('cvc', {
+                    containerId: 'card-element-id-cvc',
+                    onlyIframe: false
+                });
+
+                document.getElementById('heidelpayCCSubmit').onclick = function() {
+                    document.getElementById('heidelpayCCSubmit').disabled = true;
+                    document.getElementById('ccModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
+                    heidelpayPayment(placeOrderComponent, card);
+                };
+            }
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{sepa}}') {
+                showHeidelpaySepaModal();
+
+                let sepa = heidelpayInstance.SepaDirectDebit();
+                sepa.create('sepa-direct-debit', {
+                    containerId: 'sepa-IBAN'
+                });
+
+                document.getElementById('heidelpaySepaSubmit').onclick = function() {
+                    if (document.getElementById('SepaMandate').checked) {
+                        document.getElementById('heidelpaySepaSubmit').disabled = true;
+                        document.getElementById('sepaModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
+                        heidelpayPayment(placeOrderComponent, sepa);
+                    } else {
+                        window.CeresNotification.error('{{sepaMandateError}}');
+                    }
+                };
+            }
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{sepaGuaranteed}}') {
+                if (!isBirthDateAvailable() && !heidelpayBirthDate) {
+                    var Customer = heidelpayInstance.Customer()
+                    // Rendering the customer form
+                    Customer.create({
+                        containerId: 'customer',
+                        fields: ['birthdate'],
+                        showHeader: false
+                    });
+                    showHeidelpayBirthDateModal();
+                }
+                 if (isBirthDateAvailable() || heidelpayBirthDate) {
+                    showHeidelpaySepaGuaranteedModal();
+                    let sepaGuaranteed = heidelpayInstance.SepaDirectDebitGuaranteed();
+                    sepaGuaranteed.create('sepa-direct-debit-guaranteed', {
+                        containerId: 'sepa-guaranteed-IBAN'
+                    });
+
+                    document.getElementById('heidelpaySepaGuaranteedSubmit').onclick = function() {
+                        if (document.getElementById('SepaGuaranteedMandate').checked) {
+                            document.getElementById('heidelpaySepaGuaranteedSubmit').disabled = true;
+                            document.getElementById('sepaGuaranteedModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
+                            heidelpayPayment(placeOrderComponent, sepaGuaranteed);
+                        } else {
+                            window.CeresNotification.error('{{sepaMandateError}}');
+                        }
+                    };
+                 }
+            }
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{paypal}}') {
+                showHeidelpayPaypalModal();
+
+                let paypal = heidelpayInstance.Paypal();
+                // Rendering input fields
+                paypal.create('email', {
+                    containerId: 'container-heidelpay-paypal',
+                    onlyIframe: false
+                });
+
+                document.getElementById('heidelpayPaypalSubmit').onclick = function() {
+                    document.getElementById('heidelpayPaypalSubmit').disabled = true;
+                    document.getElementById('paypalModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
+                    heidelpayPayment(placeOrderComponent, paypal);
+                };
+            }
         }
     }
 }
@@ -114,28 +201,39 @@ function heidelpayPayment(placeOrderComponent, paymentInstance) {
                     console.log('Success: ', response)
                     if (response.success === true) {
                         placeOrderComponent.preparePayment();
+                        closeHeidelpayCCModal();
+                        closeHeidelpaySepaModal();
+                        closeHeidelpaySepaGuaranteedModal();
+                        closeHeidelpayPaypalModal();
+                        enableButtons();
                         return;
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    document.getElementById('checkoutButtonHeidelpay').disabled = false;
-                    document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-arrow-right';
+                    enableButtons();
                     window.CeresNotification.error(error);
                 });
             })
             .catch(error => {
                 console.log('Error: ', error);
-                document.getElementById('checkoutButtonHeidelpay').disabled = false;
-                document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-arrow-right';
+                enableButtons();
                 window.CeresNotification.error(error);
             })
     }
 }
 
-function birthDateField()
-{
-    
+function enableButtons() {
+    document.getElementById('heidelpayCCSubmit').disabled = false;
+    document.getElementById('ccModalPayButtonArrow').className = '';
+    document.getElementById('heidelpaySepaSubmit').disabled = false;
+    document.getElementById('sepaModalPayButtonArrow').className = '';
+    document.getElementById('heidelpaySepaGuaranteedSubmit').disabled = false;
+    document.getElementById('sepaGuaranteedModalPayButtonArrow').className = '';
+    document.getElementById('heidelpayPaypalSubmit').disabled = false;
+    document.getElementById('paypalModalPayButtonArrow').className = '';
+    document.getElementById('checkoutButtonHeidelpay').disabled = false;
+    document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-arrow-right';
 }
 
 function checkHeidelpayActive(e) {

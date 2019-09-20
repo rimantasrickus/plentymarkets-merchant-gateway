@@ -2,7 +2,6 @@
 set_time_limit(0);
 
 use heidelpayPHP\Exceptions\HeidelpayApiException;
-use heidelpayPHP\Constants\ApiResponseCodes;
 
 $heidelpay = new \heidelpayPHP\Heidelpay(SdkRestApi::getParam('privateKey'));
 

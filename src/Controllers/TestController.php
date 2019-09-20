@@ -70,7 +70,18 @@ class TestController extends Controller
     public function update(Request $request, Response $response, Migrate $migrate): BaseResponse
     {
         $model = $request->get('model');
-        $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\'.$model);
+        if ($model === 'all') {
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\PluginSetting');
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\InvoiceSetting');
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\InvoiceGuaranteedSetting');
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\InvoiceGuaranteedB2BSetting');
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\CreditCardSetting');
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\PaypalSetting');
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\SepaSetting');
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\SepaGuaranteedSetting');
+        } else {
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\'.$model);
+        }
 
         return $response->json('Ok');
     }
@@ -88,5 +99,14 @@ class TestController extends Controller
         $model = $request->get('model');
         
         return $response->json(pluginApp(DataBase::class)->query(PluginConfiguration::PLUGIN_NAME.'\\Models\\'.$model)->get());
+    }
+
+    public function test(Response $response)
+    {
+        return $response->json([
+            'class' => __CLASS__,
+            'get_class' => get_class($this),
+            'explode' => explode('\\', __CLASS__)[2],
+        ]);
     }
 }

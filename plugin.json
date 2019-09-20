@@ -8,7 +8,7 @@
     "namespace": "HeidelpayMGW",
 
     "type": "payment",
-    "version": "0.1.0",
+    "version": "0.3.0",
     "license": "Apache-2.0",
     "isClosedSource": false,
     "price": 0.00,
@@ -34,7 +34,11 @@
         "HeidelpayMGW\\Migrations\\CreateInvoiceSettingTable",
         "HeidelpayMGW\\Migrations\\CreatePaymentInformationTable",
         "HeidelpayMGW\\Migrations\\CreateInvoiceGuaranteedSettingTable",
-        "HeidelpayMGW\\Migrations\\CreateInvoiceGuaranteedB2BSettingTable"
+        "HeidelpayMGW\\Migrations\\CreateInvoiceGuaranteedB2BSettingTable",
+        "HeidelpayMGW\\Migrations\\CreateCreditCardSettingTable",
+        "HeidelpayMGW\\Migrations\\CreateSepaSettingTable",
+        "HeidelpayMGW\\Migrations\\CreateSepaGuaranteedSettingTable",
+        "HeidelpayMGW\\Migrations\\CreatePaypalSettingTable"
     ],
     "dataProviders":
     [
@@ -70,6 +74,34 @@
             "key"           :"HeidelpayMGW\\Containers\\BirthDateContainer",
             "name"          :"BirthDateContainer",
             "description"   :"heidelpay MGW Date of birth modal",
+            "multiple"      : false,
+            "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
+        },
+        {
+            "key"           :"HeidelpayMGW\\Containers\\CreditCardContainer",
+            "name"          :"CreditCardContainer",
+            "description"   :"Heidelpay Credit card form",
+            "multiple"      : false,
+            "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
+        },
+        {
+            "key"           :"HeidelpayMGW\\Containers\\SepaContainer",
+            "name"          :"SepaContainer",
+            "description"   :"Heidelpay Sepa form",
+            "multiple"      : false,
+            "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
+        },
+        {
+            "key"           :"HeidelpayMGW\\Containers\\SepaGuaranteedContainer",
+            "name"          :"SepaGuaranteedContainer",
+            "description"   :"Heidelpay Sepa guaranteed form",
+            "multiple"      : false,
+            "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
+        },
+        {
+            "key"           :"HeidelpayMGW\\Containers\\PaypalContainer",
+            "name"          :"PaypalContainer",
+            "description"   :"Heidelpay Paypal form",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         }

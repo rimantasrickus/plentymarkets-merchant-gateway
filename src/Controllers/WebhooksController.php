@@ -70,7 +70,7 @@ class WebhooksController extends Controller
      * @param Response  $response
      * @param Request   $request
      *
-     * @return string
+     * @return Response
      */
     public function handleWebhook(Response $response, Request $request): Response
     {

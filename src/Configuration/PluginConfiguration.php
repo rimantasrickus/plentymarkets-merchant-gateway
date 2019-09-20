@@ -29,21 +29,36 @@ class PluginConfiguration
 {
     // Plugin
     const PLUGIN_NAME = 'HeidelpayMGW';
-    const PLUGIN_VERSION = '0.1.0';
+    const PLUGIN_VERSION = '0.3.0';
     const PLUGIN_KEY = 'HeidelpayMGWPaymentPlugin';
     const API_SANDBOX = 'sandbox';
     const API_PRODUCTION = 'production';
     
     // Plugin payment methods
-    const PAYMENT_KEY_INVOICE = 'HeidelpayMGWINVOICE';
-    const INVOICE_FRONTEND_NAME = 'HeidelpayMGWInvoice';
-    const PAYMENT_KEY_INVOICE_GUARANTEED = 'HeidelpayMGWINVOICEGUARANTEED';
-    const INVOICE_GUARANTEED_FRONTEND_NAME = 'HeidelpayMGWInvoiceGuaranteed';
-    const PAYMENT_KEY_INVOICE_GUARANTEED_B2B = 'HeidelpayMGWINVOICEGUARANTEEDB2B';
-    const INVOICE_GUARANTEED_FRONTEND_NAME_B2B = 'HeidelpayMGWInvoiceGuaranteedB2B';
-
+    const PAYMENT_KEY_INVOICE = "HeidelpayMGWINVOICE";
+    const INVOICE_FRONTEND_NAME = "HeidelpayMGWInvoice";
+    const PAYMENT_KEY_INVOICE_GUARANTEED = "HeidelpayMGWINVOICEGUARANTEED";
+    const INVOICE_GUARANTEED_FRONTEND_NAME = "HeidelpayMGWInvoiceGuaranteed";
+    const PAYMENT_KEY_INVOICE_GUARANTEED_B2B = "HeidelpayMGWINVOICEGUARANTEEDB2B";
+    const INVOICE_GUARANTEED_FRONTEND_NAME_B2B = "HeidelpayMGWInvoiceGuaranteedB2B";
+    const PAYMENT_KEY_CREDIT_CARD = "HeidelpayMGWCREDITCARD";
+    const CREDIT_CARD_FRONTEND_NAME = "HeidelpayMGWCreditCard";
+    const PAYMENT_KEY_SEPA = "HeidelpayMGWSEPA";
+    const SEPA_FRONTEND_NAME = "HeidelpayMGWSEPA";
+    const PAYMENT_KEY_SEPA_GUARANTEED = "HeidelpayMGWSEPAGUARANTEED";
+    const SEPA_GUARANTEED_FRONTEND_NAME = "HeidelpayMGWSEPAGuaranteed";
+    const PAYMENT_KEY_PAYPAL = "HeidelpayMGWPAYPAL";
+    const PAYPAL_FRONTEND_NAME = "HeidelpayMGWPaypal";
+    
     // Heidelpay payment methods
     const INVOICE_GUARANTEED = 'invoice-guaranteed';
     const INVOICE_FACTORING = 'invoice-factoring';
     const INVOICE = 'invoice';
+    const CREDIT_CARD = 'card';
+    const SEPA = 'sepa-direct-debit';
+    const SEPA_GUARANTEED = 'sepa-direct-debit-guaranteed';
+
+    // Payment mode
+    const DIRECT_DEBIT = 'directDebit';
+    const AUTHORIZATION_CAPTURE = 'authorizationCapture';
 }

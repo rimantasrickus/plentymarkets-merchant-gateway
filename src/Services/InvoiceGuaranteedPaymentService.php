@@ -78,7 +78,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
     }
 
     /**
-     * Make a charge call with Heidelpay PHP-SDK
+     * Make a charge call with HeidelpayMGW PHP-SDK
      *
      * @param array $payment  Payment type information from Frontend JS
      *

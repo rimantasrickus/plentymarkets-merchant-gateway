@@ -9,8 +9,12 @@ use HeidelpayMGW\Helpers\SessionHelper;
 use Plenty\Plugin\Translation\Translator;
 use Plenty\Modules\Payment\Models\Payment;
 use HeidelpayMGW\Models\PaymentInformation;
+use HeidelpayMGW\Services\SepaPaymentService;
+use HeidelpayMGW\Services\PaypalPaymentService;
 use HeidelpayMGW\Services\InvoicePaymentService;
 use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Services\CreditCardPaymentService;
+use HeidelpayMGW\Services\SepaGuaranteedPaymentService;
 use Plenty\Modules\Order\Pdf\Models\OrderPdfGeneration;
 use Plenty\Modules\Payment\Method\Models\PaymentMethod;
 use HeidelpayMGW\Services\InvoiceGuaranteedPaymentService;
@@ -113,7 +117,40 @@ class PaymentHelper
                     'paymentKey' => PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B,
                     'name' => PluginConfiguration::INVOICE_GUARANTEED_FRONTEND_NAME_B2B
                 ];
-     
+            }
+            //credit card
+            if ($payment === PluginConfiguration::PAYMENT_KEY_CREDIT_CARD) {
+                $plentyPaymentMethodData = [
+                    'pluginKey' => PluginConfiguration::PLUGIN_KEY,
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_CREDIT_CARD,
+                    'name' => PluginConfiguration::CREDIT_CARD_FRONTEND_NAME
+                ];
+            }
+            //Sepa
+            if ($payment === PluginConfiguration::PAYMENT_KEY_SEPA) {
+                $plentyPaymentMethodData = [
+                    'pluginKey' => PluginConfiguration::PLUGIN_KEY,
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_SEPA,
+                    'name' => PluginConfiguration::SEPA_FRONTEND_NAME
+                ];
+            }
+            //Sepa guaranteed
+            if ($payment === PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED) {
+                $plentyPaymentMethodData = [
+                    'pluginKey' => PluginConfiguration::PLUGIN_KEY,
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED,
+                    'name' => PluginConfiguration::SEPA_GUARANTEED_FRONTEND_NAME
+                ];
+            }
+            //Paypal
+            if ($payment === PluginConfiguration::PAYMENT_KEY_PAYPAL) {
+                $plentyPaymentMethodData = [
+                    'pluginKey' => PluginConfiguration::PLUGIN_KEY,
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_PAYPAL,
+                    'name' => PluginConfiguration::PAYPAL_FRONTEND_NAME
+                ];
+            }
+            if ($plentyPaymentMethodData !== null) {
                 $this->plentyPaymentMethodRepository->createPaymentMethod($plentyPaymentMethodData);
             }
         }
@@ -206,7 +243,7 @@ class PaymentHelper
         
         if (!$libResponse['success']) {
             $this->getLogger(__METHOD__)->error(
-                'translation.exception',
+                PluginConfiguration::PLUGIN_NAME.'::translation.exception',
                 [
                     'error' => $libResponse
                 ]
@@ -236,6 +273,13 @@ class PaymentHelper
         $this->heidelpayPaymentInformationRepo->save($heidelpayPaymentInformation);
         $this->sessionHelper->setValue('paymentInformation', $heidelpayPaymentInformation);
 
+        if ($libResponse['redirectUrl']) {
+            return [
+                'value' => $libResponse['redirectUrl'],
+                'type' => GetPaymentMethodContent::RETURN_TYPE_REDIRECT_URL
+            ];
+        }
+
         return [
             'value' => null,
             'type' => GetPaymentMethodContent::RETURN_TYPE_CONTINUE
@@ -252,7 +296,7 @@ class PaymentHelper
      *
      * @throws \Throwable
      */
-    private function getPluginPaymentService(int $orderId, int $mopId = null)
+    public function getPluginPaymentService(int $orderId, int $mopId = null)
     {
         if (empty($mopId)) {
             /** @var Order $order */
@@ -272,6 +316,18 @@ class PaymentHelper
                 }
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B) {
                     return pluginApp(InvoiceGuaranteedPaymentServiceB2B::class);
+                }
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_CREDIT_CARD) {
+                    return pluginApp(CreditCardPaymentService::class);
+                }
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_SEPA) {
+                    return pluginApp(SepaPaymentService::class);
+                }
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED) {
+                    return pluginApp(SepaGuaranteedPaymentService::class);
+                }
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_PAYPAL) {
+                    return pluginApp(PaypalPaymentService::class);
                 }
             }
         }
