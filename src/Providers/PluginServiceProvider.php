@@ -12,9 +12,12 @@ use Plenty\Plugin\Translation\Translator;
 use Plenty\Modules\Order\Models\OrderType;
 use HeidelpayMGW\Methods\SepaPaymentMethod;
 use HeidelpayMGW\Models\PaymentInformation;
+use HeidelpayMGW\Methods\IdealPaymentMethod;
 use Plenty\Modules\Document\Models\Document;
 use HeidelpayMGW\Methods\PaypalPaymentMethod;
+use HeidelpayMGW\Methods\SofortPaymentMethod;
 use HeidelpayMGW\Methods\InvoicePaymentMethod;
+use HeidelpayMGW\Methods\FlexipayPaymentMethod;
 use HeidelpayMGW\Methods\CreditCardPaymentMethod;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 use HeidelpayMGW\Methods\SepaGuaranteedPaymentMethod;
@@ -134,6 +137,27 @@ class PluginServiceProvider extends ServiceProvider
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_PAYPAL,
             PaypalPaymentMethod::class,
+            $this->paymentMethodEvents()
+        );
+        //iDEAL
+        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_IDEAL);
+        $payContainer->register(
+            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_IDEAL,
+            IdealPaymentMethod::class,
+            $this->paymentMethodEvents()
+        );
+        //Sofort
+        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SOFORT);
+        $payContainer->register(
+            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SOFORT,
+            SofortPaymentMethod::class,
+            $this->paymentMethodEvents()
+        );
+        //Flexipay
+        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_FLEXIPAY);
+        $payContainer->register(
+            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_FLEXIPAY,
+            FlexipayPaymentMethod::class,
             $this->paymentMethodEvents()
         );
 

@@ -49,6 +49,24 @@
             "menu": "settings/orders/payment/Plugins/Heidelpay",
             "urlKey": "paypal-settings",
             "entryPoint": "index.html?action=paypal-settings"
+        },
+        {
+            "label": "menu.idealSettings",
+            "menu": "settings/orders/payment/Plugins/Heidelpay",
+            "urlKey": "ideal-settings",
+            "entryPoint": "index.html?action=ideal-settings"
+        },
+        {
+            "label": "menu.sofortSettings",
+            "menu": "settings/orders/payment/Plugins/Heidelpay",
+            "urlKey": "sofort-settings",
+            "entryPoint": "index.html?action=sofort-settings"
+        },
+        {
+            "label": "menu.flexipaySettings",
+            "menu": "settings/orders/payment/Plugins/Heidelpay",
+            "urlKey": "flexipay-settings",
+            "entryPoint": "index.html?action=flexipay-settings"
         }
     ]
 }

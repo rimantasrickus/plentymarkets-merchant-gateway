@@ -8,7 +8,7 @@
     "namespace": "HeidelpayMGW",
 
     "type": "payment",
-    "version": "0.3.0",
+    "version": "0.7.0",
     "license": "Apache-2.0",
     "isClosedSource": false,
     "price": 0.00,
@@ -38,7 +38,10 @@
         "HeidelpayMGW\\Migrations\\CreateCreditCardSettingTable",
         "HeidelpayMGW\\Migrations\\CreateSepaSettingTable",
         "HeidelpayMGW\\Migrations\\CreateSepaGuaranteedSettingTable",
-        "HeidelpayMGW\\Migrations\\CreatePaypalSettingTable"
+        "HeidelpayMGW\\Migrations\\CreatePaypalSettingTable",
+        "HeidelpayMGW\\Migrations\\CreateIdealSettingTable",
+        "HeidelpayMGW\\Migrations\\CreateSofortSettingTable",
+        "HeidelpayMGW\\Migrations\\CreateFlexipaySettingTable"
     ],
     "dataProviders":
     [
@@ -102,6 +105,13 @@
             "key"           :"HeidelpayMGW\\Containers\\PaypalContainer",
             "name"          :"PaypalContainer",
             "description"   :"Heidelpay Paypal form",
+            "multiple"      : false,
+            "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
+        },
+        {
+            "key"           :"HeidelpayMGW\\Containers\\IdealContainer",
+            "name"          :"IdealContainer",
+            "description"   :"Heidelpay iDEAL form",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         }

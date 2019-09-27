@@ -10,8 +10,11 @@ use Plenty\Plugin\Translation\Translator;
 use Plenty\Modules\Payment\Models\Payment;
 use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Services\SepaPaymentService;
+use HeidelpayMGW\Services\IdealPaymentService;
 use HeidelpayMGW\Services\PaypalPaymentService;
+use HeidelpayMGW\Services\SofortPaymentService;
 use HeidelpayMGW\Services\InvoicePaymentService;
+use HeidelpayMGW\Services\FlexipayPaymentService;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 use HeidelpayMGW\Services\CreditCardPaymentService;
 use HeidelpayMGW\Services\SepaGuaranteedPaymentService;
@@ -148,6 +151,30 @@ class PaymentHelper
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
                     'paymentKey' => PluginConfiguration::PAYMENT_KEY_PAYPAL,
                     'name' => PluginConfiguration::PAYPAL_FRONTEND_NAME
+                ];
+            }
+            //iDEAL
+            if ($payment === PluginConfiguration::PAYMENT_KEY_IDEAL) {
+                $plentyPaymentMethodData = [
+                    'pluginKey' => PluginConfiguration::PLUGIN_KEY,
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_IDEAL,
+                    'name' => PluginConfiguration::IDEAL_FRONTEND_NAME
+                ];
+            }
+            //Sofort
+            if ($payment === PluginConfiguration::PAYMENT_KEY_SOFORT) {
+                $plentyPaymentMethodData = [
+                    'pluginKey' => PluginConfiguration::PLUGIN_KEY,
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_SOFORT,
+                    'name' => PluginConfiguration::SOFORT_FRONTEND_NAME
+                ];
+            }
+            //Flexipay
+            if ($payment === PluginConfiguration::PAYMENT_KEY_FLEXIPAY) {
+                $plentyPaymentMethodData = [
+                    'pluginKey' => PluginConfiguration::PLUGIN_KEY,
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_FLEXIPAY,
+                    'name' => PluginConfiguration::FLEXIPAY_FRONTEND_NAME
                 ];
             }
             if ($plentyPaymentMethodData !== null) {
@@ -328,6 +355,15 @@ class PaymentHelper
                 }
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_PAYPAL) {
                     return pluginApp(PaypalPaymentService::class);
+                }
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_IDEAL) {
+                    return pluginApp(IdealPaymentService::class);
+                }
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_SOFORT) {
+                    return pluginApp(SofortPaymentService::class);
+                }
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_FLEXIPAY) {
+                    return pluginApp(FlexipayPaymentService::class);
                 }
             }
         }

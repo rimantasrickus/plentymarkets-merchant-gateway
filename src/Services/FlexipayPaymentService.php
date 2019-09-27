@@ -12,7 +12,7 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
 use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 
 /**
- * SEPA guaranteed payment service
+ * Flexipay payment service
  *
  * Copyright (C) 2019 heidelpay GmbH
  *
@@ -34,7 +34,7 @@ use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class SepaGuaranteedPaymentService extends AbstractPaymentService
+class FlexipayPaymentService extends AbstractPaymentService
 {
     use Loggable;
 
@@ -50,6 +50,14 @@ class SepaGuaranteedPaymentService extends AbstractPaymentService
     /** @var Translator $translator  Plenty Translator service */
     private $translator;
 
+    /**
+     * FlexipayPaymentService constructor
+     *
+     * @param LibraryCallContract $libCall  Plenty LibraryCall
+     * @param SessionHelper $sessionHelper  Saves information for current plugin session
+     * @param OrderHelper $orderHelper  Order manipulation with AuthHelper
+     * @param Translator $translator  Plenty Translator service
+     */
     public function __construct(
         LibraryCallContract $libCall,
         SessionHelper $sessionHelper,
@@ -67,15 +75,16 @@ class SepaGuaranteedPaymentService extends AbstractPaymentService
     /**
      * Make a charge call with HeidelpayMGW PHP-SDK
      *
-     * @param array $payment
+     * @param array $payment  Payment type information from Frontend JS
      *
-     * @return array
+     * @return array  Payment information from SDK
      */
     public function charge(array $payment): array
     {
         $data = $this->prepareChargeRequest($payment);
+
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::directDebit', $data);
-        
+
         $this->getLogger(__METHOD__)->debug(
             'translation.charge',
             [
@@ -105,10 +114,10 @@ class SepaGuaranteedPaymentService extends AbstractPaymentService
     /**
      * Make API call to cancel charge
      *
-     * @param PaymentInformation $paymentInformation
-     * @param Order $order
+     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param Order $order  Plenty Order
      *
-     * @return array
+     * @return array  Response from SDK
      */
     public function cancelCharge(PaymentInformation $paymentInformation, Order $order): array
     {
@@ -172,11 +181,45 @@ class SepaGuaranteedPaymentService extends AbstractPaymentService
     }
 
     /**
-     * Make API call ship to finalize transaction
-     * Since we don't need to make ship call, skip this
+     * Change payment status and add comment to Order
      *
-     * @param PaymentInformation $paymentInformation
-     * @param integer $orderId
+     * @param string $externalOrderId  Heidelpay Order ID
+     *
+     * @return bool  Was payment status changed
+     */
+    public function cancelPayment(string $externalOrderId): bool
+    {
+        try {
+            $order = $this->orderHelper->findOrderByExternalOrderId($externalOrderId);
+            parent::changePaymentStatusCanceled($order);
+
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
+            ]);
+            $this->createOrderComment(
+                $order->id,
+                $commentText
+            );
+    
+            return true;
+        } catch (\Exception $e) {
+            $this->getLogger(__METHOD__)->exception(
+                'log.exception',
+                [
+                    'message' => $e->getMessage()
+                ]
+            );
+
+            return false;
+        }
+    }
+
+    /**
+     * Make API call ship to finalize transaction
+     *
+     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param integer $orderId  Plenty Order ID
      *
      * @return array
      */

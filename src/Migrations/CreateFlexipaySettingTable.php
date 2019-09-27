@@ -1,11 +1,12 @@
 <?php
 
-namespace HeidelpayMGW\Repositories;
+namespace HeidelpayMGW\Migrations;
 
-use HeidelpayMGW\Models\InvoiceSetting;
+use HeidelpayMGW\Models\FlexipaySetting;
+use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
 /**
- * Invoice settings repository
+ * Flexipay settings table migration
  *
  * Copyright (C) 2019 heidelpay GmbH
  *
@@ -23,17 +24,21 @@ use HeidelpayMGW\Models\InvoiceSetting;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/repositories
+ * @package  heidelpayMGW/migrations
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class InvoiceSettingRepository extends BaseSettingRepository
+class CreateFlexipaySettingTable extends BasePluginMigration
 {
     /**
-     * InvoiceSettingRepository constructor
+     * Create FlexipaySetting model's table
+     *
+     * @param Migrate $migrate
+     *
+     * @return void
      */
-    public function __construct()
+    public function run(Migrate $migrate)
     {
-        parent::__construct(pluginApp(InvoiceSetting::class));
+        $this->createTable($migrate, FlexipaySetting::class);
     }
 }

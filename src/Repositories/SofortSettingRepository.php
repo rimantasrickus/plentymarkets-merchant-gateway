@@ -2,10 +2,10 @@
 
 namespace HeidelpayMGW\Repositories;
 
-use HeidelpayMGW\Models\InvoiceSetting;
+use HeidelpayMGW\Models\SofortSetting;
 
 /**
- * Invoice settings repository
+ * Sofort settings repository
  *
  * Copyright (C) 2019 heidelpay GmbH
  *
@@ -27,13 +27,13 @@ use HeidelpayMGW\Models\InvoiceSetting;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class InvoiceSettingRepository extends BaseSettingRepository
+class SofortSettingRepository extends BaseSettingRepository
 {
     /**
-     * InvoiceSettingRepository constructor
+     * SofortSettingRepository constructor
      */
     public function __construct()
     {
-        parent::__construct(pluginApp(InvoiceSetting::class));
+        parent::__construct(pluginApp(SofortSetting::class));
     }
 }

@@ -12,7 +12,7 @@ use HeidelpayMGW\Repositories\PaypalSettingRepository;
 use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 
 /**
- * Card payment service
+ * PayPal payment service
  *
  * Copyright (C) 2019 heidelpay GmbH
  *
@@ -135,15 +135,24 @@ class PaypalPaymentService extends AbstractPaymentService
         $data = parent::prepareCancelChargeRequest($paymentInformation, $order);
         if ($this->paypalSettings->mode == PluginConfiguration::AUTHORIZATION_CAPTURE) {
             $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelAutorization', $data);
-            $commentText = $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAuthorization');
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAuthorization')
+            ]);
         } else {
             $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelCharge', $data);
-            $commentText = $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAmount') . $data['amount'];
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAmount') . $data['amount']
+            ]);
         }
         
         
         if (!empty($libResponse['merchantMessage'])) {
-            $commentText = $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage'];
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
+            ]);
 
             $this->getLogger(__METHOD__)->error(
                 PluginConfiguration::PLUGIN_NAME.'::translation.cancelChargeError',
@@ -177,48 +186,18 @@ class PaypalPaymentService extends AbstractPaymentService
     public function addExternalOrderId(int $orderId, string $externalOrderId)
     {
         parent::addExternalOrderId($orderId, $externalOrderId);
-
-        $charge = $this->sessionHelper->getValue('paymentInformation')['transaction'];
-        if (empty($charge)) {
+        /** @var array $transaction */
+        $transaction = $this->sessionHelper->getValue('paymentInformation')['transaction'];
+        if (empty($transaction)) {
             return;
         }
-        
+        /** @var string $commentText */
         $commentText = implode('<br />', [
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCompleted'),
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.shortId') . $charge['shortId'],
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.shortId') . $transaction['shortId'],
         ]);
         $this->createOrderComment($orderId, $commentText);
-    }
-
-    /**
-     * Change payment status and add comment to Order
-     *
-     * @param string $externalOrderId
-     *
-     * @return bool
-     */
-    public function cancelPlentyPayment(string $externalOrderId): bool
-    {
-        try {
-            $order = $this->orderHelper->findOrderByExternalOrderId($externalOrderId);
-            parent::changePaymentStatusCanceled($order);
-
-            $this->createOrderComment(
-                $order->id,
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
-            );
-    
-            return true;
-        } catch (\Exception $e) {
-            $this->getLogger(__METHOD__)->exception(
-                'log.exception',
-                [
-                    'message' => $e->getMessage()
-                ]
-            );
-
-            return false;
-        }
     }
 
     /**
@@ -260,7 +239,10 @@ class PaypalPaymentService extends AbstractPaymentService
             'amount' => $amount
         ]);
 
-        $commentText = $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successChargeAuthorization');
+        $commentText = implode('<br />', [
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successChargeAuthorization')
+        ]);
         if (!$libResponse['success']) {
             $this->getLogger(__METHOD__)->error(
                 'translation.errorChargeAuthorization',
@@ -268,7 +250,10 @@ class PaypalPaymentService extends AbstractPaymentService
                     'error' => $libResponse
                 ]
             );
-            $commentText = $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage'];
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
+            ]);
         }
 
         $this->createOrderComment($order->id, $commentText);

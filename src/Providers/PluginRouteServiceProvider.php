@@ -75,6 +75,15 @@ class PluginRouteServiceProvider extends RouteServiceProvider
                 //Paypal settings
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/paypal-settings', 'PaypalSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/paypal-settings', 'PaypalSettingsController@saveSettings');
+                //iDeal settings
+                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/ideal-settings', 'IdealSettingsController@getSettings');
+                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/ideal-settings', 'IdealSettingsController@saveSettings');
+                //Sofort settings
+                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/sofort-settings', 'SofortSettingsController@getSettings');
+                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/sofort-settings', 'SofortSettingsController@saveSettings');
+                //Flexipay settings
+                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/flexipay-settings', 'FlexipaySettingsController@getSettings');
+                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/flexipay-settings', 'FlexipaySettingsController@saveSettings');
 
                 //Test
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/show', 'TestController@show');

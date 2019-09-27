@@ -1,12 +1,12 @@
 <?php
 
-namespace HeidelpayMGW\Methods;
+namespace HeidelpayMGW\Containers;
 
+use Plenty\Plugin\Templates\Twig;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Repositories\SepaSettingRepository;
 
 /**
- * SEPA payment method
+ * iDEAL container
  *
  * Copyright (C) 2019 heidelpay GmbH
  *
@@ -24,38 +24,14 @@ use HeidelpayMGW\Repositories\SepaSettingRepository;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/methods
+ * @package  heidelpayMGW/container
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class SepaPaymentMethod extends BasePaymentMethod
+class IdealContainer
 {
-    public function __construct()
+    public function call(Twig $twig)
     {
-        parent::__construct(pluginApp(SepaSettingRepository::class));
-    }
-
-    /**
-     * Check whether the plugin is active.
-     *
-     * @return bool
-     */
-    public function isActive(): bool
-    {
-        if ($this->basketService->isBasketB2B()) {
-            return false;
-        }
-        
-        return parent::isActive();
-    }
-
-    /**
-     * Get the description of the payment method.
-     *
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return PluginConfiguration::SEPA_FRONTEND_NAME;
+        return $twig->render(PluginConfiguration::PLUGIN_NAME.'::content.Ideal', []);
     }
 }

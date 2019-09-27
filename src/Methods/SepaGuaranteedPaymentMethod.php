@@ -45,6 +45,7 @@ class SepaGuaranteedPaymentMethod extends BasePaymentMethod
         if ($this->basketService->isBasketB2B()) {
             return false;
         }
+        
         return parent::isActive();
     }
 

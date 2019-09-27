@@ -156,6 +156,29 @@ function prepareHeidelpayPayment() {
                     heidelpayPayment(placeOrderComponent, paypal);
                 };
             }
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{ideal}}') {
+                showHeidelpayIdealModal();
+
+                let ideal = heidelpayInstance.Ideal();
+                // Rendering input fields
+                ideal.create('ideal', {
+                    containerId: 'ideal-element'
+                });
+
+                document.getElementById('heidelpayIdealSubmit').onclick = function() {
+                    document.getElementById('heidelpayIdealSubmit').disabled = true;
+                    document.getElementById('idealModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
+                    heidelpayPayment(placeOrderComponent, ideal);
+                };
+            }
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{sofort}}') {
+                document.getElementById('checkoutButtonHeidelpay').disabled = true;
+                heidelpayPayment(placeOrderComponent, heidelpayInstance.Sofort());
+            }
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{flexipay}}') {
+                document.getElementById('checkoutButtonHeidelpay').disabled = true;
+                heidelpayPayment(placeOrderComponent, heidelpayInstance.FlexiPayDirect());
+            }
         }
     }
 }
@@ -205,6 +228,7 @@ function heidelpayPayment(placeOrderComponent, paymentInstance) {
                         closeHeidelpaySepaModal();
                         closeHeidelpaySepaGuaranteedModal();
                         closeHeidelpayPaypalModal();
+                        closeHeidelpayIdealModal();
                         enableButtons();
                         return;
                     }
@@ -232,6 +256,8 @@ function enableButtons() {
     document.getElementById('sepaGuaranteedModalPayButtonArrow').className = '';
     document.getElementById('heidelpayPaypalSubmit').disabled = false;
     document.getElementById('paypalModalPayButtonArrow').className = '';
+    document.getElementById('heidelpayIdealSubmit').disabled = false;
+    document.getElementById('idealModalPayButtonArrow').className = '';
     document.getElementById('checkoutButtonHeidelpay').disabled = false;
     document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-arrow-right';
 }

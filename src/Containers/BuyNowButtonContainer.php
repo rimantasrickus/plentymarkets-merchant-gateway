@@ -65,7 +65,10 @@ class BuyNowButtonContainer
             'sepa' => PluginConfiguration::PAYMENT_KEY_SEPA,
             'sepaGuaranteed' => PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED,
             'sepaMandateError' => 'Please agree to SEPA Mandate',
-            'paypal' => PluginConfiguration::PAYMENT_KEY_PAYPAL
+            'paypal' => PluginConfiguration::PAYMENT_KEY_PAYPAL,
+            'ideal' => PluginConfiguration::PAYMENT_KEY_IDEAL,
+            'sofort' => PluginConfiguration::PAYMENT_KEY_SOFORT,
+            'flexipay' => PluginConfiguration::PAYMENT_KEY_FLEXIPAY
         ];
 
         return $twig->render(

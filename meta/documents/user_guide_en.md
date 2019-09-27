@@ -10,6 +10,9 @@ Currently supported payment methods are:
 * Card
 * SEPA Direct Debit and Guaranteed
 * PayPal
+* SOFORT
+* iDEAL
+* FlexiPay Direct
 
 ## REQUIREMENTS
 * This plugin is designed fo Plentymarkets 7.

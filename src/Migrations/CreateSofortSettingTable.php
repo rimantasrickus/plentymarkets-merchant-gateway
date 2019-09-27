@@ -1,11 +1,13 @@
 <?php
+namespace HeidelpayMGW\Migrations;
 
-namespace HeidelpayMGW\Repositories;
+use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
-use HeidelpayMGW\Models\InvoiceSetting;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Models\SofortSetting;
 
 /**
- * Invoice settings repository
+ * Create SofortSetting model's table
  *
  * Copyright (C) 2019 heidelpay GmbH
  *
@@ -23,17 +25,23 @@ use HeidelpayMGW\Models\InvoiceSetting;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/repositories
+ * @package  heidelpayMGW/migrations
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class InvoiceSettingRepository extends BaseSettingRepository
+class CreateSofortSettingTable extends BasePluginMigration
 {
+    use Loggable;
+
     /**
-     * InvoiceSettingRepository constructor
+     * Create SofortSetting model's table
+     *
+     * @param Migrate $migrate
+     *
+     * @return void
      */
-    public function __construct()
+    public function run(Migrate $migrate)
     {
-        parent::__construct(pluginApp(InvoiceSetting::class));
+        $this->createTable($migrate, SofortSetting::class);
     }
 }

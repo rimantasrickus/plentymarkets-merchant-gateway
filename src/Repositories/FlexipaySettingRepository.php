@@ -2,7 +2,7 @@
 
 namespace HeidelpayMGW\Repositories;
 
-use HeidelpayMGW\Models\InvoiceSetting;
+use HeidelpayMGW\Models\FlexipaySetting;
 
 /**
  * Invoice settings repository
@@ -27,13 +27,13 @@ use HeidelpayMGW\Models\InvoiceSetting;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class InvoiceSettingRepository extends BaseSettingRepository
+class FlexipaySettingRepository extends BaseSettingRepository
 {
     /**
-     * InvoiceSettingRepository constructor
+     * InvoiceGuaranteedSettingRepository constructor
      */
     public function __construct()
     {
-        parent::__construct(pluginApp(InvoiceSetting::class));
+        parent::__construct(pluginApp(FlexipaySetting::class));
     }
 }

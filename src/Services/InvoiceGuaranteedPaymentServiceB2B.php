@@ -210,42 +210,6 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
     }
 
     /**
-     * Change payment status and add comment to Order
-     *
-     * @param string $externalOrderId  Heidelpay Order ID
-     *
-     * @return bool  Was payment status changed
-     */
-    public function cancelPlentyPayment(string $externalOrderId): bool
-    {
-        try {
-            /** @var Order $order */
-            $order = $this->orderHelper->findOrderByExternalOrderId($externalOrderId);
-            parent::changePaymentStatusCanceled($order);
-            /** @var string $commentText */
-            $commentText = implode('<br />', [
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
-            ]);
-            $this->createOrderComment(
-                $order->id,
-                $commentText
-            );
-    
-            return true;
-        } catch (\Exception $e) {
-            $this->getLogger(__METHOD__)->exception(
-                'log.exception',
-                [
-                    'message' => $e->getMessage()
-                ]
-            );
-
-            return false;
-        }
-    }
-
-    /**
      * Make API call ship to finalize transaction
      *
      * @param PaymentInformation $paymentInformation  Heidelpay payment information

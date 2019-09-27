@@ -29,7 +29,7 @@ class PluginConfiguration
 {
     // Plugin
     const PLUGIN_NAME = 'HeidelpayMGW';
-    const PLUGIN_VERSION = '0.3.0';
+    const PLUGIN_VERSION = '0.7.0';
     const PLUGIN_KEY = 'HeidelpayMGWPaymentPlugin';
     const API_SANDBOX = 'sandbox';
     const API_PRODUCTION = 'production';
@@ -49,14 +49,17 @@ class PluginConfiguration
     const SEPA_GUARANTEED_FRONTEND_NAME = "HeidelpayMGWSEPAGuaranteed";
     const PAYMENT_KEY_PAYPAL = "HeidelpayMGWPAYPAL";
     const PAYPAL_FRONTEND_NAME = "HeidelpayMGWPaypal";
+    const PAYMENT_KEY_IDEAL = "HeidelpayMGWIDEAL";
+    const IDEAL_FRONTEND_NAME = "HeidelpayMGWiDEAL";
+    const PAYMENT_KEY_SOFORT = "HeidelpayMGWSOFORT";
+    const SOFORT_FRONTEND_NAME = "HeidelpayMGWSOFORT";
+    const PAYMENT_KEY_FLEXIPAY = "HeidelpayMGWFLEXIPAY";
+    const FLEXIPAY_FRONTEND_NAME = "HeidelpayMGWFlexiPay";
     
     // Heidelpay payment methods
     const INVOICE_GUARANTEED = 'invoice-guaranteed';
     const INVOICE_FACTORING = 'invoice-factoring';
     const INVOICE = 'invoice';
-    const CREDIT_CARD = 'card';
-    const SEPA = 'sepa-direct-debit';
-    const SEPA_GUARANTEED = 'sepa-direct-debit-guaranteed';
 
     // Payment mode
     const DIRECT_DEBIT = 'directDebit';

@@ -603,7 +603,36 @@ abstract class AbstractPaymentService
      *
      * @return bool  Was payment status changed
      */
-    abstract public function cancelPlentyPayment(string $externalOrderId): bool;
+    public function cancelPlentyPayment(string $externalOrderId): bool
+    {
+        try {
+            /** @var Order $order */
+            $order = $this->orderHelper->findOrderByExternalOrderId($externalOrderId);
+            $this->changePaymentStatusCanceled($order);
+            /** @var Translator $translator */
+            $translator = pluginApp(Translator::class);
+            /** @var string $commentText */
+            $commentText = implode('<br />', [
+                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
+            ]);
+            $this->createOrderComment(
+                $order->id,
+                $commentText
+            );
+    
+            return true;
+        } catch (\Exception $e) {
+            $this->getLogger(__METHOD__)->exception(
+                'log.exception',
+                [
+                    'message' => $e->getMessage()
+                ]
+            );
+
+            return false;
+        }
+    }
 
     /**
      * Change payment status to canceled
