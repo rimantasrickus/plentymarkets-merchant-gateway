@@ -180,17 +180,12 @@ abstract class AbstractPaymentService
         $returnAmount = $order->amounts
             ->where('currency', '=', $paymentInformation->transaction['currency'])
             ->first()->invoiceTotal;
-        /** @var float $paidAmount */
-        $paidAmount = $order->parentOrder->amounts
-            ->where('currency', '=', $paymentInformation->transaction['currency'])
-            ->first()->paidAmount;
 
-        $amount = $returnAmount > $paidAmount ? $paidAmount : $returnAmount;
         $data = [
             'privateKey' => $this->apiKeysHelper->getPrivateKey(),
             'paymentId' => $paymentInformation->transaction['paymentId'],
             'chargeId' => $paymentInformation->transaction['chargeId'],
-            'amount' => $amount
+            'amount' => $returnAmount
         ];
 
         return $data;
