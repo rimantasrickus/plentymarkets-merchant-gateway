@@ -5,11 +5,9 @@ use HeidelpayMGW\Helpers\Loggable;
 use HeidelpayMGW\Helpers\OrderHelper;
 use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\SessionHelper;
-use Plenty\Plugin\Translation\Translator;
 use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 use HeidelpayMGW\Repositories\PaypalSettingRepository;
-use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 
 /**
  * PayPal payment service
@@ -38,9 +36,6 @@ class PaypalPaymentService extends AbstractPaymentService
 {
     use Loggable;
 
-    /** @var LibraryCallContract $libCall  Plenty LibraryCall */
-    private $libCall;
-
     /** @var SessionHelper $sessionHelper  Saves information for current plugin session */
     private $sessionHelper;
 
@@ -50,30 +45,21 @@ class PaypalPaymentService extends AbstractPaymentService
     /** @var PaypalSettingRepository $paypalSettings  Card settings repository*/
     private $paypalSettings;
 
-    /** @var Translator $translator  Plenty Translator service */
-    private $translator;
-
     /**
      * PaypalPaymentService constructor
      *
-     * @param LibraryCallContract $libCall
      * @param SessionHelper $sessionHelper
      * @param OrderHelper $orderHelper
      * @param PaypalSettingRepository $paypalSettingRepository
-     * @param Application $app
      */
     public function __construct(
-        LibraryCallContract $libCall,
         SessionHelper $sessionHelper,
         OrderHelper $orderHelper,
-        PaypalSettingRepository $paypalSettingRepository,
-        Translator $translator
+        PaypalSettingRepository $paypalSettingRepository
     ) {
-        $this->libCall = $libCall;
         $this->sessionHelper = $sessionHelper;
         $this->orderHelper = $orderHelper;
         $this->paypalSettings = $paypalSettingRepository->get();
-        $this->translator = $translator;
 
         parent::__construct();
     }
@@ -120,59 +106,6 @@ class PaypalPaymentService extends AbstractPaymentService
         $data['route'] = parent::getBaseUrl().'/'.PluginConfiguration::PLUGIN_NAME.'/process-redirect';
         
         return $data;
-    }
-
-    /**
-     * Make API call to cancel charge
-     *
-     * @param PaymentInformation $paymentInformation
-     * @param Order $order
-     *
-     * @return array
-     */
-    public function cancelCharge(PaymentInformation $paymentInformation, Order $order): array
-    {
-        $data = parent::prepareCancelChargeRequest($paymentInformation, $order);
-        if ($this->paypalSettings->mode == PluginConfiguration::AUTHORIZATION_CAPTURE) {
-            $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelAutorization', $data);
-            $commentText = implode('<br />', [
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAuthorization')
-            ]);
-        } else {
-            $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelCharge', $data);
-            $commentText = implode('<br />', [
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAmount') . $data['amount']
-            ]);
-        }
-        
-        
-        if (!empty($libResponse['merchantMessage'])) {
-            $commentText = implode('<br />', [
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
-            ]);
-
-            $this->getLogger(__METHOD__)->error(
-                PluginConfiguration::PLUGIN_NAME.'::translation.cancelChargeError',
-                [
-                    'data' => $data,
-                    'libResponse' => $libResponse
-                ]
-            );
-        }
-        $this->createOrderComment($order->parentOrder->id, $commentText);
-
-        $this->getLogger(__METHOD__)->debug(
-            'translation.cancelCharge',
-            [
-                'data' => $data,
-                'libResponse' => $libResponse
-            ]
-        );
-        
-        return $libResponse;
     }
 
     /**

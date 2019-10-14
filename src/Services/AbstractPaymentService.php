@@ -90,6 +90,12 @@ abstract class AbstractPaymentService
     /** @var ApiKeysHelper $apiKeysHelper  Returns Api keys depending if it's sandbox or production mode */
     protected $apiKeysHelper;
 
+    /** @var Translator $translator  Plenty Translator service */
+    protected $translator;
+
+    /** @var LibraryCallContract $libCall  Plenty LibraryCall */
+    protected $libCall;
+
     /**
      * AbstractPaymentService constructor
      */
@@ -102,6 +108,8 @@ abstract class AbstractPaymentService
         $this->basketService = pluginApp(BasketService::class);
         $this->sessionHelper = pluginApp(SessionHelper::class);
         $this->apiKeysHelper = pluginApp(ApiKeysHelper::class);
+        $this->translator = pluginApp(Translator::class);
+        $this->libCall = pluginApp(LibraryCallContract::class);
     }
 
     /**
@@ -114,14 +122,49 @@ abstract class AbstractPaymentService
     abstract public function charge(array $payment): array;
 
     /**
-     * Make API call to cancel charge
+     * Make API call to cancel transaction
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
-     * @param Order $order  Plenty Order
+     * @param PaymentInformation $paymentInformation
+     * @param Order $order
      *
-     * @return array  Response from SDK
+     * @return array
      */
-    abstract public function cancelCharge(PaymentInformation $paymentInformation, Order $order): array;
+    public function cancelTransaction(PaymentInformation $paymentInformation, Order $order): array
+    {
+        $data = $this->prepareCancelTransactionRequest($paymentInformation, $order);
+        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelTransaction', $data);
+        $commentText = implode('<br />', [
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAmount') . $data['amount']
+        ]);
+        
+        if (!empty($libResponse['merchantMessage'])) {
+            $commentText = implode('<br />', [
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.cancelTransactionError'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
+            ]);
+
+            $this->getLogger(__METHOD__)->error(
+                PluginConfiguration::PLUGIN_NAME.'::translation.cancelTransactionError',
+                [
+                    'data' => $data,
+                    'libResponse' => $libResponse
+                ]
+            );
+        }
+        $this->createOrderComment($order->parentOrder->id, $commentText);
+
+        $this->getLogger(__METHOD__)->debug(
+            'translation.cancelTransaction',
+            [
+                'data' => $data,
+                'libResponse' => $libResponse
+            ]
+        );
+        
+        return $libResponse;
+    }
 
     /**
      * Prepare required data for Heidelpay charge call
@@ -129,9 +172,9 @@ abstract class AbstractPaymentService
      * @param PaymentInformation $paymentInformation  Heidelpay payment information
      * @param Order $order  Plenty Order
      *
-     * @return array  Data required for cancelCharge call
+     * @return array  Data required for cancelTransaction call
      */
-    public function prepareCancelChargeRequest(PaymentInformation $paymentInformation, Order $order): array
+    public function prepareCancelTransactionRequest(PaymentInformation $paymentInformation, Order $order): array
     {
         /** @var float $returnAmount */
         $returnAmount = $order->amounts
@@ -609,12 +652,10 @@ abstract class AbstractPaymentService
             /** @var Order $order */
             $order = $this->orderHelper->findOrderByExternalOrderId($externalOrderId);
             $this->changePaymentStatusCanceled($order);
-            /** @var Translator $translator */
-            $translator = pluginApp(Translator::class);
             /** @var string $commentText */
             $commentText = implode('<br />', [
-                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
             ]);
             $this->createOrderComment(
                 $order->id,
@@ -643,8 +684,15 @@ abstract class AbstractPaymentService
      */
     public function changePaymentStatusCanceled(Order $order)
     {
+        $payments = array();
+        // since $order->payments is not an array, but a collection we need to make an array
+        // with payment objects
+        foreach ($order->payments as $payment) {
+            $payments[] = $payment;
+        }
+
         $this->updatePlentyPayment(
-            (array)$order->payments,
+            $payments,
             $order->id,
             Payment::STATUS_CANCELED,
             true
@@ -718,10 +766,9 @@ abstract class AbstractPaymentService
                 $invoiceId = $document->numberWithPrefix;
             }
         }
-        /** @var LibraryCallContract $libCall */
-        $libCall = pluginApp(LibraryCallContract::class);
+
         /** @var array $libResponse */
-        $libResponse = $libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceShip', [
+        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceShip', [
             'privateKey' => $this->apiKeysHelper->getPrivateKey(),
             'paymentId' => $paymentInformation->transaction['paymentId'],
             'invoiceId' => $invoiceId
@@ -745,12 +792,10 @@ abstract class AbstractPaymentService
             ];
         }
 
-        /** @var Translator $translator */
-        $translator = pluginApp(Translator::class);
         /** @var string $commentText */
         $commentText = implode('<br />', [
-            $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-            $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successShip')
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successShip')
         ]);
 
         
@@ -763,9 +808,9 @@ abstract class AbstractPaymentService
             );
 
             $commentText = implode('<br />', [
-                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.errorShip'),
-                $translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.errorShip'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
             ]);
         }
 

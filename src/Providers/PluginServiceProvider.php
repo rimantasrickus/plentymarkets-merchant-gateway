@@ -283,7 +283,7 @@ class PluginServiceProvider extends ServiceProvider
                             break;
                         case Document::RETURN_NOTE:
                                 // perform refund transaction
-                                $paymentHelper->cancelCharge($paymentInformation, $order);
+                                $paymentHelper->cancelTransaction($paymentInformation, $order);
                             break;
                         default:
                             //do nothing

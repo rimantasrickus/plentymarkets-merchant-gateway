@@ -410,21 +410,21 @@ class PaymentHelper
     }
 
     /**
-     * Call plugin payment service's cancelCharge method
+     * Call plugin payment service's cancelTransaction method
      *
      * @param PaymentInformation $heidelpayPaymentInformation  Payment transaction data from SDK
      * @param Order $order  Plenty Order
      *
      * @return void
      */
-    public function cancelCharge(PaymentInformation $heidelpayPaymentInformation, Order $order)
+    public function cancelTransaction(PaymentInformation $heidelpayPaymentInformation, Order $order)
     {
         if (empty($heidelpayPaymentInformation->transaction)) {
             return;
         }
         /** @var mixed $pluginPaymentService */
         $pluginPaymentService = $this->getPluginPaymentService($order->parentOrder->id);
-        $pluginPaymentService->cancelCharge($heidelpayPaymentInformation, $order);
+        $pluginPaymentService->cancelTransaction($heidelpayPaymentInformation, $order);
     }
 
     /**

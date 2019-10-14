@@ -4,12 +4,9 @@ namespace HeidelpayMGW\Services;
 
 use HeidelpayMGW\Helpers\Loggable;
 use HeidelpayMGW\Helpers\OrderHelper;
-use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\SessionHelper;
-use Plenty\Plugin\Translation\Translator;
 use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 
 /**
  * Sofort payment service
@@ -38,36 +35,24 @@ class SofortPaymentService extends AbstractPaymentService
 {
     use Loggable;
 
-    /** @var LibraryCallContract $libCall  Plenty LibraryCall */
-    private $libCall;
-
     /** @var SessionHelper $sessionHelper  Saves information for current plugin session */
     private $sessionHelper;
 
     /** @var OrderHelper $orderHelper  Order manipulation with AuthHelper */
     private $orderHelper;
 
-    /** @var Translator $translator  Plenty Translator service */
-    private $translator;
-
     /**
      * SofortPaymentService constructor
      *
-     * @param LibraryCallContract $libCall  Plenty LibraryCall
      * @param SessionHelper $sessionHelper  Saves information for current plugin session
      * @param OrderHelper $orderHelper  Order manipulation with AuthHelper
-     * @param Translator $translator  Plenty Translator service
      */
     public function __construct(
-        LibraryCallContract $libCall,
         SessionHelper $sessionHelper,
-        OrderHelper $orderHelper,
-        Translator $translator
+        OrderHelper $orderHelper
     ) {
-        $this->libCall = $libCall;
         $this->sessionHelper = $sessionHelper;
         $this->orderHelper = $orderHelper;
-        $this->translator = $translator;
 
         parent::__construct();
     }
@@ -109,50 +94,6 @@ class SofortPaymentService extends AbstractPaymentService
         $data['route'] = parent::getBaseUrl().'/'.PluginConfiguration::PLUGIN_NAME.'/process-redirect';
         
         return $data;
-    }
-
-    /**
-     * Make API call to cancel charge
-     *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
-     * @param Order $order  Plenty Order
-     *
-     * @return array  Response from SDK
-     */
-    public function cancelCharge(PaymentInformation $paymentInformation, Order $order): array
-    {
-        $data = parent::prepareCancelChargeRequest($paymentInformation, $order);
-        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelCharge', $data);
-        $commentText = implode('<br />', [
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAmount') . $data['amount']
-        ]);
-        
-        if (!empty($libResponse['merchantMessage'])) {
-            $commentText = implode('<br />', [
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
-            ]);
-
-            $this->getLogger(__METHOD__)->error(
-                PluginConfiguration::PLUGIN_NAME.'::translation.cancelChargeError',
-                [
-                    'data' => $data,
-                    'libResponse' => $libResponse
-                ]
-            );
-        }
-        $this->createOrderComment($order->parentOrder->id, $commentText);
-
-        $this->getLogger(__METHOD__)->debug(
-            'translation.cancelCharge',
-            [
-                'data' => $data,
-                'libResponse' => $libResponse
-            ]
-        );
-        
-        return $libResponse;
     }
 
     /**

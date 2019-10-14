@@ -6,14 +6,12 @@ use HeidelpayMGW\Helpers\Loggable;
 use HeidelpayMGW\Helpers\OrderHelper;
 use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\SessionHelper;
-use Plenty\Plugin\Translation\Translator;
 use Plenty\Modules\Order\Models\OrderItem;
 use HeidelpayMGW\Models\PaymentInformation;
 use Plenty\Modules\Document\Models\Document;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 use Plenty\Modules\Order\Property\Models\OrderItemProperty;
 use Plenty\Modules\Order\Property\Models\OrderPropertyType;
-use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
 
 /**
@@ -43,36 +41,24 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
 {
     use Loggable;
 
-    /** @var LibraryCallContract $libCall  Plenty LibraryCall */
-    private $libCall;
-
     /** @var SessionHelper $sessionHelper  Saves information for current plugin session */
     private $sessionHelper;
 
     /** @var OrderHelper $orderHelper  Order manipulation with AuthHelper */
     private $orderHelper;
 
-    /** @var Translator $translator  Plenty Translator service */
-    private $translator;
-
     /**
      * InvoiceGuaranteedPaymentService constructor
      *
-     * @param LibraryCallContract $libCall  Plenty LibraryCall
      * @param SessionHelper $sessionHelper  Saves information for current plugin session
      * @param OrderHelper $orderHelper  Order manipulation with AuthHelper
-     * @param Translator $translator  Plenty Translator service
      */
     public function __construct(
-        LibraryCallContract $libCall,
         SessionHelper $sessionHelper,
-        OrderHelper $orderHelper,
-        Translator $translator
+        OrderHelper $orderHelper
     ) {
-        $this->libCall = $libCall;
         $this->sessionHelper = $sessionHelper;
         $this->orderHelper = $orderHelper;
-        $this->translator = $translator;
 
         parent::__construct();
     }
@@ -110,10 +96,10 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
      *
      * @return array  Response from SDK
      */
-    public function cancelCharge(PaymentInformation $paymentInformation, Order $order): array
+    public function cancelTransaction(PaymentInformation $paymentInformation, Order $order): array
     {
         /** @var array $data */
-        $data = parent::prepareCancelChargeRequest($paymentInformation, $order);
+        $data = parent::prepareCancelTransactionRequest($paymentInformation, $order);
 
         if ($paymentInformation->paymentMethod === PluginConfiguration::INVOICE_FACTORING) {
             /** @var InvoiceGuaranteedSettingRepository $invoiceGuaranteedSettingRepo */
@@ -132,7 +118,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
             $data['reason'] = $reason;
         }
         /** @var array $libResponse */
-        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelCharge', $data);
+        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelTransaction', $data);
         /** @var string $commentText */
         $commentText = implode('<br />', [
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
@@ -142,11 +128,11 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
         if (!empty($libResponse['merchantMessage'])) {
             $commentText = implode('<br />', [
                 $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.cancelChargeError'),
+                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.cancelTransactionError'),
                 $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage']
             ]);
             $this->getLogger(__METHOD__)->error(
-                PluginConfiguration::PLUGIN_NAME.'::translation.cancelChargeError',
+                PluginConfiguration::PLUGIN_NAME.'::translation.cancelTransactionError',
                 [
                     'data' => $data,
                     'libResponse' => $libResponse
@@ -156,7 +142,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
         $this->createOrderComment($order->parentOrder->id, $commentText);
 
         $this->getLogger(__METHOD__)->debug(
-            'translation.cancelCharge',
+            'translation.cancelTransaction',
             [
                 'data' => $data,
                 'libResponse' => $libResponse
