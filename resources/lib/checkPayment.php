@@ -12,6 +12,8 @@ try {
         'success' => true,
         'paymentId' => $payment->getId(),
         'status' => $payment->getStateName(),
+        'amount' => $payment->getAmount(),
+        'currency' => $payment->getCurrency()
     ];
 } catch (HeidelpayApiException $e) {
     return [

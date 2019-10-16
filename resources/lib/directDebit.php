@@ -64,10 +64,10 @@ if (!empty($contactPlenty['mobile'])) {
     $customer->setMobile($contactPlenty['mobile']);
 }
 $salutation = Salutations::UNKNOWN;
-if ($contactPlenty['gender'] == 'male') {
+if ($contactPlenty['gender'] === 'male') {
     $salutation = Salutations::MR;
 }
-if ($contactPlenty['gender'] == 'female') {
+if ($contactPlenty['gender'] === 'female') {
     $salutation = Salutations::MRS;
 }
 $customer->setSalutation($salutation);
