@@ -25,6 +25,48 @@
             "menu": "settings/orders/payment/Plugins/Heidelpay",
             "urlKey": "invoice-guaranteedb2b-settings",
             "entryPoint": "index.html?action=invoice-guaranteedb2b-settings"
+        },
+        {
+            "label": "menu.creditCardSettings",
+            "menu": "settings/orders/payment/Plugins/Heidelpay",
+            "urlKey": "credit-card-settings",
+            "entryPoint": "index.html?action=credit-card-settings"
+        },
+        {
+            "label": "menu.sepaSettings",
+            "menu": "settings/orders/payment/Plugins/Heidelpay",
+            "urlKey": "sepa-settings",
+            "entryPoint": "index.html?action=sepa-settings"
+        },
+        {
+            "label": "menu.sepaGuaranteedSettings",
+            "menu": "settings/orders/payment/Plugins/Heidelpay",
+            "urlKey": "sepa-guaranteed-settings",
+            "entryPoint": "index.html?action=sepa-guaranteed-settings"
+        },
+        {
+            "label": "menu.paypalSettings",
+            "menu": "settings/orders/payment/Plugins/Heidelpay",
+            "urlKey": "paypal-settings",
+            "entryPoint": "index.html?action=paypal-settings"
+        },
+        {
+            "label": "menu.idealSettings",
+            "menu": "settings/orders/payment/Plugins/Heidelpay",
+            "urlKey": "ideal-settings",
+            "entryPoint": "index.html?action=ideal-settings"
+        },
+        {
+            "label": "menu.sofortSettings",
+            "menu": "settings/orders/payment/Plugins/Heidelpay",
+            "urlKey": "sofort-settings",
+            "entryPoint": "index.html?action=sofort-settings"
+        },
+        {
+            "label": "menu.flexipaySettings",
+            "menu": "settings/orders/payment/Plugins/Heidelpay",
+            "urlKey": "flexipay-settings",
+            "entryPoint": "index.html?action=flexipay-settings"
         }
     ]
 }

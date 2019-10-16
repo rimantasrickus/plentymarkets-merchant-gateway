@@ -4,12 +4,9 @@ namespace HeidelpayMGW\Services;
 
 use HeidelpayMGW\Helpers\Loggable;
 use HeidelpayMGW\Helpers\OrderHelper;
-use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\SessionHelper;
-use Plenty\Plugin\Translation\Translator;
 use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use Plenty\Modules\Plugin\Libs\Contracts\LibraryCallContract;
 
 /**
  * Invoice payment service class
@@ -38,42 +35,30 @@ class InvoicePaymentService extends AbstractPaymentService
 {
     use Loggable;
 
-    /** @var LibraryCallContract $libCall  Plenty LibraryCall */
-    private $libCall;
-
     /** @var SessionHelper $sessionHelper  Saves information for current plugin session */
     private $sessionHelper;
 
     /** @var OrderHelper $orderHelper  Order manipulation with AuthHelper */
     private $orderHelper;
 
-    /** @var Translator $translator  Plenty Translator service */
-    private $translator;
-
     /**
      * InvoicePaymentService constructor
      *
-     * @param LibraryCallContract $libCall  Plenty LibraryCall
      * @param SessionHelper $sessionHelper  Saves information for current plugin session
      * @param OrderHelper $orderHelper  Order manipulation with AuthHelper
-     * @param Translator $translator  Plenty Translator service
      */
     public function __construct(
-        LibraryCallContract $libCall,
         SessionHelper $sessionHelper,
-        OrderHelper $orderHelper,
-        Translator $translator
+        OrderHelper $orderHelper
     ) {
-        $this->libCall = $libCall;
         $this->sessionHelper = $sessionHelper;
         $this->orderHelper = $orderHelper;
-        $this->translator = $translator;
 
         parent::__construct();
     }
 
     /**
-     * Make a charge call with Heidelpay PHP-SDK
+     * Make a charge call with HeidelpayMGW PHP-SDK
      *
      * @param array $payment  Payment type information from Frontend JS
      *
@@ -88,54 +73,6 @@ class InvoicePaymentService extends AbstractPaymentService
 
         $this->getLogger(__METHOD__)->debug(
             'translation.charge',
-            [
-                'data' => $data,
-                'libResponse' => $libResponse
-            ]
-        );
-        
-        return $libResponse;
-    }
-
-    /**
-     * Make API call to cancel charge
-     *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
-     * @param Order $order  Plenty Order
-     *
-     * @return array  Response from SDK
-     */
-    public function cancelCharge(PaymentInformation $paymentInformation, Order $order): array
-    {
-        /** @var array $data */
-        $data = parent::prepareCancelChargeRequest($paymentInformation, $order);
-        /** @var array $libResponse */
-        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelCharge', $data);
-        /** @var string $commentText */
-        $commentText = implode('<br />', [
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-            $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.successCancelAmount') . $data['amount']
-        ]);
-        if (!empty($libResponse['merchantMessage'])) {
-            $commentText = implode('<br />', [
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.cancelChargeError'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.merchantMessage') . $libResponse['merchantMessage'],
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.clientMessage') . $libResponse['clientMessage']
-            ]);
-
-            $this->getLogger(__METHOD__)->error(
-                PluginConfiguration::PLUGIN_NAME.'::translation.cancelChargeError',
-                [
-                    'data' => $data,
-                    'libResponse' => $libResponse
-                ]
-            );
-        }
-        $this->createOrderComment($order->parentOrder->id, $commentText);
-
-        $this->getLogger(__METHOD__)->debug(
-            'translation.cancelCharge',
             [
                 'data' => $data,
                 'libResponse' => $libResponse
@@ -171,42 +108,6 @@ class InvoicePaymentService extends AbstractPaymentService
             $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.descriptor') . $transaction['descriptor']
         ]);
         $this->createOrderComment($orderId, $commentText);
-    }
-
-    /**
-     * Change payment status and add comment to Order
-     *
-     * @param string $externalOrderId  Heidelpay Order ID
-     *
-     * @return bool  Was payment status changed
-     */
-    public function cancelPlentyPayment(string $externalOrderId): bool
-    {
-        try {
-            /** @var Order $order */
-            $order = $this->orderHelper->findOrderByExternalOrderId($externalOrderId);
-            parent::changePaymentStatusCanceled($order);
-            /** @var string $commentText */
-            $commentText = implode('<br />', [
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
-                $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
-            ]);
-            $this->createOrderComment(
-                $order->id,
-                $commentText
-            );
-    
-            return true;
-        } catch (\Exception $e) {
-            $this->getLogger(__METHOD__)->exception(
-                'log.exception',
-                [
-                    'message' => $e->getMessage()
-                ]
-            );
-
-            return false;
-        }
     }
 
     /**

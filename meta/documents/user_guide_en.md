@@ -7,6 +7,12 @@ Currently supported payment methods are:
 * Invoice
 * Invoice secured B2C
 * Invoice secured B2B
+* Card
+* SEPA Direct Debit and Guaranteed
+* PayPal
+* SOFORT
+* iDEAL
+* FlexiPay Direct
 
 ## REQUIREMENTS
 * This plugin is designed fo Plentymarkets 7.
@@ -90,6 +96,13 @@ Map Plentymarkets item return reason from the list to heidelpay `RETURN`
 ##### Reason for CREDIT
 Map Plentymarkets item return reason from the list to heidelpay `CREDIT`
 
+##### Card payment method
+Card payments can be used in two different ways:
+* Direct charge: the bank account of the customer is charged directly.
+* Authorize and charge: First you reserve money on the customer's account and later you charge the money.
+
+If customer has a card that uses 3D security, then during the checkout, customer will be redirected to a page where he can authorize his payment. If for some reason customer will not be able to authorize, he will be redirected back to the checkout. On the other hand if everything is OK, the Plentysystem will create an Order and customer will be redirected to Order status page.
+
 ## Workflow description
 ### Logging
 To see Logs of Plentymarkets system navigate to `Data`->`Log` page. There You will see all the Logs of Plentymarkets system. Normally heidelpayMGW plugin will show only `error` level logs. Additionally You can enable `debug` level logs and this will show much more information of what is happening behind the scenes. To enable `debug` level logs, press `Configure logs` at the top-middle section of the `Log` page. In opened popup select `HeidelpayMGW` plugin, check `Active` checkbox, select duration for how long this configuration should be active and select `Debug` from `Log level` list.
@@ -121,6 +134,23 @@ In order to start the insurance of a payment you need to trigger a finalize tran
 
 ### Cancel payment
 To cancel payment You will need to create `Return order`. First You need to navigate to original Order. Open this Order. In the `Overview` tab You will see list box named `Return...`. From list select `create`. In the opened popup select items You want to return. Select return reason (see [Return reasons](#return-reasons)). Press save button. Plentymarkets will create new return Order. Navigate to `Receipts` tab from the `Create receipt` list select `Return slip`. Adjust settings if needed and press `Save`. Document generation will trigger `cancel charge` in heidelpay system with the amount of the return Order. 
+
+### Creating event procedure
+In order to add new event procedure You will need to take these steps:
+* Go to `System`->`Orders`->`Events`
+* At the bottom press button Add event procedure
+* In dialog box name your configuration and select when this event should be fired, for example `Order change`->`Status change`
+* Press Save
+* When modal closes, tick `Active` checkbox and in `Procedures` section add Procedure that should handle fired event. In this case `Authorization charge (Heidelpay)`
+* After that save your configuration by pressing `Save` button at the top
+
+### Direct charge
+For this transaction no additional steps are needed. The bank account of the customer is charged directly and Plentymarkets Order will be updated with paid amount automatically.
+
+### Authorize and charge
+With this transaction type money will not be directly charged from the customer, so You will need to charge reserved amount latter. This can be done in two ways:
+* You can do this by creating the delivery note within the shop backend (see [Creating delivery note](#creating-delivery-note))
+* You can do this by using custom event procedure within Plentymarkets (see [Creating event procedure](#creating-event-procedure))
 
 ### Invoice payment methods
 > _Invoice and Invoice secured B2C_ is only available under the following conditions:

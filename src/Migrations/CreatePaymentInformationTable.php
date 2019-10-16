@@ -1,5 +1,4 @@
 <?php
-
 namespace HeidelpayMGW\Migrations;
 
 use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;

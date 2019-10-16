@@ -30,7 +30,7 @@ use HeidelpayMGW\Models\InvoiceSetting;
 class InvoiceSettingRepository extends BaseSettingRepository
 {
     /**
-     * InvoiceGuaranteedSettingRepository constructor
+     * InvoiceSettingRepository constructor
      */
     public function __construct()
     {
