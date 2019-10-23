@@ -181,6 +181,13 @@ abstract class AbstractPaymentService
             ->where('currency', '=', $paymentInformation->transaction['currency'])
             ->first()->invoiceTotal;
 
+        $this->getLogger(__METHOD__)->error('prepareCancelTransactionRequest', [
+            'amounts' => $order->amounts,
+            'items' => $order->orderItems,
+            'order' => $order,
+            'parentOrder' => $order->parentOrder
+        ]);
+
         $data = [
             'privateKey' => $this->apiKeysHelper->getPrivateKey(),
             'paymentId' => $paymentInformation->transaction['paymentId'],
