@@ -2,6 +2,7 @@
 
 namespace HeidelpayMGW\Methods;
 
+use HeidelpayMGW\Helpers\Loggable;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 use HeidelpayMGW\Repositories\SofortSettingRepository;
 
@@ -30,6 +31,8 @@ use HeidelpayMGW\Repositories\SofortSettingRepository;
 */
 class SofortPaymentMethod extends BasePaymentMethod
 {
+    use Loggable;
+
     const AVAILABLE_COUNTRIES = ['DE'];
 
     /**
@@ -51,9 +54,6 @@ class SofortPaymentMethod extends BasePaymentMethod
         if ($this->basketService->isBasketB2B()) {
             return false;
         }
-        if ($this->isCountryRestricted()) {
-            return false;
-        }
         
         return parent::isActive();
     }
@@ -65,21 +65,6 @@ class SofortPaymentMethod extends BasePaymentMethod
      */
     public function getDescription(): string
     {
-        return PluginConfiguration::SOFORT_FRONTEND_NAME;
-    }
-
-    /**
-     * Check if country of the address is in available countries list
-     *
-     * @return bool  True if not in the white list
-     */
-    private function isCountryRestricted(): bool
-    {
-        $address = $this->basketService->getCustomerAddressData()['billing'];
-        if (in_array($address->country->isoCode2, self::AVAILABLE_COUNTRIES)) {
-            return false;
-        }
-
-        return true;
+        return $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::Frontend.sofortDescription');
     }
 }

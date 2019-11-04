@@ -1,4 +1,4 @@
-# Release Notes for 
+# Release Notes 
 
 ## v1.0.0 ()
 - Initial release

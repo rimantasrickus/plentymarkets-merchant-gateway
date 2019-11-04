@@ -62,6 +62,6 @@ class InvoiceGuaranteedPaymentMethodB2B extends BasePaymentMethod
      */
     public function getDescription(): string
     {
-        return PluginConfiguration::INVOICE_GUARANTEED_FRONTEND_NAME_B2B;
+        return $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::Frontend.invoiceGuaranteedB2BDescription');
     }
 }

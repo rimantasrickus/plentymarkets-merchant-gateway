@@ -4,6 +4,7 @@ namespace HeidelpayMGW\Methods;
 
 use Plenty\Plugin\Application;
 use HeidelpayMGW\Services\BasketService;
+use Plenty\Plugin\Translation\Translator;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 use Plenty\Modules\Payment\Method\Contracts\PaymentMethodService;
 
@@ -40,6 +41,9 @@ class BasePaymentMethod extends PaymentMethodService
     /** @var BasketService $basketService */
     protected $basketService;
 
+    /** @var Translator $translator */
+    protected $translator;
+
     /**
      * BasePaymentMethod constructor
      *
@@ -49,6 +53,7 @@ class BasePaymentMethod extends PaymentMethodService
     {
         $this->settings = $settingRepository->get();
         $this->basketService = pluginApp(BasketService::class);
+        $this->translator = pluginApp(Translator::class);
     }
 
     /**

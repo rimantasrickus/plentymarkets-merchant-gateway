@@ -81,6 +81,13 @@
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         },
         {
+            "key"           :"HeidelpayMGW\\Containers\\InvoiceGuaranteedB2BContainer",
+            "name"          :"InvoiceGuaranteedB2BContainer",
+            "description"   :"heidelpay MGW B2B customer modal",
+            "multiple"      : false,
+            "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
+        },
+        {
             "key"           :"HeidelpayMGW\\Containers\\CreditCardContainer",
             "name"          :"CreditCardContainer",
             "description"   :"Heidelpay Credit card form",

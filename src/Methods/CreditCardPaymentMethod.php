@@ -56,6 +56,6 @@ class CreditCardPaymentMethod extends BasePaymentMethod
      */
     public function getDescription(): string
     {
-        return PluginConfiguration::CREDIT_CARD_FRONTEND_NAME;
+        return $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::Frontend.creditCardDescription');
     }
 }

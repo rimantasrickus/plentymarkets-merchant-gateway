@@ -73,6 +73,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
     {
         /** @var array $data */
         $data = parent::prepareChargeRequest($payment);
+        $data['b2bCustomer'] = $this->sessionHelper->getValue('heidelpayB2BCustomer');
         /** @var array $libResponse */
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceGuaranteedB2B', $data);
         

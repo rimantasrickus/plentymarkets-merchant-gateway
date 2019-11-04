@@ -37,7 +37,7 @@ class FlexipaySetting extends Model
     public $isActive = false;
 
     /** @var string $displayName  Payment method display name */
-    public $displayName = '';
+    public $displayName = 'Flexipay direct/ PIS';
 
     /** @var string $basketMinTotal  Minimum basket amount for payment method */
     public $basketMinTotal = '';
