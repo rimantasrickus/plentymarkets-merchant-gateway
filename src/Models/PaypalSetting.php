@@ -30,14 +30,14 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Model;
  */
 class PaypalSetting extends Model
 {
-    /** @var int $id Model ID in the database. We don't need autoincrement so we set ID always to 1 */
+    /** @var int $id Model ID in the database. We don't need auto-increment so we set ID always to 1 */
     public $id = 1;
 
     /** @var bool $isActive */
     public $isActive = false;
 
     /** @var string $displayName  Payment method display name */
-    public $displayName = '';
+    public $displayName = 'Paypal';
 
     /** @var string $basketMinTotal  Minimum basket amount for payment method */
     public $basketMinTotal = '';

@@ -11,62 +11,48 @@ use heidelpayPHP\Resources\EmbeddedResources\BasketItem;
 
 $heidelpay = new \heidelpayPHP\Heidelpay(SdkRestApi::getParam('privateKey'));
 
-// Invoice address
-$invoiceAddressPlenty = SdkRestApi::getParam('invoiceAddress');
-$name = $invoiceAddressPlenty['name2'].' '.$invoiceAddressPlenty['name3'];
-$invoiceAddress = new Address();
-$street = $invoiceAddressPlenty['address1'].' '.$invoiceAddressPlenty['address2'];
-if (!empty($invoiceAddressPlenty['address3'])) {
-    $street .= ', '.$invoiceAddressPlenty['address3'];
-}
-$state = '';
-if (!empty($invoiceAddressPlenty['stateName'])) {
-    $state = $invoiceAddressPlenty['stateName'];
-}
-$invoiceAddress->setName($name)
-    ->setStreet($street)
-    ->setCity($invoiceAddressPlenty['town'])
-    ->setZip($invoiceAddressPlenty['postalCode'])
-    ->setState($state)
-    ->setCountry($invoiceAddressPlenty['countryCode']);
+$contactPlenty = SdkRestApi::getParam('contact');
+$b2bCustomer = SdkRestApi::getParam('b2bCustomer');
 
-// Delivery address
-$deliveryAddressPlenty = SdkRestApi::getParam('deliveryAddress');
-$deliveryAddress = new Address();
-$name = $deliveryAddressPlenty['name2'].' '.$deliveryAddressPlenty['name3'];
-$street = $deliveryAddressPlenty['address1'].' '.$deliveryAddressPlenty['address2'];
-if (!empty($deliveryAddressPlenty['address3'])) {
-    $street .= ', '.$deliveryAddressPlenty['address3'];
+// Invoice address
+$invoiceAddress = new Address();
+$invoiceAddress->setStreet($b2bCustomer['street'])
+    ->setCity($b2bCustomer['city'])
+    ->setZip($b2bCustomer['zip'])
+    ->setCountry($b2bCustomer['country']);
+if ($b2bCustomer['companyRegistered']) {
+    $invoiceAddress->setName($b2bCustomer['company']);
+} else {
+    $invoiceAddress->setName($b2bCustomer['firstName'].' '.$b2bCustomer['lastName']);
 }
-$state = '';
-if (!empty($deliveryAddressPlenty['stateName'])) {
-    $state = $deliveryAddressPlenty['stateName'];
-}
-$deliveryAddress->setName($name)
-    ->setStreet($street)
-    ->setCity($deliveryAddressPlenty['town'])
-    ->setZip($deliveryAddressPlenty['postalCode'])
-    ->setState($state)
-    ->setCountry($deliveryAddressPlenty['countryCode']);
 
 // Customer
-$contactPlenty = SdkRestApi::getParam('contact');
-$customer = CustomerFactory::createNotRegisteredB2bCustomer(
-    $contactPlenty['firstName'],
-    $contactPlenty['lastName'],
-    $contactPlenty['birthday'],
-    $invoiceAddress,
-    $contactPlenty['email'],
-    $contactPlenty['company']
-);
+if ($b2bCustomer['companyRegistered'] === 'registered') {
+    $customer = CustomerFactory::createRegisteredB2bCustomer(
+        $invoiceAddress,
+        $b2bCustomer['commercialRegisterNumber'],
+        $b2bCustomer['company'],
+        $b2bCustomer['commercialSector']
+    );
+} else {
+    $customer = CustomerFactory::createNotRegisteredB2bCustomer(
+        $b2bCustomer['firstName'],
+        $b2bCustomer['lastName'],
+        $b2bCustomer['birthDate'],
+        $invoiceAddress,
+        $b2bCustomer['email'],
+        $b2bCustomer['company'],
+        $b2bCustomer['commercialSector']
+    );
+    $customer->setSalutation($b2bCustomer['salutation']);
+}
 if (!empty($contactPlenty['phone'])) {
     $customer->setPhone($contactPlenty['phone']);
 }
 if (!empty($contactPlenty['mobile'])) {
     $customer->setMobile($contactPlenty['mobile']);
 }
-$customer->setShippingAddress($deliveryAddress);
-$paymentResource = SdkRestApi::getParam('paymentResource');
+$customer->setShippingAddress($invoiceAddress);
 
 // Basket
 $basketPlenty = SdkRestApi::getParam('basket');
@@ -119,6 +105,8 @@ $metadata->addMetadata('shopType', $metadataPlenty['shopType']);
 $metadata->addMetadata('shopVersion', $metadataPlenty['shopVersion']);
 $metadata->addMetadata('pluginVersion', $metadataPlenty['pluginVersion']);
 $metadata->addMetadata('pluginType', $metadataPlenty['pluginType']);
+
+$paymentResource = SdkRestApi::getParam('paymentResource');
 try {
     $transaction = $heidelpay->charge(
         $basketPlenty['amountTotal'],

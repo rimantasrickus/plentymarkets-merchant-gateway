@@ -51,23 +51,26 @@ function prepareHeidelpayPayment() {
                 }
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{invoiceGuaranteedB2B}}') {
-                if (!isBirthDateAvailable() && !heidelpayBirthDate) {
-                    var Customer = heidelpayInstance.Customer()
-                    // Rendering the customer form
-                    Customer.create({
-                        containerId: 'customer',
-                        fields: ['birthdate'],
-                        showHeader: false
-                    });
-                    showHeidelpayBirthDateModal();
-                }
-                if (isBirthDateAvailable() || heidelpayBirthDate) {
-                    if ({{useInvoiceB2BFactoring}}) {
-                        heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceFactoring());
-                    } else {
-                        heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
+                // Creating a customer instance
+                var Customer = heidelpayInstance.B2BCustomer()
+                // Rendering the customer form
+                Customer.create({
+                    containerId: 'customerB2B',
+                });
+                window.b2bCustomer = Customer;
+                showHeidelpayB2BCustomerModal();
+                
+                document.getElementById('heidelpayB2BCustomerSubmit').onclick = function() {
+                    if (isB2BCustomerValid()) {
+                        document.getElementById('heidelpayB2BCustomerSubmit').disabled = true;
+                        document.getElementById('heidelpayB2BCustomerButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
+                        if ({{useInvoiceB2BFactoring}}) {
+                            heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceFactoring());
+                        } else {
+                            heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
+                        }
                     }
-                }
+                };
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{creditCard}}') {
                 showHeidelpayCCModal();
@@ -107,7 +110,7 @@ function prepareHeidelpayPayment() {
                         document.getElementById('sepaModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
                         heidelpayPayment(placeOrderComponent, sepa);
                     } else {
-                        window.CeresNotification.error('{{sepaMandateError}}');
+                        showErrorNotification('{{sepaMandateError}}');
                     }
                 };
             }
@@ -135,7 +138,7 @@ function prepareHeidelpayPayment() {
                             document.getElementById('sepaGuaranteedModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
                             heidelpayPayment(placeOrderComponent, sepaGuaranteed);
                         } else {
-                            window.CeresNotification.error('{{sepaMandateError}}');
+                            showErrorNotification('{{sepaMandateError}}');
                         }
                     };
                  }
@@ -207,21 +210,46 @@ function validateBirthDate() {
     }
 }
 
+function isB2BCustomerValid() {
+    let b2bCustomorData = gatherHeidelpayB2BData(window.b2bCustomer);
+    let errors = [];
+    for (let index in b2bCustomorData) {
+        if (!b2bCustomorData[index]) {
+            errors.push(index);
+        }
+    }
+    if (errors.length > 0) {
+        showErrorNotification('{{ trans("HeidelpayMGW::Frontend.b2bCustomerFieldsError") }}' + errors.join(','));
+        return false;
+    }
+    if (jQuery(".h-iconimg-error").length > 0) {
+        showErrorNotification('{{ trans("HeidelpayMGW::Frontend.b2bCustomerDataError") }}');
+        return false;
+    }
+
+    return true;
+}
+
 function heidelpayPayment(placeOrderComponent, paymentInstance) {
     if (paymentInstance) {
         paymentInstance.createResource()
             .then(data => {
-                console.log('Success: ', data)
+                let post;
+                if (window.b2bCustomer) {
+                    let heidelpayB2BCustomer = gatherHeidelpayB2BData(window.b2bCustomer);
+                    post = {data, heidelpayBirthDate, heidelpayB2BCustomer};
+                } else {
+                    post = {data, heidelpayBirthDate};
+                }
                 fetch('/{{routeName}}/payment-type', {
                     method: 'POST', 
-                    body: JSON.stringify({data, heidelpayBirthDate}),
+                    body: JSON.stringify(post),
                     headers:{
                         'Content-Type': 'application/json'
                     }
                 })
                 .then(res => res.json())
                 .then(response => {
-                    console.log('Success: ', response)
                     if (response.success === true) {
                         placeOrderComponent.preparePayment();
                         closeHeidelpayCCModal();
@@ -229,6 +257,7 @@ function heidelpayPayment(placeOrderComponent, paymentInstance) {
                         closeHeidelpaySepaGuaranteedModal();
                         closeHeidelpayPaypalModal();
                         closeHeidelpayIdealModal();
+                        closeHeidelpayB2BCustomerModal();
                         enableButtons();
                         return;
                     }
@@ -236,15 +265,25 @@ function heidelpayPayment(placeOrderComponent, paymentInstance) {
                 .catch(error => {
                     console.error('Error:', error);
                     enableButtons();
-                    window.CeresNotification.error(error);
+                    showErrorNotification(error);
                 });
             })
             .catch(error => {
                 console.log('Error: ', error);
                 enableButtons();
-                window.CeresNotification.error(error);
+                showErrorNotification(error);
             })
     }
+}
+
+function showErrorNotification(errorText) {
+    let allNotifications = window.CeresNotification.getNotifications().all();
+    for(let notification of allNotifications) {
+        if (notification.message === errorText) {
+            return;
+        }
+    }
+    window.CeresNotification.error(errorText);
 }
 
 function enableButtons() {
@@ -258,6 +297,8 @@ function enableButtons() {
     document.getElementById('paypalModalPayButtonArrow').className = '';
     document.getElementById('heidelpayIdealSubmit').disabled = false;
     document.getElementById('idealModalPayButtonArrow').className = '';
+    document.getElementById('heidelpayB2BCustomerSubmit').disabled = false;
+    document.getElementById('heidelpayB2BCustomerButtonArrow').className = '';
     document.getElementById('checkoutButtonHeidelpay').disabled = false;
     document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-arrow-right';
 }

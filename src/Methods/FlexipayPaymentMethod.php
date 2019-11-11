@@ -60,6 +60,6 @@ class FlexipayPaymentMethod extends BasePaymentMethod
      */
     public function getDescription(): string
     {
-        return PluginConfiguration::FLEXIPAY_FRONTEND_NAME;
+        return $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::Frontend.flexipayDescription');
     }
 }

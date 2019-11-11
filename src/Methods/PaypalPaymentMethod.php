@@ -59,6 +59,6 @@ class PaypalPaymentMethod extends BasePaymentMethod
      */
     public function getDescription(): string
     {
-        return PluginConfiguration::PAYPAL_FRONTEND_NAME;
+        return $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::Frontend.paypalDescription');
     }
 }

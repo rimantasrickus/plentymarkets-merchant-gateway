@@ -57,9 +57,12 @@ class PaymentTypeController extends Controller
         $data = $frontendData['data'];
         /** @var string $heidelpayBirthDate */
         $heidelpayBirthDate = $frontendData['heidelpayBirthDate'];
+        /** @var array $heidelpayB2BCustomer */
+        $heidelpayB2BCustomer = $frontendData['heidelpayB2BCustomer'];
 
         $sessionHelper->setValue('paymentResource', $data);
         $sessionHelper->setValue('heidelpayBirthDate', $heidelpayBirthDate);
+        $sessionHelper->setValue('heidelpayB2BCustomer', $heidelpayB2BCustomer);
 
         return $response->json([
             'success' => true

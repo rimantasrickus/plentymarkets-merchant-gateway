@@ -89,7 +89,7 @@ class TestController extends Controller
     /**
      * Show model
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      *
      * @return BaseResponse

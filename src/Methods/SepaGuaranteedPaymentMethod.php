@@ -56,6 +56,6 @@ class SepaGuaranteedPaymentMethod extends BasePaymentMethod
      */
     public function getDescription(): string
     {
-        return PluginConfiguration::SEPA_GUARANTEED_FRONTEND_NAME;
+        return $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::Frontend.sepaGuaranteedDescription');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace HeidelpayMGW\Methods;
 
+use HeidelpayMGW\Helpers\Loggable;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 use HeidelpayMGW\Repositories\InvoiceSettingRepository;
 
@@ -30,6 +31,8 @@ use HeidelpayMGW\Repositories\InvoiceSettingRepository;
 */
 class InvoicePaymentMethod extends BasePaymentMethod
 {
+    use Loggable;
+
     const AVAILABLE_COUNTRIES = ['DE', 'AT'];
 
     /**
@@ -62,6 +65,6 @@ class InvoicePaymentMethod extends BasePaymentMethod
      */
     public function getDescription(): string
     {
-        return PluginConfiguration::INVOICE_FRONTEND_NAME;
+        return $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::Frontend.invoiceDescription');
     }
 }
