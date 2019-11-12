@@ -57,7 +57,8 @@ class BaseSettingRepository
      */
     public function get()
     {
-        return $this->database->query($this->modelClass)->get()[0] ?? $this->emptyModel;
+        return $this->database->query($this->modelClass)
+            ->get()[0] ?? $this->emptyModel;
     }
 
     /**

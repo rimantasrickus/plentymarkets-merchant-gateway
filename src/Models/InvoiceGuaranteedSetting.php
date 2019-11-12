@@ -37,7 +37,7 @@ class InvoiceGuaranteedSetting extends Model
     public $isActive = false;
 
     /** @var string $displayName  Payment method display name */
-    public $displayName = '';
+    public $displayName = 'Invoice B2C guaranteed';
 
     /** @var string $basketMinTotal  Minimum basket amount for payment method */
     public $basketMinTotal = '';

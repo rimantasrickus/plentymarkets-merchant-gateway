@@ -3,6 +3,7 @@
 namespace HeidelpayMGW\Containers;
 
 use Plenty\Plugin\Templates\Twig;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 
 /**
 * Returns rendered HeidelpayScripts twig template
@@ -38,6 +39,6 @@ class HeidelpayScriptsContainer
      */
     public function call(Twig $twig): string
     {
-        return $twig->render('HeidelpayMGW::content.HeidelpayScripts', []);
+        return $twig->render(PluginConfiguration::PLUGIN_NAME.'::content.HeidelpayScripts', []);
     }
 }
