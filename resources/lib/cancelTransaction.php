@@ -9,6 +9,9 @@ try {
     
     $payment = $heidelpay->fetchPayment(SdkRestApi::getParam('paymentId'));
     $cancelCharges = $payment->cancelAmount(SdkRestApi::getParam('amount'), SdkRestApi::getParam('reason'));
+    foreach ($cancelCharges as &$cancellation) {
+        $cancellation = $cancellation->expose();
+    }
 
     return [
         'success' => true,

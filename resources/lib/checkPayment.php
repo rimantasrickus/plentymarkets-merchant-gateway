@@ -7,12 +7,18 @@ $heidelpay = new \heidelpayPHP\Heidelpay(SdkRestApi::getParam('privateKey'));
 
 try {
     $payment = $heidelpay->fetchPayment(SdkRestApi::getParam('paymentId'));
-
+    $amount = $payment->getAmount();
+    
     return [
         'success' => true,
         'paymentId' => $payment->getId(),
         'status' => $payment->getStateName(),
-        'amount' => $payment->getAmount(),
+        'amount' => [
+            'total' => $amount->getTotal(),
+            'charged' => $amount->getCharged(),
+            'canceled' => $amount->getCanceled(),
+            'remaining' => $amount->getRemaining(),
+        ],
         'currency' => $payment->getCurrency()
     ];
 } catch (HeidelpayApiException $e) {
