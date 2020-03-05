@@ -59,16 +59,6 @@ class IdealPaymentMethod extends BasePaymentMethod
     }
 
     /**
-     * Get the description of the payment method
-     *
-     * @return string  Payment method's description in a checkout
-     */
-    public function getDescription(): string
-    {
-        return $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::Frontend.idealDescription');
-    }
-
-    /**
      * Check if country of the address is in available countries list
      *
      * @return bool  True if not in the white list

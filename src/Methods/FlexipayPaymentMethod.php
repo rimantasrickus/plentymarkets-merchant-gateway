@@ -52,14 +52,4 @@ class FlexipayPaymentMethod extends BasePaymentMethod
 
         return parent::isActive();
     }
-
-    /**
-     * Get the description of the payment method
-     *
-     * @return string  Payment method's description in a checkout
-     */
-    public function getDescription(): string
-    {
-        return $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::Frontend.flexipayDescription');
-    }
 }

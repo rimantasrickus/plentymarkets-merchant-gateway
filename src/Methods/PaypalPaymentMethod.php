@@ -51,14 +51,4 @@ class PaypalPaymentMethod extends BasePaymentMethod
 
         return parent::isActive();
     }
-
-    /**
-     * Get the description of the payment method.
-     *
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::Frontend.paypalDescription');
-    }
 }
