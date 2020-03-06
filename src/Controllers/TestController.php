@@ -100,13 +100,4 @@ class TestController extends Controller
         
         return $response->json(pluginApp(DataBase::class)->query(PluginConfiguration::PLUGIN_NAME.'\\Models\\'.$model)->get());
     }
-
-    public function test(Response $response)
-    {
-        return $response->json([
-            'class' => __CLASS__,
-            'get_class' => get_class($this),
-            'explode' => explode('\\', __CLASS__)[2],
-        ]);
-    }
 }

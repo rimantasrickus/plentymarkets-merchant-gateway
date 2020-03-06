@@ -465,7 +465,7 @@ class PaymentHelper
         }
         // payment partially completed logic
         if ($hook['event'] === self::PAYMENT_PARTLY) {
-            $updated = $pluginPaymentService->updatePlentyPaymentPaidAmount((int)$heidelpayPaymentInfo->orderId, (int)($libResponse['total'] * 100), Payment::STATUS_PARTIALLY_CAPTURED);
+            $updated = $pluginPaymentService->updatePlentyPaymentPaidAmount((int)$heidelpayPaymentInfo->orderId, (int)($libResponse['charged'] * 100), Payment::STATUS_PARTIALLY_CAPTURED);
         }
         // payment canceled logic
         if ($hook['event'] === self::PAYMENT_CANCELED) {
