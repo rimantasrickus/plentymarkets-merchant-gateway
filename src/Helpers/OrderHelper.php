@@ -2,6 +2,8 @@
 
 namespace HeidelpayMGW\Helpers;
 
+use Plenty\Modules\Order\Models\Order;
+use Plenty\Modules\Order\Models\OrderType;
 use Plenty\Modules\Authorization\Services\AuthHelper;
 use Plenty\Modules\Order\Contracts\OrderRepositoryContract;
 
@@ -101,5 +103,40 @@ class OrderHelper
                 return $this->orderRepository->findOrderByExternalOrderId($externalOrderId);
             }
         );
+    }
+    
+    /**
+     * Return original order ID
+     *
+     * @param Order $order
+     *
+     * @return int
+     */
+    public function getOriginalOrderId(Order $order): int
+    {
+        return $this->getOriginalOrder($order)->id;
+    }
+
+    /**
+     * Return Original Order
+     *
+     * @param Order $order
+     *
+     * @return Order
+     */
+    public function getOriginalOrder(Order $order): Order
+    {
+        if ($order->typeId === OrderType::TYPE_SALES_ORDER) {
+            return $order;
+        }
+        
+        while ($order->parentOrder) {
+            if ($order->parentOrder->typeId === OrderType::TYPE_SALES_ORDER) {
+                return $order->parentOrder;
+            }
+            $order = $order->parentOrder;
+        }
+
+        return $order;
     }
 }
