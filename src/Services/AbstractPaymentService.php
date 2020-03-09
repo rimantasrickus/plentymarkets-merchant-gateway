@@ -185,7 +185,7 @@ abstract class AbstractPaymentService
         
         $originOrder = $this->orderHelper->getOriginalOrder($order);
         $paidAmount = $originOrder->payments->sum('amount');
-        if ($returnAmount > $paidAmount) {
+        if ($returnAmount > $paidAmount && $paidAmount > 0.0) {
             $returnAmount = $paidAmount;
         }
 
