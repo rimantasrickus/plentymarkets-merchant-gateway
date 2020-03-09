@@ -126,14 +126,17 @@ To create Delivery note document for the Order, navigate to `Edit orders` page. 
 
 In order to start the insurance of a payment you need to trigger a finalize transaction. To do this there are two possibilities:
 * You can do this in your hIP account (heidelpay Intelligence Platform)
-* You can do this by creating the delivery note within the shop backend (see [Creating delivery note](#creating-delivery-note))
+* You can do this by creating event procedure (Finalize transaction (HeidelpayMGW)) in shop backend (see [Creating event procedure](#creating-event-procedure))
+> Recommendation is to create event procedure when Invoice is created
 * The finalize starts the insurance period in which the customer has to pay the total amount of the order.
 * The insurance period is determined within your contract with heidelpay.
 * As soon as the total amount is paid by the customer a receipt transaction (REC) appears within the hIP and is sent to the pushUrl of your shop.
 * The plugin will then update payment linked to the corresponding order.
 
 ### Cancel payment
-To cancel payment You will need to create `Return order`. First You need to navigate to original Order. Open this Order. In the `Overview` tab You will see list box named `Return...`. From list select `create`. In the opened popup select items You want to return. Select return reason (see [Return reasons](#return-reasons)). Press save button. Plentymarkets will create new return Order. Navigate to `Receipts` tab from the `Create receipt` list select `Return slip`. Adjust settings if needed and press `Save`. Document generation will trigger `cancel charge` in heidelpay system with the amount of the return Order. 
+To cancel payment You will need to create event procedure (Refund transaction (HeidelpayMGW)) in shop backend (see [Creating event procedure](#creating-event-procedure)).
+> Recommendation is to create event procedure when Credit node document is created
+Usual workflow would be to navigate to original Order. In the `Overview` tab You will see list box named `Credit note...`. From list select `from individual items` or `from all positions`. In the opened popup select items You want to refund. Press save button. Plentymarkets will create new Credit note Order. Navigate to `Receipts` tab from the `Create receipt` list select `Credit note`. Adjust settings if needed and press `Save`. If event procedure is configured to trigger when Credit note is generated then plugin will send refund amount to heidelpay API.
 
 ### Creating event procedure
 In order to add new event procedure You will need to take these steps:
