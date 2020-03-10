@@ -28,8 +28,10 @@ use Plenty\Modules\Basket\Events\Basket\AfterBasketCreate;
 use Plenty\Modules\Payment\Events\Checkout\ExecutePayment;
 use HeidelpayMGW\Methods\InvoiceGuaranteedPaymentMethodB2B;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
+use HeidelpayMGW\EventProcedures\RefundTransactionProcedure;
 use Plenty\Modules\Order\Pdf\Events\OrderPdfGenerationEvent;
 use HeidelpayMGW\EventProcedures\AuthorizationChargeProcedure;
+use HeidelpayMGW\EventProcedures\FinalizeTransactionProcedure;
 use Plenty\Modules\Basket\Events\BasketItem\AfterBasketItemAdd;
 use Plenty\Modules\EventProcedures\Services\Entries\ProcedureEntry;
 use Plenty\Modules\EventProcedures\Services\EventProceduresService;
@@ -172,6 +174,26 @@ class PluginServiceProvider extends ServiceProvider
             ],
             AuthorizationChargeProcedure::class . '@handle'
         );
+        //perform finalize transaction
+        $eventProceduresService->registerProcedure(
+            'finalizeTransaction',
+            ProcedureEntry::EVENT_TYPE_ORDER,
+            [
+                'de' => 'Finalize transaction ('.PluginConfiguration::PLUGIN_NAME.')',
+                'en' => 'Finalize transaction ('.PluginConfiguration::PLUGIN_NAME.')'
+            ],
+            FinalizeTransactionProcedure::class . '@handle'
+        );
+        //perform refund transaction
+        $eventProceduresService->registerProcedure(
+            'finalizeTransaction',
+            ProcedureEntry::EVENT_TYPE_ORDER,
+            [
+                'de' => 'Refund transaction ('.PluginConfiguration::PLUGIN_NAME.')',
+                'en' => 'Refund transaction ('.PluginConfiguration::PLUGIN_NAME.')'
+            ],
+            RefundTransactionProcedure::class . '@handle'
+        );
 
         $logger = $this->getLogger(__METHOD__);
         //Listen for the event that gets the payment method content before Order creation
@@ -276,14 +298,6 @@ class PluginServiceProvider extends ServiceProvider
                             if ($orderPdfGeneration instanceof OrderPdfGeneration) {
                                 $event->addOrderPdfGeneration($orderPdfGeneration);
                             }
-                            break;
-                        case Document::DELIVERY_NOTE:
-                            //perform finalize transaction
-                            $paymentHelper->executeShipment($orderId, $paymentInformation);
-                            break;
-                        case Document::RETURN_NOTE:
-                                // perform refund transaction
-                                $paymentHelper->cancelTransaction($paymentInformation, $order);
                             break;
                         default:
                             //do nothing

@@ -71,7 +71,7 @@ class PaymentHelper
 
     /** @var PaymentInformationRepository $heidelpayPaymentInformationRepo */
     private $heidelpayPaymentInformationRepo;
- 
+    
     public function __construct(
         PaymentMethodRepositoryContract $plentyPaymentMethodRepository,
         SessionHelper $sessionHelper,
@@ -414,17 +414,19 @@ class PaymentHelper
      *
      * @param PaymentInformation $heidelpayPaymentInformation  Payment transaction data from SDK
      * @param Order $order  Plenty Order
+     * @param int $originalOrderId  Plenty Order ID
      *
      * @return void
      */
-    public function cancelTransaction(PaymentInformation $heidelpayPaymentInformation, Order $order)
+    public function cancelTransaction(PaymentInformation $heidelpayPaymentInformation, Order $order, int $originalOrderId)
     {
         if (empty($heidelpayPaymentInformation->transaction)) {
             return;
         }
+
         /** @var mixed $pluginPaymentService */
-        $pluginPaymentService = $this->getPluginPaymentService($order->parentOrder->id);
-        $pluginPaymentService->cancelTransaction($heidelpayPaymentInformation, $order);
+        $pluginPaymentService = $this->getPluginPaymentService($originalOrderId);
+        $pluginPaymentService->cancelTransaction($heidelpayPaymentInformation, $order, $originalOrderId);
     }
 
     /**

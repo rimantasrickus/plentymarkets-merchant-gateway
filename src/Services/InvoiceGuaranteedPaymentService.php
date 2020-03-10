@@ -93,10 +93,11 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
      *
      * @param PaymentInformation $paymentInformation  Heidelpay payment information
      * @param Order $order  Plenty Order
+     * @param int $originalOrderId Original Plenty Order ID
      *
      * @return array  Response from SDK
      */
-    public function cancelTransaction(PaymentInformation $paymentInformation, Order $order): array
+    public function cancelTransaction(PaymentInformation $paymentInformation, Order $order, int $originalOrderId): array
     {
         /** @var array $data */
         $data = parent::prepareCancelTransactionRequest($paymentInformation, $order);
@@ -139,7 +140,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
                 ]
             );
         }
-        $this->createOrderComment($order->parentOrder->id, $commentText);
+        $this->createOrderComment($originalOrderId, $commentText);
 
         $this->getLogger(__METHOD__)->debug(
             'translation.cancelTransaction',

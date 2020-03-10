@@ -125,11 +125,12 @@ abstract class AbstractPaymentService
      * Make API call to cancel transaction
      *
      * @param PaymentInformation $paymentInformation
-     * @param Order $order
+     * @param Order $order Plenty Order
+     * @param int $originalOrderId Original Plenty Order ID
      *
      * @return array
      */
-    public function cancelTransaction(PaymentInformation $paymentInformation, Order $order): array
+    public function cancelTransaction(PaymentInformation $paymentInformation, Order $order, int $originalOrderId): array
     {
         $data = $this->prepareCancelTransactionRequest($paymentInformation, $order);
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelTransaction', $data);
@@ -153,7 +154,8 @@ abstract class AbstractPaymentService
                 ]
             );
         }
-        $this->createOrderComment($order->parentOrder->id, $commentText);
+
+        $this->createOrderComment($originalOrderId, $commentText);
 
         $this->getLogger(__METHOD__)->debug(
             'translation.cancelTransaction',
@@ -180,6 +182,12 @@ abstract class AbstractPaymentService
         $returnAmount = $order->amounts
             ->where('currency', '=', $paymentInformation->transaction['currency'])
             ->first()->invoiceTotal;
+        
+        $originOrder = $this->orderHelper->getOriginalOrder($order);
+        $paidAmount = $originOrder->payments->sum('amount');
+        if ($returnAmount > $paidAmount && $paidAmount > 0.0) {
+            $returnAmount = $paidAmount;
+        }
 
         $data = [
             'privateKey' => $this->apiKeysHelper->getPrivateKey(),
