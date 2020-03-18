@@ -458,8 +458,8 @@ class PaymentHelper
             /** @var Order $order */
             $order = pluginApp(OrderHelper::class)->findOrderById((int)$heidelpayPaymentInfo->orderId);
             // don't duplicate amount
-            if ($order->paymentStatus !== 'fullyPaid') {
-                $updated = $pluginPaymentService->updatePlentyPaymentPaidAmount((int)$heidelpayPaymentInfo->orderId, (int)($paymentResource['total'] * 100), Payment::STATUS_CAPTURED);
+            if ($order->payments->sum('amount') !== $paymentResource['charged']) {
+                $updated = $pluginPaymentService->updatePlentyPaymentPaidAmount((int)$heidelpayPaymentInfo->orderId, (int)($paymentResource['charged'] * 100), Payment::STATUS_CAPTURED);
             } else {
                 $updated = true;
             }
