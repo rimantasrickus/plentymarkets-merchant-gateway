@@ -321,21 +321,24 @@ abstract class AbstractPaymentService
         $amountTotalDiscount = round($basket->couponDiscount, 2) < 0 ? round($basket->couponDiscount, 2) * -1 : round($basket->couponDiscount, 2);
         $amountTotalVat += $basket->shippingAmount - $basket->shippingAmountNet;
 
-        $this->getLogger(__METHOD__)->error(__FUNCTION__, [
-            'basket' => $basket,
-            'data' => [
-                'amountTotal' => round($basket->basketAmount, 2),
-                'amountTotalDiscount' => $amountTotalDiscount,
-                'amountTotalVat' => round($amountTotalVat, 2),
-                'currencyCode' => $basket->currency,
-                'shippingAmount' => round($basket->shippingAmount, 2),
-                'shippingAmountNet' => round($basket->shippingAmountNet, 2),
-                'shippingVat' => $basket->basketItems[0]->vat,
-                'shippingTitle' => 'Shipping',
-                'discountTitle' => 'Voucher',
-                'basketItems' => $basketItems
+        $this->getLogger(__METHOD__)->debug(
+            'translation.getBasketForAPI',
+            [
+                'basket' => $basket,
+                'data' => [
+                    'amountTotal' => round($basket->basketAmount, 2),
+                    'amountTotalDiscount' => $amountTotalDiscount,
+                    'amountTotalVat' => round($amountTotalVat, 2),
+                    'currencyCode' => $basket->currency,
+                    'shippingAmount' => round($basket->shippingAmount, 2),
+                    'shippingAmountNet' => round($basket->shippingAmountNet, 2),
+                    'shippingVat' => $basket->basketItems[0]->vat,
+                    'shippingTitle' => 'Shipping',
+                    'discountTitle' => 'Voucher',
+                    'basketItems' => $basketItems
+                ]
             ]
-        ]);
+        );
         
         return [
             'amountTotal' => round($basket->basketAmount, 2),

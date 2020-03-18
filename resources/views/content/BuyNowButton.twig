@@ -241,7 +241,7 @@ function heidelpayPayment(placeOrderComponent, paymentInstance) {
                 } else {
                     post = {data, heidelpayBirthDate};
                 }
-                fetch('/{{routeName}}/payment-type', {
+                fetch('/{{routeName}}/payment-type/', {
                     method: 'POST', 
                     body: JSON.stringify(post),
                     headers:{
