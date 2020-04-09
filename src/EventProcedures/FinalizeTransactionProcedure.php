@@ -2,6 +2,7 @@
 
 namespace HeidelpayMGW\EventProcedures;
 
+use HeidelpayMGW\Helpers\OrderHelper;
 use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
@@ -48,14 +49,17 @@ class FinalizeTransactionProcedure
     public function handle(
         EventProceduresTriggered $event,
         PaymentHelper $paymentHelper,
-        PaymentInformationRepository $paymentInformationRepository
+        PaymentInformationRepository $paymentInformationRepository,
+        OrderHelper $orderHelper
     ) {
         /** @var Order $order */
         $order = $event->getOrder();
-        $paymentInformation = $paymentInformationRepository->getByOrderId($order->id);
+        /** @var int $originalOrderId */
+        $originalOrderId = $orderHelper->getOriginalOrderId($order);
+        $paymentInformation = $paymentInformationRepository->getByOrderId($originalOrderId);
         if (empty($paymentInformation)) {
             return;
         }
-        $paymentHelper->executeShipment($order->id, $paymentInformation);
+        $paymentHelper->executeShipment($originalOrderId, $paymentInformation);
     }
 }

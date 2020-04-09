@@ -6,6 +6,8 @@ use HeidelpayMGW\Helpers\Loggable;
 use HeidelpayMGW\Helpers\OrderHelper;
 use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\PaymentHelper;
+use Plenty\Modules\Payment\Models\Payment;
+use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
 use Plenty\Modules\EventProcedures\Events\EventProceduresTriggered;
 
@@ -35,9 +37,12 @@ use Plenty\Modules\EventProcedures\Events\EventProceduresTriggered;
 class RefundTransactionProcedure
 {
     use Loggable;
+
+    private $paymentHelper;
     
-    public function __construct()
+    public function __construct(PaymentHelper $paymentHelper)
     {
+        $this->paymentHelper = $paymentHelper;
     }
 
     /**
@@ -51,7 +56,6 @@ class RefundTransactionProcedure
      */
     public function handle(
         EventProceduresTriggered $event,
-        PaymentHelper $paymentHelper,
         PaymentInformationRepository $paymentInformationRepository,
         OrderHelper $orderHelper
     ) {
@@ -59,11 +63,49 @@ class RefundTransactionProcedure
         $order = $event->getOrder();
         /** @var int $originalOrderId */
         $originalOrderId = $orderHelper->getOriginalOrderId($order);
+        /** @var PaymentInformation $paymentInformation */
         $paymentInformation = $paymentInformationRepository->getByOrderId($originalOrderId);
 
         if (empty($paymentInformation)) {
             return;
         }
-        $paymentHelper->cancelTransaction($paymentInformation, $order, $originalOrderId);
+        
+        $libResponse = $this->paymentHelper->cancelTransaction($paymentInformation, $order, $originalOrderId);
+        if ($libResponse['success']) {
+            $this->addPayments($libResponse['cancellations'], $order, $paymentInformation);
+        }
+    }
+
+    private function addPayments(array $cancellations, Order $order, PaymentInformation $paymentInformation)
+    {
+        $paymentId = $paymentInformation->transaction['paymentId'];
+        foreach ($cancellations as $heidelpayCancellation) {
+            // add payment only for charged transactions
+            if (empty($heidelpayCancellation['chargeId']) || $heidelpayCancellation['chargePending']) {
+                continue;
+            }
+            $paymentHash = $this->paymentHelper->generatePaymentHash(
+                $order->id,
+                $paymentId,
+                $heidelpayCancellation['chargeId'],
+                $heidelpayCancellation['id']
+            );
+            // if order already has this charge, skip
+            if ($this->paymentHelper->hasPayment($order, $paymentHash)) {
+                continue;
+            }
+            $paymentReference = 'paymentId: '.$paymentId;
+            $paymentReference .= ' chargeId: '.$heidelpayCancellation['chargeId'];
+            $paymentReference .= ' cancellationId: '.$heidelpayCancellation['id'];
+            $this->paymentHelper->addPayment(
+                $order->id,
+                $order->methodOfPaymentId,
+                $paymentInformation->transaction['currency'],
+                $paymentReference,
+                $heidelpayCancellation['amount'],
+                $paymentHash,
+                Payment::PAYMENT_TYPE_DEBIT
+            );
+        }
     }
 }

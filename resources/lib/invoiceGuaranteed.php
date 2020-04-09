@@ -122,10 +122,10 @@ if ($basketPlenty['amountTotalDiscount'] > 0) {
 //Metadata
 $metadataPlenty = SdkRestApi::getParam('metadata');
 $metadata = new Metadata();
-$metadata->addMetadata('shopType', $metadataPlenty['shopType']);
-$metadata->addMetadata('shopVersion', $metadataPlenty['shopVersion']);
 $metadata->addMetadata('pluginVersion', $metadataPlenty['pluginVersion']);
 $metadata->addMetadata('pluginType', $metadataPlenty['pluginType']);
+$metadata->setShopVersion($metadataPlenty['shopVersion']);
+$metadata->setShopType($metadataPlenty['shopType']);
 
 $paymentResource = SdkRestApi::getParam('paymentResource');
 try {

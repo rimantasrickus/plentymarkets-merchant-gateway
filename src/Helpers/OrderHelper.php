@@ -55,11 +55,11 @@ class OrderHelper
      *
      * @param int $orderId  Plenty Order ID
      *
-     * @return \Plenty\Modules\Order\Models\Order
+     * @return Order
      *
      * @throws \Throwable
      */
-    public function findOrderById(int $orderId): \Plenty\Modules\Order\Models\Order
+    public function findOrderById(int $orderId): Order
     {
         return $this->authHelper->processUnguarded(
             function () use ($orderId) {
@@ -74,11 +74,11 @@ class OrderHelper
      * @param array $order  Plenty Order model as array
      * @param int $orderId  Plenty Order ID
      *
-     * @return \Plenty\Modules\Order\Models\Order
+     * @return Order
      *
      * @throws \Throwable
      */
-    public function updateOrder(array $order, int $orderId): \Plenty\Modules\Order\Models\Order
+    public function updateOrder(array $order, int $orderId): Order
     {
         return $this->authHelper->processUnguarded(
             function () use ($order, $orderId) {
@@ -92,15 +92,31 @@ class OrderHelper
      *
      * @param string $externalOrderId  Heidelpay Order ID
      *
-     * @return \Plenty\Modules\Order\Models\Order
+     * @return Order
      *
      * @throws \Throwable
      */
-    public function findOrderByExternalOrderId(string $externalOrderId): \Plenty\Modules\Order\Models\Order
+    public function findOrderByExternalOrderId(string $externalOrderId): Order
     {
         return $this->authHelper->processUnguarded(
             function () use ($externalOrderId) {
                 return $this->orderRepository->findOrderByExternalOrderId($externalOrderId);
+            }
+        );
+    }
+
+    /**
+     * Find child Credit note Order from sales Order
+     *
+     * @param Order $order
+     *
+     * @return Order|null
+     */
+    public function findCreditNoteOrderUnauthorized(Order $order)
+    {
+        return $this->authHelper->processUnguarded(
+            function () use ($order) {
+                return $order->childOrders->where('typeId', '=', OrderType::TYPE_CREDIT_NOTE)->first();
             }
         );
     }

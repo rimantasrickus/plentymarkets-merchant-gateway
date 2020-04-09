@@ -103,6 +103,7 @@ class RedirectController extends Controller
         $paymentInformation['transaction']['status'] = $libResponse['status'];
         unset($paymentInformation['transaction']['redirectUrl']);
         $this->sessionHelper->setValue('paymentInformation', $paymentInformation);
+        $this->sessionHelper->setValue('paymentResource', $libResponse);
 
         return $response->redirectTo('place-order');
     }

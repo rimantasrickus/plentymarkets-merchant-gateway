@@ -163,7 +163,6 @@ class PluginServiceProvider extends ServiceProvider
             $this->paymentMethodEvents()
         );
 
-
         //charge authorization event
         $eventProceduresService->registerProcedure(
             'authorizationCharge',
@@ -189,8 +188,8 @@ class PluginServiceProvider extends ServiceProvider
             'finalizeTransaction',
             ProcedureEntry::EVENT_TYPE_ORDER,
             [
-                'de' => 'Refund transaction ('.PluginConfiguration::PLUGIN_NAME.')',
-                'en' => 'Refund transaction ('.PluginConfiguration::PLUGIN_NAME.')'
+                'de' => 'Cancel transaction ('.PluginConfiguration::PLUGIN_NAME.')',
+                'en' => 'Cancel transaction ('.PluginConfiguration::PLUGIN_NAME.')'
             ],
             RefundTransactionProcedure::class . '@handle'
         );
@@ -249,11 +248,15 @@ class PluginServiceProvider extends ServiceProvider
                     if (!$paymentHelper->isHeidelpayMGWMOP($event->getMop())) {
                         return $event->setType(GetPaymentMethodContent::RETURN_TYPE_CONTINUE);
                     }
-                    /** @var array $paymentResource */
-                    $paymentResource = $sessionHelper->getValue('paymentInformation');
-                    if (!empty($paymentResource)) {
-                        $paymentInformationRepository->updateOrderId($paymentResource['paymentType'], (string)$event->getOrderId());
-                        $paymentHelper->handlePayment($paymentResource, $event->getOrderId(), $event->getMop());
+                    /** @var array $paymentInformation */
+                    $paymentInformation = $sessionHelper->getValue('paymentInformation');
+                    if (!empty($paymentInformation)) {
+                        $paymentInformationRepository->updateOrderId($paymentInformation['paymentType'], (string)$event->getOrderId());
+                        /** @var mixed $pluginPaymentService */
+                        $pluginPaymentService = $paymentHelper->getPluginPaymentService($event->getOrderId());
+                        $pluginPaymentService->addExternalOrderId($event->getOrderId(), $sessionHelper->getValue('externalOrderId'));
+                        // use paymentResource from RedirectController@processRedirect
+                        $paymentHelper->handleWebhook($sessionHelper->getValue('paymentResource'));
                     }
                 } catch (\Exception $e) {
                     $logger->exception(
