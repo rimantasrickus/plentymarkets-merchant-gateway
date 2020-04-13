@@ -376,12 +376,15 @@ abstract class AbstractPaymentService
      * Create payment and add to Order
      *
      * @param int $orderId  Plenty Order ID
-     * @param string $referenceNumber  Heidelpay short ID
-     * @param int $mopId  Method of payment ID
+     * @param string $referenceNumber  Heidelpay payment ID and charge ID and cancellation ID
+     * @param int $mopId  Plentymarkets method of payment ID
+     * @param float $amount  Payment amount
+     * @param string $currency  Payment currency
+     * @param string $paymentHash Plentymarkets payment hash
+     * @param string $paymentType  Plentymarkets payment type
      *
      * @return Payment|null  Returns Plenty payment if success
      */
-    //TODO: fix comment
     public function addPaymentToOrder(
         int $orderId,
         string $referenceNumber,
@@ -485,13 +488,15 @@ abstract class AbstractPaymentService
     /**
      * Create Plentymarkets payment
      *
-     * @param int $mopId  Method of payment ID
-     * @param string $paymentReference  heidelpay payment reference
-     * @param Order $order  Plenty Order
+     * @param int $mopId  Plentymarkets method of payment ID
+     * @param string $referenceNumber  Heidelpay payment ID and charge ID and cancellation ID
+     * @param float $amount  Payment amount
+     * @param string $currency  Payment currency
+     * @param string $paymentHash Plentymarkets payment hash
+     * @param string $paymentType  Plentymarkets payment type
      *
      * @return Payment|null  Returns Plenty payment if success
      */
-    //TODO: fix comment
     public function createPlentyPayment(
         int $mopId,
         string $paymentReference,
@@ -537,32 +542,6 @@ abstract class AbstractPaymentService
         }
         
         return null;
-    }
-
-    /**
-     * Get payment status to assign to Plentymarkets payment
-     *
-     * @param Order $order  Plenty Order
-     * @param float $amount  Payment amount
-     * @param string $paymentCurrency  Payment currency
-     *
-     * @return int  Plenty Payment status
-     */
-    //TODO: remove this?
-    private function getPaymentStatus(Order $order, float $amount, string $paymentCurrency): int
-    {
-        /** @var OrderAmount $orderAmount */
-        $orderAmount = $order->amounts->where('currency', '=', $paymentCurrency)->first();
-        /** @var int $paymentStatus */
-        $paymentStatus = Payment::STATUS_AWAITING_APPROVAL;
-        if ($orderAmount->invoiceTotal === $amount && $amount !== 0.00) {
-            $paymentStatus = Payment::STATUS_CAPTURED;
-        }
-        if ($orderAmount->invoiceTotal > $amount && $amount !== 0.00) {
-            $paymentStatus = Payment::STATUS_PARTIALLY_CAPTURED;
-        }
-
-        return $paymentStatus;
     }
 
     /**
