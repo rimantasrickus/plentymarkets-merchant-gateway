@@ -76,26 +76,27 @@ class WebhooksController extends Controller
     {
         /** @var array $hook */
         $hook = json_decode($request->getContent(), true);
-        
-        $this->getLogger(__METHOD__)->debug(
-            'translation.incomingWebhook',
-            [
-                'hook' => $hook,
-            ]
-        );
 
         if ($hook['publicKey'] !== $this->apiKeysHelper->getPublicKey()) {
             return $response->forceStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        /** @var array $libResponse */
-        $libResponse = $this->libContract->call(PluginConfiguration::PLUGIN_NAME.'::webhookResource', [
+        /** @var array $paymentResource */
+        $paymentResource = $this->libContract->call(PluginConfiguration::PLUGIN_NAME.'::webhookResource', [
             'privateKey' => $this->apiKeysHelper->getPrivateKey(),
             'jsonRequest' => $request->getContent()
         ]);
 
+        $this->getLogger(__METHOD__)->debug(
+            'translation.incomingWebhook',
+            [
+                'hook' => $hook,
+                'paymentResource' => empty($paymentResource) ? null : $paymentResource,
+            ]
+        );
+
         try {
-            if (!$this->paymentHelper->handleWebhook($hook, $libResponse)) {
+            if (!$this->paymentHelper->handleWebhook($paymentResource)) {
                 return $response->forceStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         } catch (\Exception $e) {

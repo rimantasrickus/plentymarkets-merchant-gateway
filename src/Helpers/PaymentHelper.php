@@ -55,10 +55,10 @@ class PaymentHelper
     use Loggable;
 
     // payment events
-    const PAYMENT_COMPLETED = 'payment.completed';
-    const PAYMENT_CANCELED = 'payment.canceled';
-    const PAYMENT_PARTLY = 'payment.partly';
-    const PAYMENT_PENDING = 'payment.pending';
+    const PAYMENT_COMPLETED = 'completed';
+    const PAYMENT_CANCELED = 'canceled';
+    const PAYMENT_PARTLY = 'partly';
+    const PAYMENT_PENDING = 'pending';
 
     //Canceled order status
     const ORDER_CANCELED = 8.0;
@@ -432,21 +432,20 @@ class PaymentHelper
     /**
      * Handle Heidelpay webhook event
      *
-     * @param array $hook  Heidelpay webhook information array
-     * @param array $libResponse  Heidelpay payment information from SDK
+     * @param array $paymentResource  Heidelpay payment information from SDK
      *
      * @return bool
      */
-    public function handleWebhook(array $hook, array $libResponse): bool
+    public function handleWebhook(array $paymentResource): bool
     {
-        if ($hook['event'] === self::PAYMENT_PENDING) {
+        if (empty($paymentResource['paymentResourceId'])) {
             return true;
         }
-        if (empty($libResponse['paymentResourceId'])) {
+        if ($paymentResource['stateName'] === self::PAYMENT_PENDING) {
             return true;
         }
         /** @var PaymentInformation $heidelpayPaymentInfo */
-        $heidelpayPaymentInfo = $this->heidelpayPaymentInformationRepo->getByResourceId($libResponse['paymentResourceId']);
+        $heidelpayPaymentInfo = $this->heidelpayPaymentInformationRepo->getByResourceId($paymentResource['paymentResourceId']);
         if (empty($heidelpayPaymentInfo) || empty($heidelpayPaymentInfo->orderId)) {
             return false;
         }
@@ -455,22 +454,22 @@ class PaymentHelper
         /** @var mixed $pluginPaymentService */
         $pluginPaymentService = $this->getPluginPaymentService((int)$heidelpayPaymentInfo->orderId);
         // payment completed logic
-        if ($hook['event'] === self::PAYMENT_COMPLETED) {
+        if ($paymentResource['stateName'] === self::PAYMENT_COMPLETED) {
             /** @var Order $order */
             $order = pluginApp(OrderHelper::class)->findOrderById((int)$heidelpayPaymentInfo->orderId);
             // don't duplicate amount
-            if ($order->paymentStatus !== 'fullyPaid') {
-                $updated = $pluginPaymentService->updatePlentyPaymentPaidAmount((int)$heidelpayPaymentInfo->orderId, (int)($libResponse['total'] * 100), Payment::STATUS_CAPTURED);
+            if ($order->payments->sum('amount') !== $paymentResource['charged']) {
+                $updated = $pluginPaymentService->updatePlentyPaymentPaidAmount((int)$heidelpayPaymentInfo->orderId, (int)($paymentResource['charged'] * 100), Payment::STATUS_CAPTURED);
             } else {
                 $updated = true;
             }
         }
         // payment partially completed logic
-        if ($hook['event'] === self::PAYMENT_PARTLY) {
-            $updated = $pluginPaymentService->updatePlentyPaymentPaidAmount((int)$heidelpayPaymentInfo->orderId, (int)($libResponse['charged'] * 100), Payment::STATUS_PARTIALLY_CAPTURED);
+        if ($paymentResource['stateName'] === self::PAYMENT_PARTLY) {
+            $updated = $pluginPaymentService->updatePlentyPaymentPaidAmount((int)$heidelpayPaymentInfo->orderId, (int)($paymentResource['charged'] * 100), Payment::STATUS_PARTIALLY_CAPTURED);
         }
         // payment canceled logic
-        if ($hook['event'] === self::PAYMENT_CANCELED) {
+        if ($paymentResource['stateName'] === self::PAYMENT_CANCELED) {
             $updated = $pluginPaymentService->cancelPlentyPayment($heidelpayPaymentInfo->externalOrderId);
             try {
                 /** @var Order $order */
@@ -491,8 +490,7 @@ class PaymentHelper
         $this->getLogger(__METHOD__)->debug(
             'translation.paymentEvent',
             [
-                'hook' => $hook,
-                'libResponse' => $libResponse,
+                'paymentResource' => $paymentResource,
                 'heidelpayPaymentInfo' => $heidelpayPaymentInfo,
                 'updated' => $updated
             ]
