@@ -664,7 +664,7 @@ abstract class AbstractPaymentService
         
         if (!$libResponse['success']) {
             $this->getLogger(__METHOD__)->error(
-                PluginConfiguration::PLUGIN_NAME.'translation.errorShip',
+                PluginConfiguration::PLUGIN_NAME.'::translation.errorShip',
                 [
                     'error' => $libResponse
                 ]
