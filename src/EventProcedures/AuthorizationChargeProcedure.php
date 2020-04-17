@@ -63,6 +63,6 @@ class AuthorizationChargeProcedure
         }
         
         $paymentService = $paymentHelper->getPluginPaymentService($originalOrder->id, (int)$originalOrder->methodOfPaymentId);
-        $paymentService->chargeAuthorization($paymentInformation, $originalOrder);
+        $paymentService->chargeAuthorization($paymentInformation, $order);
     }
 }
