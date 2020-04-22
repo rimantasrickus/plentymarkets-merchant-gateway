@@ -94,9 +94,9 @@ class RefundTransactionProcedure
             if ($this->paymentHelper->hasPayment($order, $paymentHash)) {
                 continue;
             }
-            $paymentReference = 'paymentId: '.$paymentId;
-            $paymentReference .= ' chargeId: '.$heidelpayCancellation['chargeId'];
-            $paymentReference .= ' cancellationId: '.$heidelpayCancellation['id'];
+            $paymentReference = 'cancellation: '.$heidelpayCancellation['shortId'];
+            $paymentReference .= ' charge: '.$heidelpayCancellation['chargeShortId'];
+            $paymentReference .= ' paymentId: '.$paymentId;
             $this->paymentHelper->addPayment(
                 $order->id,
                 $order->methodOfPaymentId,

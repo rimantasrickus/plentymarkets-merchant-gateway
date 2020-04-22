@@ -15,25 +15,31 @@ try {
     if ($resource instanceof Payment) {
         $charges = array();
         foreach ($resource->getCharges() as $charge) {
+            $charge = $resource->getCharge($charge->getId());
             $charges[] = [
                 'amount' => $charge->getAmount(),
                 'id' => $charge->getId(),
-                'isPending' => $resource->getCharge($charge->getId())->isPending()
+                'isPending' => $charge->isPending(),
+                'shortId' => $charge->getShortId(),
             ];
         }
         $cancellations = array();
         foreach ($resource->getCancellations() as $key => $cancellation) {
+            $cancellation = $resource->getCancellation($cancellation->getId());
             $cancellations[$key] = [
                 'amount' => $cancellation->getAmount(),
                 'id' => $cancellation->getId(),
+                'shortId' => $cancellation->getShortId(),
             ];
             $parentResource = $cancellation->getParentResource();
             if ($parentResource instanceof Charge) {
                 $cancellations[$key]['chargeId'] = $parentResource->getId();
                 $cancellations[$key]['chargePending'] = $parentResource->isPending();
+                $cancellations[$key]['chargeShortId'] = $parentResource->getShortId();
             }
             if ($parentResource instanceof Authorization) {
                 $cancellations[$key]['authId'] = $parentResource->getId();
+                $cancellations[$key]['authShortId'] = $parentResource->getShortId();
             }
         }
         $data = [

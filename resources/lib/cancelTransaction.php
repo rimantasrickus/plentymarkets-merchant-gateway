@@ -13,18 +13,21 @@ try {
     $cancelCharges = $payment->cancelAmount(SdkRestApi::getParam('amount'), SdkRestApi::getParam('reason'));
     $cancellations = array();
     foreach ($cancelCharges as $key => $cancellation) {
-        // $cancellation = $cancellation->expose();
+        $cancellation = $payment->getCancellation($cancellation->getId());
         $cancellations[$key] = [
             'amount' => $cancellation->getAmount(),
             'id' => $cancellation->getId(),
+            'shortId' => $cancellation->getShortId(),
         ];
         $parentResource = $cancellation->getParentResource();
         if ($parentResource instanceof Charge) {
             $cancellations[$key]['chargeId'] = $parentResource->getId();
-            $cancellations[$key]['chargePending'] = $payment->getCharge($parentResource->getId())->isPending();
+            $cancellations[$key]['chargePending'] = $parentResource->isPending();
+            $cancellations[$key]['chargeShortId'] = $parentResource->getShortId();
         }
         if ($parentResource instanceof Authorization) {
             $cancellations[$key]['authId'] = $parentResource->getId();
+            $cancellations[$key]['authShortId'] = $parentResource->getShortId();
         }
     }
     

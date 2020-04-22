@@ -625,7 +625,7 @@ class PaymentHelper
             if ($this->hasPayment($order, $paymentHash) || $heidelpayCharge['isPending']) {
                 continue;
             }
-            $paymentReference = 'paymentId: '.$paymentResource['paymentId'].' chargeId: '.$heidelpayCharge['id'];
+            $paymentReference = 'charge: '.$heidelpayCharge['shortId'].' paymentId: '.$paymentResource['paymentId'];
             $this->addPayment(
                 $order->id,
                 $order->methodOfPaymentId,
@@ -660,9 +660,9 @@ class PaymentHelper
             if ($this->hasPayment($order, $paymentHash)) {
                 continue;
             }
-            $paymentReference = 'paymentId: '.$paymentResource['paymentId'];
-            $paymentReference .= ' chargeId: '.$heidelpayCancellation['chargeId'];
-            $paymentReference .= ' cancellationId: '.$heidelpayCancellation['id'];
+            $paymentReference = 'cancellation: '.$heidelpayCancellation['shortId'];
+            $paymentReference .= ' charge: '.$heidelpayCancellation['chargeShortId'];
+            $paymentReference .= ' paymentId: '.$paymentResource['paymentId'];
             $this->addPayment(
                 $order->id,
                 $order->methodOfPaymentId,
