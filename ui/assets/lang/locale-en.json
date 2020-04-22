@@ -7,7 +7,7 @@
 	"privateKeyTooltip": "Private key",
 	"invoiceSettings": "Invoice settings",
 	"paymentActive": " Active",
-	"displayName": "Display name",
+	"displayName": "Displayed name",
 	"minTotal": "Min. total (Eur)",
 	"maxTotal": "Max. total (Eur)",
 	"iconURL": "URL to payment icon",

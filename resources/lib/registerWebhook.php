@@ -17,8 +17,6 @@ try {
     $webhook = $heidelpay->registerMultipleWebhooks(
         SdkRestApi::getParam('webhookUrl'),
         [
-            WebhookEvents::CHARGE,
-            WebhookEvents::CHARGEBACK,
             WebhookEvents::PAYMENT_PENDING,
             WebhookEvents::PAYMENT_COMPLETED,
             WebhookEvents::PAYMENT_CANCELED,

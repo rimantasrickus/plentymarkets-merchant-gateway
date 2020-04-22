@@ -2,6 +2,7 @@
 
 namespace HeidelpayMGW\EventProcedures;
 
+use HeidelpayMGW\Helpers\OrderHelper;
 use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
@@ -48,12 +49,20 @@ class AuthorizationChargeProcedure
     public function handle(
         EventProceduresTriggered $event,
         PaymentHelper $paymentHelper,
-        PaymentInformationRepository $paymentInformationRepository
+        PaymentInformationRepository $paymentInformationRepository,
+        OrderHelper $orderHelper
     ) {
         /** @var Order $order */
         $order = $event->getOrder();
-        $paymentService = $paymentHelper->getPluginPaymentService($order->id, (int)$order->methodOfPaymentId);
-        $paymentInformation = $paymentInformationRepository->getByOrderId($order->id);
+        /** @var Order $originalOrder */
+        $originalOrder = $orderHelper->getOriginalOrder($order);
+        
+        $paymentInformation = $paymentInformationRepository->getByOrderId($originalOrder->id);
+        if (empty($paymentInformation)) {
+            return;
+        }
+        
+        $paymentService = $paymentHelper->getPluginPaymentService($originalOrder->id, (int)$originalOrder->methodOfPaymentId);
         $paymentService->chargeAuthorization($paymentInformation, $order);
     }
 }

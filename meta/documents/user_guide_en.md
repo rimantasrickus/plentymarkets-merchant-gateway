@@ -122,7 +122,7 @@ To create Delivery note document for the Order, navigate to `Edit orders` page. 
 > If for some reason You are not able to create Delivery note document, You need to check Your document template. Go to `System`->`Client`->`{your shop}`->`Locations`->`Deutschland (standard)`->`Documents`->`Delivery note` to do that.
 
 ### Finalize invoice payment
-> This section is relevant for `Invoice guaranteed` and `Invoice factoring` payment methods
+> This section is relevant for `Invoice guaranteed` payment methods
 
 In order to start the insurance of a payment you need to trigger a finalize transaction. To do this there are two possibilities:
 * You can do this in your hIP account (heidelpay Intelligence Platform)
@@ -131,12 +131,16 @@ In order to start the insurance of a payment you need to trigger a finalize tran
 * The finalize starts the insurance period in which the customer has to pay the total amount of the order.
 * The insurance period is determined within your contract with heidelpay.
 * As soon as the total amount is paid by the customer a receipt transaction (REC) appears within the hIP and is sent to the pushUrl of your shop.
-* The plugin will then update payment linked to the corresponding order.
+* The plugin will then update payments of the corresponding order.
 
 ### Cancel payment
-To cancel payment You will need to create event procedure (Refund transaction (HeidelpayMGW)) in shop backend (see [Creating event procedure](#creating-event-procedure)).
+To cancel payment You will need to create event procedure (Cancel transaction (HeidelpayMGW)) in shop backend (see [Creating event procedure](#creating-event-procedure)).
 > Recommendation is to create event procedure when Credit node document is created
 Usual workflow would be to navigate to original Order. In the `Overview` tab You will see list box named `Credit note...`. From list select `from individual items` or `from all positions`. In the opened popup select items You want to refund. Press save button. Plentymarkets will create new Credit note Order. Navigate to `Receipts` tab from the `Create receipt` list select `Credit note`. Adjust settings if needed and press `Save`. If event procedure is configured to trigger when Credit note is generated then plugin will send refund amount to heidelpay API.
+
+> If Credit note Order will be partly cancellation of original sales Order, plugin will subtract shipping costs from Credit note Order total amount when sending data to HeidelpayMGW.
+
+> If Credit note Order will be full cancellation of original sales Order, plugin will send total Credit note Order amount to HeidelpayMGW. If You would like to not include shipping costs in full cancellation then You can open Credit note Order, navigate to `Settings` tab and remove shipping costs by hand. If You want Credit note Orders to never have shipping costs included from original Order, You can navigate to `Setup`->`Orders`->`Settings` and change `Include shipping costs in credit note` value to `No`
 
 ### Creating event procedure
 In order to add new event procedure You will need to take these steps:
