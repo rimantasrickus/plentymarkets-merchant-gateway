@@ -23,9 +23,11 @@ try {
                 'shortId' => $charge->getShortId(),
             ];
         }
+        $resourceService = $heidelpay->getResourceService();
         $cancellations = array();
+        /** @var Cancellation $cancellation */
         foreach ($resource->getCancellations() as $key => $cancellation) {
-            $cancellation = $resource->getCancellation($cancellation->getId());
+            $cancellation = $resourceService->fetchResource($cancellation);
             $cancellations[$key] = [
                 'amount' => $cancellation->getAmount(),
                 'id' => $cancellation->getId(),

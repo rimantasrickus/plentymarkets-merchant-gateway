@@ -11,14 +11,16 @@ try {
     
     $payment = $heidelpay->fetchPayment(SdkRestApi::getParam('paymentId'));
     $cancelCharges = $payment->cancelAmount(SdkRestApi::getParam('amount'), SdkRestApi::getParam('reason'));
+    $resourceService = $heidelpay->getResourceService();
     $cancellations = array();
+    /** @var Cancellation $cancellation */
     foreach ($cancelCharges as $key => $cancellation) {
-        $cancellation = $payment->getCancellation($cancellation->getId());
+        $cancellation = $resourceService->fetchResource($cancellation);
         $cancellations[$key] = [
-            'amount' => $cancellation->getAmount(),
-            'id' => $cancellation->getId(),
-            'shortId' => $cancellation->getShortId(),
-        ];
+                'amount' => $cancellation->getAmount(),
+                'id' => $cancellation->getId(),
+                'shortId' => $cancellation->getShortId(),
+            ];
         $parentResource = $cancellation->getParentResource();
         if ($parentResource instanceof Charge) {
             $cancellations[$key]['chargeId'] = $parentResource->getId();
