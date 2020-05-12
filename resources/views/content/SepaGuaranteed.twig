@@ -2,14 +2,14 @@
     <div role="document" class="modal-dialog">
         <div class="modal-content" id="heidelpaySepaGuaranteedModalContent">
             <div class="modal-header">
+                <h4 class="modal-title">{{ trans("HeidelpayMGW::Frontend.sepaGuaranteedModalTitle") }}</h4>
                 <button type="button" aria-label="Close" class="close" onclick="closeHeidelpaySepaGuaranteedModal(true);">
                     <span aria-hidden="true">×</span>
                 </button> 
-                <h4 class="modal-title">{{ trans("HeidelpayMGW::Frontend.sepaGuaranteedModalTitle") }}</h4>
             </div> 
             <div class="modal-body" id="heidelpaySepaGuaranteedModalBody">
                 <div id="heidelpay-sepa-form" class="heidelpayUI form" novalidate>
-                    <div class="field" id="sepaDirectDebitMandateText">
+                    <div class="field" id="sepaGuaranteedDirectDebitMandateText">
                         <h3>{{ trans("HeidelpayMGW::Frontend.sepaDirectDebitMandateTitle") }}</h3><br />
                         {{ trans("HeidelpayMGW::Frontend.sepaDirectDebitMandateText1") }}<br /><br />
                         {{ trans("HeidelpayMGW::Frontend.sepaDirectDebitMandateText2") }}<br /><br />
@@ -35,7 +35,7 @@
 </div>
 
 <script type="text/javascript">
-document.getElementById('sepaDirectDebitMandateText').innerHTML = document.getElementById('sepaDirectDebitMandateText').innerHTML.replace(/\{NAME OF MERCHANT\}/g, '<b>{{companyName}}<\/b>');
+document.getElementById('sepaGuaranteedDirectDebitMandateText').innerHTML = document.getElementById('sepaGuaranteedDirectDebitMandateText').innerHTML.replace(/\{NAME OF MERCHANT\}/g, '<b>{{companyName}}<\/b>');
 
 function closeHeidelpaySepaGuaranteedModal(selfClose) {
     if (selfClose) {
