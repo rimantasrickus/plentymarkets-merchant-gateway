@@ -13,7 +13,7 @@ try {
         $charges[] = [
             'amount' => $charge->getAmount(),
             'id' => $charge->getId(),
-            'isPending' => $charge->isPending(),
+            'isSuccess' => $charge->isSuccess(),
             'shortId' => $charge->getShortId(),
         ];
     }
@@ -30,7 +30,7 @@ try {
         $parentResource = $cancellation->getParentResource();
         if ($parentResource instanceof Charge) {
             $cancellations[$key]['chargeId'] = $parentResource->getId();
-            $cancellations[$key]['chargePending'] = $parentResource->isPending();
+            $cancellations[$key]['chargeSuccess'] = $parentResource->isSuccess();
             $cancellations[$key]['chargeShortId'] = $parentResource->getShortId();
         }
         if ($parentResource instanceof Authorization) {
