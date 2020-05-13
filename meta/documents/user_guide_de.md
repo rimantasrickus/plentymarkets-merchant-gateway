@@ -43,9 +43,6 @@ Für einige Zahlungsarten ist das `Geburtsdatum` erforderlich. Um es zu aktivier
 
 Alternativ, wenn die Adresse kein Geburtsdatum hat, erscheint ein Pop-up-Feld mit dem Feld "Geburtsdatum".
 
-### Rückgabegründe
-Die Zahlungsmethode des Rechnungsfactoring muss einen Rückgabegrund haben, wenn die Bestellung storniert wird. Um einen Rückgabegrund in Plentymarkets hinzuzufügen, navigieren Sie zu `System`->`Bestellungen`->`Bestellarten`->`Rückgabe`. Hier können Sie Rückgabegründe hinzufügen. Letztere können Sie bei der Erstellung von Rückgabeaufträgen auswählen. 
-
 ## Plugin-Einstellungen
 ####### Öffentlicher Schlüssel
 Zum Erstellen von Zahlungsarten durch den Browser ist ein öffentlicher Schlüssel erforderlich
@@ -80,21 +77,6 @@ Voraussetzungen für die url-Zeichenfolge:
 * sie muss aus dem Internet erreichbar sein
 * es muss mit 'http://' oder 'https://' beginnen
 * es muss mit '.jpg', '.png' oder '.gif' enden
-
-###### Rechnungsfakturierung statt garantierter Rechnung verwenden
-Wenn Sie `Rechnungsgarantie` verwenden, können Sie die Zahlung ändern und stattdessen die Zahlungsmethode `Rechnungsfakturierung` verwenden.
-> Im Wesentlichen ist das `Invoice Factoring` dasselbe wie `Invoice Guaranteed`, mit dem einzigen Unterschied, dass es sich um die Versicherungsgesellschaft handelt. Statt einer Versicherungsgesellschaft im Hintergrund kümmert sich ein Drittunternehmen um die Rechnung und garantiert so Ihre Zahlung.
-####### Rechnung Factoring Zahlungsstornierungsgründe
-Wie man Rückgabegründe in Plentymarkets hinzufügt, erfahren Sie im Abschnitt [Rückgabegründe](#Rückgabegründe).
-
-###### Grund für die Stornierung
-Karte Plentymarkets Artikel Rückgabegrund von der Liste an heidelpay `CANCEL`
-
-###### Grund für RETURN
-Karte Plentymarkets Artikel Rückgabegrund aus der Liste an heidelpay `RETURN`
-
-###### Grund für CREDIT
-Karte Plentymarkets Artikel Rückgabegrund von der Liste an heidelpay `CREDIT`
 
 ####### Kartenzahlungsmethode
 Kartenzahlungen können auf zwei verschiedene Arten verwendet werden:
