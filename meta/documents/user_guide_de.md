@@ -116,7 +116,7 @@ Der übliche Arbeitsablauf würde darin bestehen, zur ursprünglichen Bestellung
 
 ### Ereignisprozedur erstellen
 Um eine neue Ereignisprozedur hinzuzufügen, müssen Sie diese Schritte durchführen:
-* Gehen Sie zu `System`->`Bestellungen`->`Veranstaltungen`
+* Gehen Sie zu `Einrichtung`->`Aufträge`->`Ereignisse`
 * Drücken Sie unten auf die Schaltfläche Ereignisprozedur hinzufügen
 * Benennen Sie in der Dialogbox Ihre Konfiguration und wählen Sie, wann dieses Ereignis ausgelöst werden soll, z.B. ``Auftragsänderung`->`Statusänderung`
 * Drücken Sie Speichern
