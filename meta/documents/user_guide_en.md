@@ -32,16 +32,6 @@ This module is based on the heidelpay php-sdk (https://github.com/heidelpay/heid
 + Select `Default container links` tab. Select all elements in the list and save configuration.
 + For the plugin configuration please go to `System`->`Orders`->`Payment`->`Plugins`.
 
-### Date of birth
-For some payment types `Date of birth` is necessary. To enable it:
- + Select `Ceres` plugin in "Plugin overview"
- + Under `Configuration` menu section select `Checkout and My account`
- + If not activated switch `Toggle deprecated entries` at the top
- + In the `SHOW INVOICE ADDRESS FIELDS IN ADDRESS FORM` list enable `Date of birth`
- + In the `ENABLE INVOICE ADDRESS FIELD VALIDATION` list enable  `Date of birth`
-
-Alternatively if address will not have `Date of birth` pop-up box with `Date of birth` field will appear.
-
 ### Return reasons
 Invoice factoring payment method needs to have return reason when Order is canceled. To add return reason in Plentymarkets navigate to `System`->`Orders`->`Order types`->`Return`. Here added return reasons, You can select latter when creating return Order. 
 

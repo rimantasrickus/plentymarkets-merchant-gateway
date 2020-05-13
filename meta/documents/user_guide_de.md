@@ -33,16 +33,6 @@ Dieses Modul basiert auf dem heidelpay php-sdk (https://github.com/heidelpay/hei
 + Wählen Sie die Registerkarte `Standard-Containerlinks`. Wählen Sie alle Elemente in der Liste aus und speichern Sie die Konfiguration.
 + Für die Plugin-Konfiguration gehen Sie bitte zu `System`->`Bestellungen`->`Bezahlung`->`Plugins`.
 
-### Geburtsdatum
-Für einige Zahlungsarten ist das `Geburtsdatum` erforderlich. Um es zu aktivieren:
- + Wählen Sie das `Ceres`-Plugin in der "Plugin-Übersicht".
- + Wählen Sie unter dem Menüabschnitt "Konfiguration" die Option "Auschecken und mein Konto".
- + Falls nicht aktiviert, Schalter `Veraltete Einträge umschalten` ganz oben
- + In der Liste `RECHNUNGSADRESSBEREICHE IM ADRESSEFORMULAR ANZEIGEN` aktivieren Sie `Geburtsdatum`.
- + In der Liste `ENABLE INVOICE ADDRESS FIELD VALIDATION` aktivieren Sie `Geburtsdatum`.
-
-Alternativ, wenn die Adresse kein Geburtsdatum hat, erscheint ein Pop-up-Feld mit dem Feld "Geburtsdatum".
-
 ## Plugin-Einstellungen
 ####### Öffentlicher Schlüssel
 Zum Erstellen von Zahlungsarten durch den Browser ist ein öffentlicher Schlüssel erforderlich
