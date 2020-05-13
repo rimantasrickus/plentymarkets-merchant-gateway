@@ -80,22 +80,6 @@ Prerequisites for the url string:
 * it must start with 'http://' or 'https://'
 * it must end with '.jpg', '.png' or '.gif'
 
-##### Use Invoice Factoring instead of Invoice Guaranteed
-When using `Invoice Guaranteed` You can change payment to use `Invoice Factoring` payment method instead.\
-> In essence, Invoice factoring is the same as Invoice guaranteed with the only difference being the insurance company. Instead of an insurance company in the background a third party business takes care of the invoice, thus guaranteeing your payment.
-
-##### Invoice Factoring payment cancel reasons
-How to add return reasons in Plentymarkets refer to section [Return reasons](#return-reasons).
-
-##### Reason for CANCEL
-Map Plentymarkets item return reason from the list to heidelpay `CANCEL`
-
-##### Reason for RETURN
-Map Plentymarkets item return reason from the list to heidelpay `RETURN`
-
-##### Reason for CREDIT
-Map Plentymarkets item return reason from the list to heidelpay `CREDIT`
-
 ##### Card payment method
 Card payments can be used in two different ways:
 * Direct charge: the bank account of the customer is charged directly.
