@@ -36,16 +36,16 @@ class PaymentInformation extends Model
     /** @var string $orderId  Plenty Order ID */
     public $orderId = '';
 
-    /** @var string $externalOrderId  Heidelpay Order ID */
+    /** @var string $externalOrderId  heidelpay Order ID */
     public $externalOrderId = '';
 
-    /** @var string $paymentMethod  Heidelpay payment method */
+    /** @var string $paymentMethod  heidelpay payment method */
     public $paymentMethod = '';
 
-    /** @var string $paymentType  Heidelpay payment type ID */
+    /** @var string $paymentType  heidelpay payment type ID */
     public $paymentType = '';
 
-    /** @var array $transaction  Heidelpay payment transaction information like payment ID, amount, redirect URL and so on */
+    /** @var array $transaction  heidelpay payment transaction information like payment ID, amount, redirect URL and so on */
     public $transaction = array();
 
     /**

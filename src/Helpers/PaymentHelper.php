@@ -266,7 +266,7 @@ class PaymentHelper
     /**
      * Select payment service, make charge call and handle result
      *
-     * @param array $heidelpayPaymentResource  Heidelpay payment data from JS class in frontend
+     * @param array $heidelpayPaymentResource  heidelpay payment data from JS class in frontend
      * @param int $mopId  Plenty payment method ID
      *
      * @return array GetPaymentMethodContent event's value and type
@@ -385,7 +385,7 @@ class PaymentHelper
     }
 
     /**
-     * Add Plenty payment from Heidelpay payment information
+     * Add Plenty payment from heidelpay payment information
      *
      * @param integer $orderId
      * @param integer $mopId
@@ -441,9 +441,9 @@ class PaymentHelper
     }
 
     /**
-     * Handle Heidelpay webhook event
+     * Handle heidelpay webhook event
      *
-     * @param array $paymentResource  Heidelpay payment information from SDK
+     * @param array $paymentResource  heidelpay payment information from SDK
      *
      * @return bool
      */

@@ -92,7 +92,7 @@ class BasePaymentMethod extends PaymentMethodService
     }
 
     /**
-     * Get additional costs for Heidelpay
+     * Get additional costs for heidelpay
      *
      * @return float
      */

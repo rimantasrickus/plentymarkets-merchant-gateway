@@ -72,7 +72,7 @@ class PluginServiceProvider extends ServiceProvider
     {
         $this->getApplication()->register(PluginRouteServiceProvider::class);
     }
-    
+
     /**
      * Everything that needs constant attention goes here. Like system events and so on.
      *
@@ -80,7 +80,8 @@ class PluginServiceProvider extends ServiceProvider
      * @param PaymentMethodContainer $payContainer  Plentymarkets PaymentMethodContainer
      * @param SessionHelper $sessionHelper  Helper class to save information to session
      * @param Dispatcher $eventDispatcher  Plentymarkets event Dispatcher
-     * @param PaymentInformationRepository $paymentInformationRepository  Heidelpay payment information repository
+     * @param PaymentInformationRepository $paymentInformationRepository  heidelpay payment information repository
+     * @param EventProceduresService $eventProceduresService
      *
      * @return void
      */

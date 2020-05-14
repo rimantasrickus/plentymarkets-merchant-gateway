@@ -90,7 +90,7 @@ class OrderHelper
     /**
      * Return Order by external Order ID
      *
-     * @param string $externalOrderId  Heidelpay Order ID
+     * @param string $externalOrderId  heidelpay Order ID
      *
      * @return Order
      *

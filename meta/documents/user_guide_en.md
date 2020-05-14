@@ -122,7 +122,7 @@ In order to add new event procedure You will need to take these steps:
 * At the bottom press button Add event procedure
 * In dialog box name your configuration and select when this event should be fired, for example `Order change`->`Status change`
 * Press Save
-* When modal closes, tick `Active` checkbox and in `Procedures` section add Procedure that should handle fired event. In this case `Authorization charge (Heidelpay)`
+* When modal closes, tick `Active` checkbox and in `Procedures` section add Procedure that should handle fired event. In this case `Authorization charge (heidelpay)`
 * After that save your configuration by pressing `Save` button at the top
 
 ### Direct charge

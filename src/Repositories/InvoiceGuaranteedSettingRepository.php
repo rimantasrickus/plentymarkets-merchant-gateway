@@ -38,7 +38,7 @@ class InvoiceGuaranteedSettingRepository extends BaseSettingRepository
     }
 
     /**
-     * Get Heidelpay return reason
+     * Get heidelpay return reason
      *
      * @param string $returnId  Plenty return reason ID
      *

@@ -32,13 +32,13 @@ class PluginSetting extends Model
     /** @var int $id Model ID in the database. We don't need autoincrement so we set ID always to 1 */
     public $id = 1;
 
-    /** @var string $publicKey Heidelpay API key */
+    /** @var string $publicKey heidelpay API key */
     public $publicKey = '';
 
-    /** @var string $privateKey Heidelpay API key */
+    /** @var string $privateKey heidelpay API key */
     public $privateKey = '';
 
-    /** @var string $apiMode Heidelpay API mode */
+    /** @var string $apiMode heidelpay API mode */
     public $apiMode = '';
 
     /**

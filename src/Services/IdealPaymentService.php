@@ -124,7 +124,7 @@ class IdealPaymentService extends AbstractPaymentService
     /**
      * Make API call ship to finalize transaction
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param integer $orderId  Plenty Order ID
      *
      * @return array

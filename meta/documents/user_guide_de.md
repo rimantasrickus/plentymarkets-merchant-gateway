@@ -38,7 +38,7 @@ Dieses Modul basiert auf dem heidelpay php-sdk (https://github.com/heidelpay/hei
 Zum Erstellen von Zahlungsarten durch den Browser ist ein öffentlicher Schlüssel erforderlich
 
 ####### Privater Schlüssel
-Öffentlicher Schlüssel ist für die Authentifizierung auf dem Heidelpay-Server erforderlich
+Öffentlicher Schlüssel ist für die Authentifizierung auf dem heidelpay-Server erforderlich
 
 ###### Api-Modus
 * Wählen Sie den Parameter *'Sandbox'*, um die Verbindung zur Testumgebung zu ermöglichen. In diesem Fall werden alle Transaktionen in die Sandbox übertragen und nicht berechnet.  
@@ -83,7 +83,7 @@ Um das Logs of Plentymarkets System zu sehen, navigieren Sie zur Seite `Daten`->
 Wenn eine Bestellung mit heidelpayMGW plugin erstellt wird, wird die Bestellung mit einer `Externen Bestellnummer` versehen. Diese Nummer ist die Bestell-ID in Ihrem hIP (heidelpay Intelligence Platform). Um diese Nummer im Plentymarkets System zu finden, navigieren Sie zur Seite `Orders bearbeiten`. Suchen Sie nach der mit dem heidelpayMGW-Plugin erstellten Order und öffnen Sie diese. In der geöffneten Order gehen Sie zum Reiter `Einstellungen` und dort sehen Sie `Ext. Ordernummer`.
 
 ### Status einer Zahlung
-Um zu sehen, welchen Status eine Zahlung für einen bestimmten Auftrag hat, öffnen Sie diesen Auftrag. Navigieren Sie zur Registerkarte `Zahlung`. Dort sehen Sie, welchen Status die Zahlung im Moment hat. Wenn sich die Zahlung im Heidelpay-System ändert, erhält das Plugin das Ereignis, dass sich die Zahlung geändert hat und ändert den Status einer Zahlung im Plentymarkets-System automatisch.
+Um zu sehen, welchen Status eine Zahlung für einen bestimmten Auftrag hat, öffnen Sie diesen Auftrag. Navigieren Sie zur Registerkarte `Zahlung`. Dort sehen Sie, welchen Status die Zahlung im Moment hat. Wenn sich die Zahlung im heidelpay-System ändert, erhält das Plugin das Ereignis, dass sich die Zahlung geändert hat und ändert den Status einer Zahlung im Plentymarkets-System automatisch.
 
 ### Rechnung erstellen
 Um ein Rechnungsdokument für die Bestellung zu erstellen, navigieren Sie zur Seite `Bestellungen bearbeiten`. Suchen Sie nach der Bestellung, für die Sie eine Rechnung erstellen möchten, und klicken Sie darauf. In der geöffneten Bestellung gehen Sie zur Registerkarte `Quittungen`. Wählen Sie aus der Liste `Quittung erstellen` die Option `Rechnung`. In dem neuen Fenster nehmen Sie gegebenenfalls Änderungen vor und drücken Sie die Schaltfläche "Speichern". Danach werden Sie das erstellte Rechnungsdokument sehen. Für die Zahlungsmethoden der "Rechnung" werden die zusätzlichen Zahlungsinformationen automatisch zum Rechnungsdokument hinzugefügt.
@@ -120,7 +120,7 @@ Um eine neue Ereignisprozedur hinzuzufügen, müssen Sie diese Schritte durchfü
 * Drücken Sie unten auf die Schaltfläche Ereignisprozedur hinzufügen
 * Benennen Sie in der Dialogbox Ihre Konfiguration und wählen Sie, wann dieses Ereignis ausgelöst werden soll, z.B. ``Auftragsänderung`->`Statusänderung`
 * Drücken Sie Speichern
-* Wenn der Modalmodus geschlossen wird, kreuzen Sie das Kontrollkästchen `Aktiv` an und fügen Sie im Abschnitt `Prozeduren` die Prozedur hinzu, die das gefeuerte Ereignis behandeln soll. In diesem Fall `Autorisierungsgebühr (Heidelpay)`
+* Wenn der Modalmodus geschlossen wird, kreuzen Sie das Kontrollkästchen `Aktiv` an und fügen Sie im Abschnitt `Prozeduren` die Prozedur hinzu, die das gefeuerte Ereignis behandeln soll. In diesem Fall `Autorisierungsgebühr (heidelpay)`
 * Danach speichern Sie Ihre Konfiguration, indem Sie oben auf die Schaltfläche `Save` klicken.
 
 ### Direkte Gebühr

@@ -91,9 +91,9 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
     /**
      * Make API call to cancel charge
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param Order $order  Plenty Order
-     * @param Order int $originalOrderId Original Plenty Order ID
+     * @param int $originalOrderId Original Plenty Order ID
      *
      * @return array  Response from SDK
      */
@@ -154,11 +154,11 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
     }
 
     /**
-     * Return array with contact information for Heidelpay customer object
+     * Return array with contact information for heidelpay customer object
      *
      * @param Address $address  Plenty Address model
      *
-     * @return array  Data for Heidelpay B2B customer object
+     * @return array  Data for heidelpay B2B customer object
      */
     public function contactInformation(Address $address): array
     {
@@ -173,7 +173,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
      * Update plentymarkets Order with external Order ID and comment
      *
      * @param int $orderId  Plenty Order ID
-     * @param string $externalOrderId  Heidelpay Order ID
+     * @param string $externalOrderId  heidelpay Order ID
      *
      * @return void
      */
@@ -200,7 +200,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
     /**
      * Make API call ship to finalize transaction
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param integer $orderId  Plenty Order ID
      *
      * @throws Exception

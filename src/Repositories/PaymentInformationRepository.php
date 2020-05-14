@@ -63,7 +63,7 @@ class PaymentInformationRepository
     /**
      * Returns PaymentInformation model by external Order ID
      *
-     * @param string $externalOrderId  Heidelpay Order ID
+     * @param string $externalOrderId  heidelpay Order ID
      *
      * @return PaymentInformation|null
      */
@@ -79,7 +79,7 @@ class PaymentInformationRepository
     /**
      * Returns PaymentInformation model by Payment resource ID.
      *
-     * @param string $paymentResourceId  Heidelpay payment type
+     * @param string $paymentResourceId  heidelpay payment type
      *
      * @return PaymentInformation|null  Returns PaymentInformation with information such as OrderId, ExternalOrderId,
      *                                  PaymentResourceId, payment transaction information, like shortId, amount and so on.

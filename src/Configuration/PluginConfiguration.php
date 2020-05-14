@@ -56,7 +56,7 @@ class PluginConfiguration
     const PAYMENT_KEY_FLEXIPAY = "HeidelpayMGWFLEXIPAY";
     const FLEXIPAY_FRONTEND_NAME = "HeidelpayMGWFlexiPay";
     
-    // Heidelpay payment methods
+    // heidelpay payment methods
     const INVOICE_GUARANTEED = 'invoice-guaranteed';
     const INVOICE_FACTORING = 'invoice-factoring';
     const INVOICE = 'invoice';

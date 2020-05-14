@@ -8,7 +8,6 @@ use HeidelpayMGW\Helpers\OrderHelper;
 use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\ApiKeysHelper;
 use HeidelpayMGW\Helpers\SessionHelper;
-use HeidelpayMGW\Services\BasketService;
 use Plenty\Modules\Basket\Models\Basket;
 use Plenty\Plugin\Translation\Translator;
 use Plenty\Modules\Comment\Models\Comment;
@@ -16,7 +15,6 @@ use Plenty\Modules\Payment\Models\Payment;
 use HeidelpayMGW\Models\PaymentInformation;
 use Plenty\Modules\Basket\Models\BasketItem;
 use Plenty\Modules\Document\Models\Document;
-use Plenty\Modules\Order\Models\OrderAmount;
 use Plenty\Modules\Account\Address\Models\Address;
 use Plenty\Modules\Account\Contact\Models\Contact;
 use Plenty\Modules\Payment\Models\PaymentProperty;
@@ -111,7 +109,7 @@ abstract class AbstractPaymentService
     }
 
     /**
-     * Make a charge call with Heidelpay PHP-SDK
+     * Make a charge call with heidelpay PHP-SDK
      *
      * @param array $payment  Payment type information from Frontend JS
      *
@@ -167,9 +165,9 @@ abstract class AbstractPaymentService
     }
 
     /**
-     * Prepare required data for Heidelpay cancel call
+     * Prepare required data for heidelpay cancel call
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param Order $order  Plenty Order
      *
      * @return array  Data required for cancelTransaction call
@@ -206,11 +204,11 @@ abstract class AbstractPaymentService
     }
 
     /**
-     * Generate Heidelpay Order ID
+     * Generate heidelpay Order ID
      *
      * @param int $id  Plentymarkets checkout basket ID
      *
-     * @return string  Generated Heidelpay Order ID
+     * @return string  Generated heidelpay Order ID
      */
     public function generateExternalOrderId(int $id): string
     {
@@ -218,11 +216,11 @@ abstract class AbstractPaymentService
     }
 
     /**
-     * Return array with contact information for Heidelpay customer object
+     * Return array with contact information for heidelpay customer object
      *
      * @param Address $address  Plenty Address model
      *
-     * @return array  Data for Heidelpay customer object
+     * @return array  Data for heidelpay customer object
      */
     public function contactInformation(Address $address): array
     {
@@ -241,7 +239,7 @@ abstract class AbstractPaymentService
     }
 
     /**
-     * Prepare information for Heidelpay charge call
+     * Prepare information for heidelpay charge call
      *
      * @param array $payment  Payment information from Frontend JS
      *
@@ -283,11 +281,11 @@ abstract class AbstractPaymentService
     }
 
     /**
-     * Return array of basket data for Heidelpay Basket and BasketItem objects
+     * Return array of basket data for heidelpay Basket and BasketItem objects
      *
      * @param Basket $basket  Plenty Basket model
      *
-     * @return array  Data for Heidelpay Basket and BasketItem objects
+     * @return array  Data for heidelpay Basket and BasketItem objects
      */
     public function getBasketForAPI(Basket $basket)
     {
@@ -355,7 +353,7 @@ abstract class AbstractPaymentService
      * Update plentymarkets Order with external Order ID and comment
      *
      * @param int $orderId  Plenty Order ID
-     * @param string $externalOrderId  Heidelpay Order ID
+     * @param string $externalOrderId  heidelpay Order ID
      *
      * @return void
      */
@@ -376,7 +374,7 @@ abstract class AbstractPaymentService
      * Create payment and add to Order
      *
      * @param int $orderId  Plenty Order ID
-     * @param string $referenceNumber  Heidelpay payment ID and charge ID and cancellation ID
+     * @param string $referenceNumber  heidelpay payment ID and charge ID and cancellation ID
      * @param int $mopId  Plentymarkets method of payment ID
      * @param float $amount  Payment amount
      * @param string $currency  Payment currency
@@ -489,7 +487,7 @@ abstract class AbstractPaymentService
      * Create Plentymarkets payment
      *
      * @param int $mopId  Plentymarkets method of payment ID
-     * @param string $referenceNumber  Heidelpay payment ID and charge ID and cancellation ID
+     * @param string $paymentReference  heidelpay payment ID and charge ID and cancellation ID
      * @param float $amount  Payment amount
      * @param string $currency  Payment currency
      * @param string $paymentHash Plentymarkets payment hash
@@ -614,7 +612,7 @@ abstract class AbstractPaymentService
     /**
      * Make API call ship to finalize transaction (if needed)
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param integer $orderId  Plenty Order ID
      *
      * @return array

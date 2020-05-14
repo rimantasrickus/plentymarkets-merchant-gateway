@@ -86,7 +86,7 @@ class InvoicePaymentService extends AbstractPaymentService
      * Update plentymarkets Order with external Order ID and comment
      *
      * @param int $orderId  Plenty Order ID
-     * @param string $externalOrderId  Heidelpay Order ID
+     * @param string $externalOrderId  heidelpay Order ID
      *
      * @return void
      */
@@ -113,7 +113,7 @@ class InvoicePaymentService extends AbstractPaymentService
     /**
      * Make API call ship to finalize transaction
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param integer $orderId  Plenty Order ID
      *
      * @return array
