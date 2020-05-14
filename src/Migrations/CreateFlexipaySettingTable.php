@@ -6,7 +6,7 @@ use HeidelpayMGW\Models\FlexipaySetting;
 use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
 /**
- * Flexipay settings table migration
+ * FlexiPay settings table migration
  *
  * Copyright (C) 2019 heidelpay GmbH
  *

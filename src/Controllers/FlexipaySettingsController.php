@@ -10,7 +10,7 @@ use HeidelpayMGW\Repositories\FlexipaySettingRepository;
 use Symfony\Component\HttpFoundation\Response as BaseResponse;
 
 /**
- * Flexipay settings controller for UI settings
+ * FlexiPay settings controller for UI settings
  *
  * Copyright (C) 2019 heidelpay GmbH
  *

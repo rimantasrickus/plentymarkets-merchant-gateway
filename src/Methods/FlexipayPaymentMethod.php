@@ -6,7 +6,7 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
 use HeidelpayMGW\Repositories\FlexipaySettingRepository;
 
 /**
-* Flexipay payment method class
+* FlexiPay payment method class
 *
 * Copyright (C) 2019 heidelpay GmbH
 *

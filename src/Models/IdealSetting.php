@@ -37,7 +37,7 @@ class IdealSetting extends Model
     public $isActive = false;
 
     /** @var string $displayName  Payment method display name */
-    public $displayName = 'iDeal';
+    public $displayName = 'iDEAL';
 
     /** @var string $basketMinTotal  Minimum basket amount for payment method */
     public $basketMinTotal = '';

@@ -37,7 +37,7 @@ class SepaSetting extends Model
     public $isActive = false;
 
     /** @var string $displayName  Payment method display name */
-    public $displayName = 'Sepa';
+    public $displayName = 'SEPA direct debit';
 
     /** @var string $basketMinTotal  Minimum basket amount for payment method */
     public $basketMinTotal = '';

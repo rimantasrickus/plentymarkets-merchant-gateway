@@ -180,7 +180,7 @@ class PaymentHelper
                     'name' => PluginConfiguration::SOFORT_FRONTEND_NAME
                 ];
             }
-            //Flexipay
+            //FlexiPay
             if ($payment === PluginConfiguration::PAYMENT_KEY_FLEXIPAY) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,

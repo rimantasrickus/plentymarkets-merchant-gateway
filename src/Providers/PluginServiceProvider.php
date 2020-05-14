@@ -156,7 +156,7 @@ class PluginServiceProvider extends ServiceProvider
             SofortPaymentMethod::class,
             $this->paymentMethodEvents()
         );
-        //Flexipay
+        //FlexiPay
         $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_FLEXIPAY);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_FLEXIPAY,

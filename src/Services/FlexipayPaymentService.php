@@ -9,7 +9,7 @@ use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 
 /**
- * Flexipay payment service
+ * FlexiPay payment service
  *
  * Copyright (C) 2019 heidelpay GmbH
  *

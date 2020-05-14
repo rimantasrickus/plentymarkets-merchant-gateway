@@ -37,7 +37,7 @@ class PaypalSetting extends Model
     public $isActive = false;
 
     /** @var string $displayName  Payment method display name */
-    public $displayName = 'Paypal';
+    public $displayName = 'PayPal';
 
     /** @var string $basketMinTotal  Minimum basket amount for payment method */
     public $basketMinTotal = '';

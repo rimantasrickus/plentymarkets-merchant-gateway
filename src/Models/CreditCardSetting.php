@@ -37,7 +37,7 @@ class CreditCardSetting extends Model
     public $isActive = false;
 
     /** @var string $displayName  Payment method display name */
-    public $displayName = 'Kredit-Debitcard';
+    public $displayName = 'Credit-/Debit card';
 
     /** @var string $basketMinTotal  Minimum basket amount for payment method */
     public $basketMinTotal = '';
