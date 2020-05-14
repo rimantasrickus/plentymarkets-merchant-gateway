@@ -31,7 +31,7 @@ Dieses Modul basiert auf dem heidelpay php-sdk (https://github.com/heidelpay/hei
 + Wählen Sie die Plugin-Registerkarte und dann "Plugin-Übersicht".
 + Wählen Sie das heidelpay-Plugin, um zur Konfigurationsübersicht zu wechseln.
 + Wählen Sie die Registerkarte `Standard-Containerlinks`. Wählen Sie alle Elemente in der Liste aus und speichern Sie die Konfiguration.
-+ Für die Plugin-Konfiguration gehen Sie bitte zu `System`->`Bestellungen`->`Bezahlung`->`Plugins`.
++ Für die Plugin-Konfiguration gehen Sie bitte zu `Einrichtung`->`Aufträge`->`Zahlung`->`Plugins`.
 
 ## Plugin-Einstellungen
 ####### Öffentlicher Schlüssel
@@ -94,11 +94,11 @@ Um ein Lieferscheindokument für die Bestellung zu erstellen, navigieren Sie zur
 > Wenn Sie aus irgendeinem Grund nicht in der Lage sind, ein Lieferscheindokument zu erstellen, müssen Sie Ihre Dokumentvorlage überprüfen. Gehen Sie zu `System`->`Kunde`->`{Ihr Geschäft}`->`Standorte`->`Deutschland (Standard)`->`Dokumente`->`Lieferschein`, um dies zu tun.
 
 ### Rechnungszahlung abschließen
-> Dieser Abschnitt ist relevant für `Rechnungsgarantierte` Zahlungsmethoden
+> Dieser Abschnitt ist relevant für `versicherte Rechnungskauf` Zahlungsmethoden
 
-Um die Versicherung einer Zahlung zu starten, müssen Sie eine abschließende Transaktion auslösen. Hierfür gibt es zwei Möglichkeiten:
+Um die Versicherung einer Zahlung zu starten, müssen Sie eine Finalize Transaktion auslösen. Hierfür gibt es zwei Möglichkeiten:
 * Sie können dies in Ihrem hIP-Konto (heidelpay Intelligence Platform) tun.
-* Sie können dies tun, indem Sie eine Ereignisprozedur (Transaktion abschließen (HeidelpayMGW)) im Shop-Backend erstellen (siehe [Ereignisprozedur erstellen](#Ereignisprozedur erstellen))
+* Sie können dies tun, indem Sie eine Ereignisprozedur (Finalize transaction (HeidelpayMGW)) im Shop-Backend erstellen (siehe [Ereignisprozedur erstellen](#Ereignisprozedur erstellen))
 > Empfehlung ist, ein Ereignisverfahren zu erstellen, wenn die Rechnung erstellt wird
 * Mit der Finalisierung beginnt die Versicherungsperiode, in der der Kunde den Gesamtbetrag der Bestellung zu zahlen hat.
 * Die Versicherungsperiode wird in Ihrem Vertrag mit heidelpay festgelegt.
