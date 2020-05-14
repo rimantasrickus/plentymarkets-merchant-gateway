@@ -104,7 +104,7 @@ class PaymentHelper
     {
         // Check whether the ID of the plugin's payment method has been created
         if ($this->getPaymentMethod($payment) == -1) {
-            //Invoice
+            //invoice
             if ($payment == PluginConfiguration::PAYMENT_KEY_INVOICE) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
@@ -114,7 +114,7 @@ class PaymentHelper
      
                 $this->plentyPaymentMethodRepository->createPaymentMethod($plentyPaymentMethodData);
             }
-            //Invoice guaranteed B2C
+            //invoice guaranteed B2C
             if ($payment == PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
@@ -124,7 +124,7 @@ class PaymentHelper
      
                 $this->plentyPaymentMethodRepository->createPaymentMethod($plentyPaymentMethodData);
             }
-            //Invoice guaranteed B2B
+            //invoice guaranteed B2B
             if ($payment == PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
@@ -132,31 +132,31 @@ class PaymentHelper
                     'name' => PluginConfiguration::INVOICE_GUARANTEED_FRONTEND_NAME_B2B
                 ];
             }
-            //Credit/Debit Card
-            if ($payment === PluginConfiguration::PAYMENT_KEY_CARDS) {
+            //credit card
+            if ($payment === PluginConfiguration::PAYMENT_KEY_CREDIT_CARD) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
-                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_CARDS,
-                    'name' => PluginConfiguration::CARDS_FRONTEND_NAME
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_CREDIT_CARD,
+                    'name' => PluginConfiguration::CREDIT_CARD_FRONTEND_NAME
                 ];
             }
-            //SEPA Direct Debit
-            if ($payment === PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT) {
+            //Sepa
+            if ($payment === PluginConfiguration::PAYMENT_KEY_SEPA) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
-                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT,
-                    'name' => PluginConfiguration::DIRECT_DEBIT_FRONTEND_NAME
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_SEPA,
+                    'name' => PluginConfiguration::SEPA_FRONTEND_NAME
                 ];
             }
-            //SEPA Direct Debit guaranteed
-            if ($payment === PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT_GUARANTEED) {
+            //Sepa guaranteed
+            if ($payment === PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
-                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT_GUARANTEED,
-                    'name' => PluginConfiguration::DIRECT_DEBIT_GUARANTEED_FRONTEND_NAME
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED,
+                    'name' => PluginConfiguration::SEPA_GUARANTEED_FRONTEND_NAME
                 ];
             }
-            //PayPal
+            //Paypal
             if ($payment === PluginConfiguration::PAYMENT_KEY_PAYPAL) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
@@ -181,11 +181,11 @@ class PaymentHelper
                 ];
             }
             //FlexiPay
-            if ($payment === PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT) {
+            if ($payment === PluginConfiguration::PAYMENT_KEY_FLEXIPAY) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
-                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT,
-                    'name' => PluginConfiguration::FLEXIPAY_DIRECT_FRONTEND_NAME
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_FLEXIPAY,
+                    'name' => PluginConfiguration::FLEXIPAY_FRONTEND_NAME
                 ];
             }
             if ($plentyPaymentMethodData !== null) {
@@ -355,13 +355,13 @@ class PaymentHelper
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B) {
                     return pluginApp(InvoiceGuaranteedPaymentServiceB2B::class);
                 }
-                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_CARDS) {
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_CREDIT_CARD) {
                     return pluginApp(CreditCardPaymentService::class);
                 }
-                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT) {
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_SEPA) {
                     return pluginApp(SepaPaymentService::class);
                 }
-                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT_GUARANTEED) {
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED) {
                     return pluginApp(SepaGuaranteedPaymentService::class);
                 }
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_PAYPAL) {
@@ -373,7 +373,7 @@ class PaymentHelper
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_SOFORT) {
                     return pluginApp(SofortPaymentService::class);
                 }
-                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT) {
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_FLEXIPAY) {
                     return pluginApp(FlexipayPaymentService::class);
                 }
             }
