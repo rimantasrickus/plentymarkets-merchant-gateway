@@ -115,23 +115,23 @@ class PluginServiceProvider extends ServiceProvider
             $this->paymentMethodEvents()
         );
         //Credit card
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_CREDIT_CARD);
+        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_CARDS);
         $payContainer->register(
-            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_CREDIT_CARD,
+            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_CARDS,
             CreditCardPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         //Sepa
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SEPA);
+        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT);
         $payContainer->register(
-            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SEPA,
+            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT,
             SepaPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         //Sepa guaranteed
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED);
+        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_DIRECT_³DEBIT_GUARANTEED);
         $payContainer->register(
-            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED,
+            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT_GUARANTEED,
             SepaGuaranteedPaymentMethod::class,
             $this->paymentMethodEvents()
         );
@@ -157,9 +157,9 @@ class PluginServiceProvider extends ServiceProvider
             $this->paymentMethodEvents()
         );
         //FlexiPay
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_FLEXIPAY);
+        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT);
         $payContainer->register(
-            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_FLEXIPAY,
+            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT,
             FlexipayPaymentMethod::class,
             $this->paymentMethodEvents()
         );

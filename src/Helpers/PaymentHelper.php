@@ -104,7 +104,7 @@ class PaymentHelper
     {
         // Check whether the ID of the plugin's payment method has been created
         if ($this->getPaymentMethod($payment) == -1) {
-            //invoice
+            // Invoice
             if ($payment == PluginConfiguration::PAYMENT_KEY_INVOICE) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
@@ -114,7 +114,7 @@ class PaymentHelper
      
                 $this->plentyPaymentMethodRepository->createPaymentMethod($plentyPaymentMethodData);
             }
-            //invoice guaranteed B2C
+            // Invoice guaranteed B2C
             if ($payment == PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
@@ -124,7 +124,7 @@ class PaymentHelper
      
                 $this->plentyPaymentMethodRepository->createPaymentMethod($plentyPaymentMethodData);
             }
-            //invoice guaranteed B2B
+            // Invoice guaranteed B2B
             if ($payment == PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
@@ -132,31 +132,31 @@ class PaymentHelper
                     'name' => PluginConfiguration::INVOICE_GUARANTEED_FRONTEND_NAME_B2B
                 ];
             }
-            //credit card
-            if ($payment === PluginConfiguration::PAYMENT_KEY_CREDIT_CARD) {
+            // Credit/Debit Card
+            if ($payment === PluginConfiguration::PAYMENT_KEY_CARDS) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
-                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_CREDIT_CARD,
-                    'name' => PluginConfiguration::CREDIT_CARD_FRONTEND_NAME
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_CARDS,
+                    'name' => PluginConfiguration::CARDS_FRONTEND_NAME
                 ];
             }
-            //Sepa
-            if ($payment === PluginConfiguration::PAYMENT_KEY_SEPA) {
+            // SEPA Direct Debit
+            if ($payment === PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
-                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_SEPA,
-                    'name' => PluginConfiguration::SEPA_FRONTEND_NAME
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT,
+                    'name' => PluginConfiguration::DIRECT_DEBIT_FRONTEND_NAME
                 ];
             }
-            //Sepa guaranteed
-            if ($payment === PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED) {
+            // SEPA Direct Debit guaranteed
+            if ($payment === PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT_GUARANTEED) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
-                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED,
-                    'name' => PluginConfiguration::SEPA_GUARANTEED_FRONTEND_NAME
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT_GUARANTEED,
+                    'name' => PluginConfiguration::DIRECT_DEBIT_GUARANTEED_FRONTEND_NAME
                 ];
             }
-            //Paypal
+            // PayPal
             if ($payment === PluginConfiguration::PAYMENT_KEY_PAYPAL) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
@@ -164,7 +164,7 @@ class PaymentHelper
                     'name' => PluginConfiguration::PAYPAL_FRONTEND_NAME
                 ];
             }
-            //iDEAL
+            // iDEAL
             if ($payment === PluginConfiguration::PAYMENT_KEY_IDEAL) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
@@ -172,7 +172,7 @@ class PaymentHelper
                     'name' => PluginConfiguration::IDEAL_FRONTEND_NAME
                 ];
             }
-            //Sofort
+            // Sofort
             if ($payment === PluginConfiguration::PAYMENT_KEY_SOFORT) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
@@ -180,12 +180,12 @@ class PaymentHelper
                     'name' => PluginConfiguration::SOFORT_FRONTEND_NAME
                 ];
             }
-            //FlexiPay
-            if ($payment === PluginConfiguration::PAYMENT_KEY_FLEXIPAY) {
+            // FlexiPay Direct
+            if ($payment === PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
-                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_FLEXIPAY,
-                    'name' => PluginConfiguration::FLEXIPAY_FRONTEND_NAME
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT,
+                    'name' => PluginConfiguration::FLEXIPAY_DIRECT_FRONTEND_NAME
                 ];
             }
             if ($plentyPaymentMethodData !== null) {
@@ -355,13 +355,13 @@ class PaymentHelper
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B) {
                     return pluginApp(InvoiceGuaranteedPaymentServiceB2B::class);
                 }
-                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_CREDIT_CARD) {
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_CARDS) {
                     return pluginApp(CreditCardPaymentService::class);
                 }
-                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_SEPA) {
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT) {
                     return pluginApp(SepaPaymentService::class);
                 }
-                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED) {
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT_GUARANTEED) {
                     return pluginApp(SepaGuaranteedPaymentService::class);
                 }
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_PAYPAL) {
@@ -373,7 +373,7 @@ class PaymentHelper
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_SOFORT) {
                     return pluginApp(SofortPaymentService::class);
                 }
-                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_FLEXIPAY) {
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT) {
                     return pluginApp(FlexipayPaymentService::class);
                 }
             }
