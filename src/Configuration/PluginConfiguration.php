@@ -5,7 +5,7 @@ namespace HeidelpayMGW\Configuration;
 /**
 * Constants for plugin
 *
-* Copyright (C) 2019 heidelpay GmbH
+* Copyright (C) 2020 heidelpay GmbH
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ class PluginConfiguration
 {
     // Plugin
     const PLUGIN_NAME = 'HeidelpayMGW';
-    const PLUGIN_VERSION = '0.7.0';
+    const PLUGIN_VERSION = '1.0.0';
     const PLUGIN_KEY = 'HeidelpayMGWPaymentPlugin';
     const API_SANDBOX = 'sandbox';
     const API_PRODUCTION = 'production';
@@ -56,7 +56,7 @@ class PluginConfiguration
     const PAYMENT_KEY_FLEXIPAY = "HeidelpayMGWFLEXIPAY";
     const FLEXIPAY_FRONTEND_NAME = "HeidelpayMGWFlexiPay";
     
-    // Heidelpay payment methods
+    // heidelpay payment methods
     const INVOICE_GUARANTEED = 'invoice-guaranteed';
     const INVOICE_FACTORING = 'invoice-factoring';
     const INVOICE = 'invoice';

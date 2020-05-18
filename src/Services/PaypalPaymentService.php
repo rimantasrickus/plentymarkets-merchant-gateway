@@ -12,7 +12,7 @@ use HeidelpayMGW\Repositories\PaypalSettingRepository;
 /**
  * PayPal payment service
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -144,11 +144,6 @@ class PaypalPaymentService extends AbstractPaymentService
      */
     public function ship(PaymentInformation $paymentInformation, int $orderId): array
     {
-        if ($this->paypalSettings->mode == PluginConfiguration::AUTHORIZATION_CAPTURE) {
-            $order = $this->orderHelper->findOrderById($orderId);
-            $this->chargeAuthorization($paymentInformation, $order);
-        }
-
         return parent::ship($paymentInformation, $orderId);
     }
 
@@ -178,7 +173,7 @@ class PaypalPaymentService extends AbstractPaymentService
         ]);
         if (!$libResponse['success']) {
             $this->getLogger(__METHOD__)->error(
-                'translation.errorChargeAuthorization',
+                PluginConfiguration::PLUGIN_NAME.'::translation.errorChargeAuthorization',
                 [
                     'error' => $libResponse
                 ]

@@ -1,166 +1,145 @@
 ![Logo](https://dev.heidelpay.com/devHeidelpay_400_180.jpg)
 
-# heidelpay plentymarkets-merchant-gateway plugin
-This extension provides an integration of the heidelpay payment methods for your plentymarkets shop.
+# heidelpay plentymarkets-Händler-Gateway-Plugin
+Dieses Plugin stellt eine Integration für die heidelpay Zahlungsarten für Ihren Plentymarkets Shop bereit.
 
-Currently supported payment methods are:
-* Invoice
-* Invoice secured B2C
-* Invoice secured B2B
-* Card
-* SEPA Direct Debit and Guaranteed
+Folgende Zahlungsarten werden aktuell unterstützt:
+* Rechnungskauf
+* Versicherter Rechnungskauf B2C
+* Versicherter Rechnungskauf B2B
+* Kreditkarte und Debitkarte
+* SEPA Lastschrift und garantiert
+* Versicherte SEPA Lastschrift
 * PayPal
 * SOFORT
-* iDEAL
-* FlexiPay Direct
+* IDEAL
+* FlexiPay Direkt
 
-## REQUIREMENTS
-* This plugin is designed fo Plentymarkets 7.
+## ANFORDERUNGEN
+* Dieses Plugin ist entwickelt für Plentymarkets 7.
 
-## Release notes
-This module is based on the heidelpay php-sdk (https://github.com/heidelpay/heidelpayPHP).
+## Versionshinweise
+Dieses Modul basiert auf dem heidelpay php-sdk (https://github.com/heidelpay/heidelpayPHP).
 
 ## Installation
-+ Please refer to [plentyKnowledge](https://knowledge.plentymarkets.com) in order to learn how to install plugins.
-+ After performing the configuration steps described below you should be able to perform some tests in staging mode.
-+ If everything is fine you can change the configuration to live mode and deploy the plugin for the productive area to enable it for your clients.
++ Bitte lesen Sie [plentyKnowledge] (https://knowledge.plentymarkets.com), um zu erfahren, wie man Plugins installiert.
++ Nachdem Sie die unten beschriebenen Konfigurationsschritte durchgeführt haben, sollten Sie in der Lage sein, einige Tests im Staging-Modus durchzuführen.
++ Wenn alles in Ordnung ist, können Sie die Konfiguration in den Live-Modus ändern und das Plugin für den produktiven Bereich einsetzen, um es für Ihre Kunden zu aktivieren.
 
-## Configuration
-### Basic configuration
-+ Select the Plugin-tab and then "Plugin overview"
-+ Select the heidelpay plugin to switch to the configuration overview.
-+ Select `Default container links` tab. Select all elements in the list and save configuration.
-+ For the plugin configuration please go to `System`->`Orders`->`Payment`->`Plugins`.
+## Konfiguration
+### Grundkonfiguration
++ Wählen Sie die Plugin-Registerkarte und dann "Plugin-Übersicht".
++ Wählen Sie das heidelpay-Plugin, um zur Konfigurationsübersicht zu wechseln.
++ Wählen Sie die Registerkarte `Standard-Containerlinks`. Wählen Sie alle Elemente in der Liste aus und speichern Sie die Konfiguration.
++ Für die Plugin-Konfiguration gehen Sie bitte zu `Einrichtung`->`Aufträge`->`Zahlung`->`Plugins`.
 
-### Date of birth
-For some payment types `Date of birth` is necessary. To enable it:
- + Select `Ceres` plugin in "Plugin overview"
- + Under `Configuration` menu section select `Checkout and My account`
- + If not activated switch `Toggle deprecated entries` at the top
- + In the `SHOW INVOICE ADDRESS FIELDS IN ADDRESS FORM` list enable `Date of birth`
- + In the `ENABLE INVOICE ADDRESS FIELD VALIDATION` list enable  `Date of birth`
+## Plugin-Einstellungen
+####### Öffentlicher Schlüssel
+Zum Erstellen von Zahlungsarten durch den Browser ist ein öffentlicher Schlüssel erforderlich
 
-Alternatively if address will not have `Date of birth` pop-up box with `Date of birth` field will appear.
+####### Privater Schlüssel
+Öffentlicher Schlüssel ist für die Authentifizierung auf dem heidelpay-Server erforderlich
 
-### Return reasons
-Invoice factoring payment method needs to have return reason when Order is canceled. To add return reason in Plentymarkets navigate to `System`->`Orders`->`Order types`->`Return`. Here added return reasons, You can select latter when creating return Order. 
+###### Api-Modus
+* Wählen Sie den Parameter *'Sandbox'*, um die Verbindung zur Testumgebung zu ermöglichen. In diesem Fall werden alle Transaktionen in die Sandbox übertragen und nicht berechnet.  
+Bitte stellen Sie sicher, dass Sie Test-Anmeldedaten verwenden, wenn diese Option ausgewählt ist (siehe https://dev.heidelpay.com/sandbox-environment/).
+* Wählen Sie den Parameter *'Production'*, um den Live-Modus zu aktivieren, was bedeutet, dass tatsächliche Transaktionen ausgeführt und berechnet werden.
+Bitte stellen Sie sicher, dass Sie Ihre Live-Anmeldedaten verwenden, wenn diese Option ausgewählt ist.
 
-## Plugin settings
-##### Public key
-Public key is required to create payment types by the browser
+> Wenn die `Speichern`-Taste gedrückt wird, registriert das Plugin heidelpay webhooks mit den dafür vorgesehenen Tasten.
 
-##### Private key
-Public key is required for authentication on heidelpay server
+####### Parameter der Zahlungsmethode
+###### Aktiv
+Wenn markiert, kann die Zahlungsmethode auf der Checkout-Seite ausgewählt werden.
 
-##### Api mode
-* Select parameter *'Sandbox'* to enable connection to the test environment, in which case any transactions will be transferred to the sandbox and will not be charged.  
-Please make sure to use test credentials when this option is selected (ref. https://dev.heidelpay.com/sandbox-environment/).
-* Select parameter *'Production'* to enable live mode which means that actual transactions will be executed and charged.
-Please make sure to use your live credentials when this option is selected.
+###### Anzeigename
+Der Name der Zahlungsmethode wird auf der Checkout-Seite unter angezeigt. \
+Ein Standardname wird angezeigt, wenn er leer gelassen wird.
 
-> When `Save` button is pressed plugin registers heidelpay webhooks with the provided keys.
+####### Min-/Max-Summe
+Die Zahlungsmethode steht nur dann zur Verfügung, wenn der Warenkorb eine Summe zwischen diesen Werten aufweist.
+Wenn Sie einen dieser Werte auf 0 setzen, wird die entsprechende Beschränkung deaktiviert.
 
-##### Payment Method Parameters
-##### Active
-If checked the payment method will be selectable on the checkout page
+####### URL zum Zahlungssymbol
+Damit wird ein Symbol für die Zahlungsmethode definiert, das in der Kasse zusätzlich zum Anzeigenamen angezeigt wird.
+Wenn leer gelassen, wird das Standardsymbol verwendet. \
+Voraussetzungen für die url-Zeichenfolge:
+* sie muss aus dem Internet erreichbar sein
+* es muss mit 'http://' oder 'https://' beginnen
+* es muss mit '.jpg', '.png' oder '.gif' enden
 
-##### Display Name
-The name the payment method is shown under on the checkout page. \
-A default name will be shown if left empty.
+####### Kartenzahlungsmethode
+Kartenzahlungen können auf zwei verschiedene Arten verwendet werden:
+* Direktbelastung: das Bankkonto des Kunden wird direkt belastet.
+* Autorisieren und belasten: Zuerst reservieren Sie Geld auf dem Konto des Kunden und später belasten Sie das Geld.
 
-##### Min-/Max-Total
-The payment method will only be available if the basket has a total between these values.
-Setting one of those values to 0 will disable the corresponding limitation.
+Wenn der Kunde eine Karte hat, die 3D-Sicherheit verwendet, wird er während des Bestellvorgangs auf eine Seite weitergeleitet, auf der er seine Zahlung autorisieren kann. Wenn der Kunde aus irgendeinem Grund nicht in der Lage sein wird, eine Autorisierung vorzunehmen, wird er zurück zur Kasse umgeleitet. Andererseits, wenn alles in Ordnung ist, wird das Plentysystem eine Bestellung erstellen und der Kunde wird zur Bestellstatus-Seite weitergeleitet.
 
-##### URL to payment icon
-This defines an icon for the payment method which is shown within checkout in addition to the display name.
-If left empty the default icon is used. \
-Prerequisites for the url string:
-* it must be reachable from the internet
-* it must start with 'http://' or 'https://'
-* it must end with '.jpg', '.png' or '.gif'
+## Workflow-Beschreibung
+### Protokollierung
+Um das Logs of Plentymarkets System zu sehen, navigieren Sie zur Seite `Daten`->`Log`. Dort sehen Sie das gesamte Logs of Plentymarkets System. Normalerweise zeigt das heidelpayMGW-Plugin nur Protokolle auf der Ebene `Fehler` an. Zusätzlich können Sie `debug'-Level-Logs aktivieren und dies wird viel mehr Informationen darüber zeigen, was hinter den Kulissen passiert. Um `debug`-Level-Logs zu aktivieren, drücken Sie `Configure logs` in der oberen mittleren Sektion der `Log`-Seite. Im geöffneten Popup-Fenster wählen Sie das Plugin `HeidelpayMGW`, markieren Sie die Checkbox `Aktiv`, wählen Sie die Dauer, wie lange diese Konfiguration aktiv sein soll und wählen Sie `Debug` aus der Liste der `Log-Ebene`.
 
-##### Use Invoice Factoring instead of Invoice Guaranteed
-When using `Invoice Guaranteed` You can change payment to use `Invoice Factoring` payment method instead.\
-> In essence, Invoice factoring is the same as Invoice guaranteed with the only difference being the insurance company. Instead of an insurance company in the background a third party business takes care of the invoice, thus guaranteeing your payment.
+### Externe Bestellnummer
+Wenn eine Bestellung mit heidelpayMGW plugin erstellt wird, wird die Bestellung mit einer `Externen Bestellnummer` versehen. Diese Nummer ist die Bestell-ID in Ihrem hIP (heidelpay Intelligence Platform). Um diese Nummer im Plentymarkets System zu finden, navigieren Sie zur Seite `Orders bearbeiten`. Suchen Sie nach der mit dem heidelpayMGW-Plugin erstellten Order und öffnen Sie diese. In der geöffneten Order gehen Sie zum Reiter `Einstellungen` und dort sehen Sie `Ext. Ordernummer`.
 
-##### Invoice Factoring payment cancel reasons
-How to add return reasons in Plentymarkets refer to section [Return reasons](#return-reasons).
+### Status einer Zahlung
+Um zu sehen, welchen Status eine Zahlung für einen bestimmten Auftrag hat, öffnen Sie diesen Auftrag. Navigieren Sie zur Registerkarte `Zahlung`. Dort sehen Sie, welchen Status die Zahlung im Moment hat. Wenn sich die Zahlung im heidelpay-System ändert, erhält das Plugin das Ereignis, dass sich die Zahlung geändert hat und ändert den Status einer Zahlung im Plentymarkets-System automatisch.
 
-##### Reason for CANCEL
-Map Plentymarkets item return reason from the list to heidelpay `CANCEL`
+### Rechnung erstellen
+Um ein Rechnungsdokument für die Bestellung zu erstellen, navigieren Sie zur Seite `Bestellungen bearbeiten`. Suchen Sie nach der Bestellung, für die Sie eine Rechnung erstellen möchten, und klicken Sie darauf. In der geöffneten Bestellung gehen Sie zur Registerkarte `Quittungen`. Wählen Sie aus der Liste `Quittung erstellen` die Option `Rechnung`. In dem neuen Fenster nehmen Sie gegebenenfalls Änderungen vor und drücken Sie die Schaltfläche "Speichern". Danach werden Sie das erstellte Rechnungsdokument sehen. Für die Zahlungsmethoden der "Rechnung" werden die zusätzlichen Zahlungsinformationen automatisch zum Rechnungsdokument hinzugefügt.
+> Wenn Sie aus irgendeinem Grund nicht in der Lage sind, ein Rechnungsdokument zu erstellen, müssen Sie Ihre Rechnungsvorlage überprüfen. Gehen Sie zu `System`->`Kunde`->`{Ihr Geschäft}`->`Standorte`->`Deutschland (Standard)`->`Dokumente`->`Rechnung`, um dies zu tun.
 
-##### Reason for RETURN
-Map Plentymarkets item return reason from the list to heidelpay `RETURN`
+### Lieferschein erstellen
+Um ein Lieferscheindokument für die Bestellung zu erstellen, navigieren Sie zur Seite `Bestellungen bearbeiten`. Suchen Sie nach der Bestellung, für die Sie ein Dokument erstellen möchten, und klicken Sie darauf. In der geöffneten Bestellung gehen Sie zur Registerkarte `Quittungen`. Wählen Sie aus der Liste `Quittung erstellen` die Option `Lieferschein`. In dem neuen Fenster nehmen Sie gegebenenfalls Änderungen vor und drücken Sie die Schaltfläche "Speichern". Danach werden Sie das erstellte Dokument sehen.
+> Wenn Sie aus irgendeinem Grund nicht in der Lage sind, ein Lieferscheindokument zu erstellen, müssen Sie Ihre Dokumentvorlage überprüfen. Gehen Sie zu `System`->`Kunde`->`{Ihr Geschäft}`->`Standorte`->`Deutschland (Standard)`->`Dokumente`->`Lieferschein`, um dies zu tun.
 
-##### Reason for CREDIT
-Map Plentymarkets item return reason from the list to heidelpay `CREDIT`
+### Rechnungszahlung abschließen
+> Dieser Abschnitt ist relevant für `versicherte Rechnungskauf` Zahlungsmethoden
 
-##### Card payment method
-Card payments can be used in two different ways:
-* Direct charge: the bank account of the customer is charged directly.
-* Authorize and charge: First you reserve money on the customer's account and later you charge the money.
+Um die Versicherung einer Zahlung zu starten, müssen Sie eine Finalize Transaktion auslösen. Hierfür gibt es zwei Möglichkeiten:
+* Sie können dies in Ihrem hIP-Konto (heidelpay Intelligence Platform) tun.
+* Sie können dies tun, indem Sie eine Ereignisprozedur (Finalize transaction (HeidelpayMGW)) im Shop-Backend erstellen (siehe [Ereignisprozedur erstellen](#Ereignisprozedur erstellen))
+> Empfehlung ist, ein Ereignisverfahren zu erstellen, wenn die Rechnung erstellt wird
+* Mit der Finalisierung beginnt die Versicherungsperiode, in der der Kunde den Gesamtbetrag der Bestellung zu zahlen hat.
+* Die Versicherungsperiode wird in Ihrem Vertrag mit heidelpay festgelegt.
+* Sobald der Kunde den Gesamtbetrag bezahlt hat, erscheint eine Quittungstransaktion (REC) innerhalb der HIP und wird an die PushUrl Ihres Shops geschickt.
+* Das Plugin aktualisiert dann die Zahlungen der entsprechenden Bestellung.
 
-If customer has a card that uses 3D security, then during the checkout, customer will be redirected to a page where he can authorize his payment. If for some reason customer will not be able to authorize, he will be redirected back to the checkout. On the other hand if everything is OK, the Plentysystem will create an Order and customer will be redirected to Order status page.
+### Zahlung stornieren
+Um die Zahlung zu stornieren, müssen Sie im Shop-Backend eine Ereignisprozedur (Transaktion stornieren (HeidelpayMGW)) erstellen (siehe [Ereignisprozedur erstellen](#Ereignisprozedur erstellen).
+> Es wird empfohlen, eine Ereignisprozedur zu erstellen, wenn ein Kredit-Knotenpunkt-Dokument erstellt wird (siehe [#Ereignisprozedur erstellen](#Ereignisprozedur erstellen)).
+Der übliche Arbeitsablauf würde darin bestehen, zur ursprünglichen Bestellung zu navigieren. Im Reiter `Übersicht` sehen Sie eine Listbox mit dem Namen `Gutschrift...`. Wählen Sie aus der Liste `von einzelnen Positionen` oder `von allen Positionen`. Im geöffneten Popup wählen Sie die Positionen aus, die Sie erstatten möchten. Drücken Sie die Schaltfläche "Speichern". Plentymarkets wird einen neuen Gutschriftsauftrag erstellen. Navigieren Sie zum Reiter `Quittungen` und wählen Sie aus der Liste `Quittung erstellen` die Option `Gutschrift`. Passen Sie bei Bedarf die Einstellungen an und drücken Sie `Speichern`. Wenn die Ereignisprozedur so konfiguriert ist, dass sie beim Generieren einer Gutschrift ausgelöst wird, sendet das Plugin den Rückerstattungsbetrag an heidelpay API.
 
-## Workflow description
-### Logging
-To see Logs of Plentymarkets system navigate to `Data`->`Log` page. There You will see all the Logs of Plentymarkets system. Normally heidelpayMGW plugin will show only `error` level logs. Additionally You can enable `debug` level logs and this will show much more information of what is happening behind the scenes. To enable `debug` level logs, press `Configure logs` at the top-middle section of the `Log` page. In opened popup select `HeidelpayMGW` plugin, check `Active` checkbox, select duration for how long this configuration should be active and select `Debug` from `Log level` list.
+> Wenn die Gutschriftsbestellung eine teilweise Stornierung der ursprünglichen Bestellung ist, zieht das Plugin die Versandkosten vom Gesamtbetrag der Gutschriftsbestellung ab, wenn es Daten an HeidelpayMGW sendet.
 
-### External Order number
-When an Order is created with heidelpayMGW plugin, Order will have `External Order number` attached. This number is Order ID in your hIP (heidelpay Intelligence Platform). To find this number in Plentymarkets system navigate to `Edit orders` page. Search for the Order created with heidelpayMGW plugin and open it. In opened Order go to `Settings` tab and there You will see `Ext. Order number`.
+> Wenn der Gutschriftsauftrag eine vollständige Stornierung des ursprünglichen Kundenauftrags darstellt, sendet das Plugin den Gesamtbetrag des Gutschriftsauftrags an HeidelpayMGW. Wenn Sie die Versandkosten nicht in die vollständige Stornierung mit einbeziehen möchten, können Sie Credit Note Order öffnen, zum Reiter `Settings` navigieren und die Versandkosten manuell entfernen. Wenn Sie möchten, dass bei Gutschriftbestellungen die Versandkosten niemals in der ursprünglichen Bestellung enthalten sind, können Sie zu `Setup`->`Bestellungen`->`Einstellungen` navigieren und den Wert `Versandkosten in Gutschrift einbeziehen` in `Nein` ändern.
 
-### Status of a payment
-To see what is the status of a payment for a given Order open that Order. Navigate to `Payment` tab. There You will see what status payment has right now. When payment changes in heidelpay system, plugin will receive event that payment changed and will change status of a payment in Plentymarkets system automatically.
+### Ereignisprozedur erstellen
+Um eine neue Ereignisprozedur hinzuzufügen, müssen Sie diese Schritte durchführen:
+* Gehen Sie zu `Einrichtung`->`Aufträge`->`Ereignisse`
+* Drücken Sie unten auf die Schaltfläche Ereignisprozedur hinzufügen
+* Benennen Sie in der Dialogbox Ihre Konfiguration und wählen Sie, wann dieses Ereignis ausgelöst werden soll, z.B. ``Auftragsänderung`->`Statusänderung`
+* Drücken Sie Speichern
+* Wenn der Modalmodus geschlossen wird, kreuzen Sie das Kontrollkästchen `Aktiv` an und fügen Sie im Abschnitt `Prozeduren` die Prozedur hinzu, die das gefeuerte Ereignis behandeln soll. In diesem Fall `Autorisierungsgebühr (heidelpay)`
+* Danach speichern Sie Ihre Konfiguration, indem Sie oben auf die Schaltfläche `Save` klicken.
 
-### Creating Invoice
-To create Invoice document for the Order, navigate to `Edit orders` page. Search for the Order You want to create Invoice for and click it. In opened Order go to `Receipts` tab. From the `Create receipt` list select `Invoice`. In the new window make changes if needed and press `Save` button. After that You will see created Invoice document. For the `Invoice` payment methods the additional payment information will be added to Invoice document automatically.
-> If for some reason You are not able to create Invoice document, You need to check Your Invoice template. Go to `System`->`Client`->`{your shop}`->`Locations`->`Deutschland (standard)`->`Documents`->`Invoice` to do that.
+### Direkte Gebühr
+Für diese Transaktion sind keine zusätzlichen Schritte erforderlich. Das Bankkonto des Kunden wird direkt belastet und Plentymarkets Order wird automatisch mit dem bezahlten Betrag aktualisiert.
 
-### Creating delivery note
-To create Delivery note document for the Order, navigate to `Edit orders` page. Search for the Order You want to create document for and click it. In opened Order go to `Receipts` tab. From the `Create receipt` list select `Delivery note`. In the new window make changes if needed and press `Save` button. After that You will see created document.
-> If for some reason You are not able to create Delivery note document, You need to check Your document template. Go to `System`->`Client`->`{your shop}`->`Locations`->`Deutschland (standard)`->`Documents`->`Delivery note` to do that.
+### Autorisieren und belasten
+Bei dieser Transaktionsart wird das Geld nicht direkt vom Kunden abgebucht, so dass Sie den reservierten Betrag letzteren belasten müssen. Dies kann auf zwei Arten erfolgen:
+* Sie können dies tun, indem Sie den Lieferschein im Shop-Backend erstellen (siehe [Lieferschein erstellen](#Lieferschein erstellen))
+* Sie können dies tun, indem Sie eine benutzerdefinierte Ereignisprozedur innerhalb Plentymarkets verwenden (siehe [Ereignisprozedur erstellen](#Ereignisprozedur erstellen))
 
-### Finalize invoice payment
-> This section is relevant for `Invoice guaranteed` and `Invoice factoring` payment methods
+### Zahlungsmethoden für Rechnungen
+> _Rechnung und Rechnung gesichert B2C_ ist nur unter den folgenden Bedingungen verfügbar:
+> 1. das Land ist entweder Deutschland oder Österreich
+> 2. Die Adresse gehört nicht zu einer Firma
 
-In order to start the insurance of a payment you need to trigger a finalize transaction. To do this there are two possibilities:
-* You can do this in your hIP account (heidelpay Intelligence Platform)
-* You can do this by creating the delivery note within the shop backend (see [Creating delivery note](#creating-delivery-note))
-* The finalize starts the insurance period in which the customer has to pay the total amount of the order.
-* The insurance period is determined within your contract with heidelpay.
-* As soon as the total amount is paid by the customer a receipt transaction (REC) appears within the hIP and is sent to the pushUrl of your shop.
-* The plugin will then update payment linked to the corresponding order.
+> _Rechnungsgesicherte B2B_ ist nur unter den folgenden Bedingungen verfügbar:
+> 1. das Land ist entweder Deutschland oder Österreich
+> 2. Die Adresse gehört zu einer Firma
 
-### Cancel payment
-To cancel payment You will need to create `Return order`. First You need to navigate to original Order. Open this Order. In the `Overview` tab You will see list box named `Return...`. From list select `create`. In the opened popup select items You want to return. Select return reason (see [Return reasons](#return-reasons)). Press save button. Plentymarkets will create new return Order. Navigate to `Receipts` tab from the `Create receipt` list select `Return slip`. Adjust settings if needed and press `Save`. Document generation will trigger `cancel charge` in heidelpay system with the amount of the return Order. 
-
-### Creating event procedure
-In order to add new event procedure You will need to take these steps:
-* Go to `System`->`Orders`->`Events`
-* At the bottom press button Add event procedure
-* In dialog box name your configuration and select when this event should be fired, for example `Order change`->`Status change`
-* Press Save
-* When modal closes, tick `Active` checkbox and in `Procedures` section add Procedure that should handle fired event. In this case `Authorization charge (Heidelpay)`
-* After that save your configuration by pressing `Save` button at the top
-
-### Direct charge
-For this transaction no additional steps are needed. The bank account of the customer is charged directly and Plentymarkets Order will be updated with paid amount automatically.
-
-### Authorize and charge
-With this transaction type money will not be directly charged from the customer, so You will need to charge reserved amount latter. This can be done in two ways:
-* You can do this by creating the delivery note within the shop backend (see [Creating delivery note](#creating-delivery-note))
-* You can do this by using custom event procedure within Plentymarkets (see [Creating event procedure](#creating-event-procedure))
-
-### Invoice payment methods
-> _Invoice and Invoice secured B2C_ is only available under the following conditions:
-> 1. The Country is either Germany or Austria
-> 2. The address does not belong to a company
-
-> _Invoice secured B2B_ is only available under the following conditions:
-> 1. The Country is either Germany or Austria
-> 2. The address does belong to a company
-
-### All payment methods
-* All payment methods will add `shortId` (the id of the transaction which lead to the payment i.e. Receipt, Debit or Capture) to the Order payment (see [Status of a payment](#status-of-a-payment)).
-* In case of an error, error message will be added to the Order note and to the Plentymarkets Logs (see [Logging](#logging)).
+### Alle Zahlungsmethoden
+* Alle Zahlungsmethoden fügen `shortId` (die ID der Transaktion, die zur Zahlung geführt hat, d.h. Quittung, Abbuchung oder Erfassung) zur Auftragszahlung hinzu (siehe [Status einer Zahlung](#Status einer Zahlung)).
+* Im Falle eines Fehlers wird eine Fehlermeldung in der Auftragsnotiz und in den Plentymarkets-Protokollen hinzugefügt (siehe [Protokollierung](#protokollierung)).

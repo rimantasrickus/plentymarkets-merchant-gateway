@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response as BaseResponse;
 /**
  * Redirect URL controller
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,6 +103,7 @@ class RedirectController extends Controller
         $paymentInformation['transaction']['status'] = $libResponse['status'];
         unset($paymentInformation['transaction']['redirectUrl']);
         $this->sessionHelper->setValue('paymentInformation', $paymentInformation);
+        $this->sessionHelper->setValue('paymentResource', $libResponse);
 
         return $response->redirectTo('place-order');
     }

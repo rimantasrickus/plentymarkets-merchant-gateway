@@ -24,13 +24,14 @@ use HeidelpayMGW\Services\InvoiceGuaranteedPaymentService;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
 use Plenty\Modules\Order\Property\Models\OrderPropertyType;
 use HeidelpayMGW\Services\InvoiceGuaranteedPaymentServiceB2B;
+use Plenty\Modules\Order\Models\OrderType;
 use Plenty\Modules\Payment\Events\Checkout\GetPaymentMethodContent;
 use Plenty\Modules\Payment\Method\Contracts\PaymentMethodRepositoryContract;
 
 /**
  * Helper class to handle payment data
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,10 +56,10 @@ class PaymentHelper
     use Loggable;
 
     // payment events
-    const PAYMENT_COMPLETED = 'payment.completed';
-    const PAYMENT_CANCELED = 'payment.canceled';
-    const PAYMENT_PARTLY = 'payment.partly';
-    const PAYMENT_PENDING = 'payment.pending';
+    const PAYMENT_COMPLETED = 'completed';
+    const PAYMENT_CANCELED = 'canceled';
+    const PAYMENT_PARTLY = 'partly';
+    const PAYMENT_PENDING = 'pending';
 
     //Canceled order status
     const ORDER_CANCELED = 8.0;
@@ -71,15 +72,25 @@ class PaymentHelper
 
     /** @var PaymentInformationRepository $heidelpayPaymentInformationRepo */
     private $heidelpayPaymentInformationRepo;
- 
+
+    /** @var Translator $translator  Plenty Translator service */
+    protected $translator;
+    
+    /** @var OrderHelper $orderHelper */
+    protected $orderHelper;
+    
     public function __construct(
         PaymentMethodRepositoryContract $plentyPaymentMethodRepository,
         SessionHelper $sessionHelper,
-        PaymentInformationRepository $heidelpayPaymentInformationRepo
+        PaymentInformationRepository $heidelpayPaymentInformationRepo,
+        Translator $translator,
+        OrderHelper $orderHelper
     ) {
         $this->plentyPaymentMethodRepository = $plentyPaymentMethodRepository;
         $this->sessionHelper = $sessionHelper;
         $this->heidelpayPaymentInformationRepo = $heidelpayPaymentInformationRepo;
+        $this->translator = $translator;
+        $this->orderHelper = $orderHelper;
     }
  
     /**
@@ -169,7 +180,7 @@ class PaymentHelper
                     'name' => PluginConfiguration::SOFORT_FRONTEND_NAME
                 ];
             }
-            //Flexipay
+            //FlexiPay
             if ($payment === PluginConfiguration::PAYMENT_KEY_FLEXIPAY) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
@@ -255,7 +266,7 @@ class PaymentHelper
     /**
      * Select payment service, make charge call and handle result
      *
-     * @param array $heidelpayPaymentResource  Heidelpay payment data from JS class in frontend
+     * @param array $heidelpayPaymentResource  heidelpay payment data from JS class in frontend
      * @param int $mopId  Plenty payment method ID
      *
      * @return array GetPaymentMethodContent event's value and type
@@ -327,7 +338,7 @@ class PaymentHelper
     {
         if (empty($mopId)) {
             /** @var Order $order */
-            $order = pluginApp(OrderHelper::class)->findOrderById($orderId);
+            $order = $this->orderHelper->findOrderById($orderId);
             $mopId = (int)$order->methodOfPaymentId;
         }
         /** @var array $pluginMopList */
@@ -374,37 +385,36 @@ class PaymentHelper
     }
 
     /**
-     * Handle Plenty payment creation from Heidelpay payment information
+     * Add Plenty payment from heidelpay payment information
      *
-     * @param array $heidelpayPayment  Payment transaction data from SDK
-     * @param int $orderId  Plenty Order ID
-     * @param int $mopId  Plenty payment method ID
+     * @param integer $orderId
+     * @param integer $mopId
+     * @param string $currency
+     * @param string $referenceNumber
+     * @param float $amount
+     * @param string $paymentHash
      *
      * @return void
      */
-    public function handlePayment(array $heidelpayPayment, int $orderId, int $mopId)
-    {
+    public function addPayment(
+        int $orderId,
+        int $mopId,
+        string $currency,
+        string $referenceNumber,
+        float $amount,
+        string $paymentHash,
+        string $paymentType
+    ) {
         /** @var mixed $pluginPaymentService */
         $pluginPaymentService = $this->getPluginPaymentService($orderId);
-        /** @var string $externalOrderId */
-        $externalOrderId = $this->sessionHelper->getValue('externalOrderId');
-        // handle invoice payment
-        /** @var string $referenceNumber */
-        $referenceNumber = $heidelpayPayment['transaction']['shortId'];
-        // if payment completed add amount to payment
-        $amount = 0.00;
-        if ($heidelpayPayment['transaction']['status'] == 'completed') {
-            $amount = (float)$heidelpayPayment['transaction']['amount'];
-        }
-
-        // add external Order ID and invoice information comment to Order
-        $pluginPaymentService->addExternalOrderId($orderId, $externalOrderId);
         $plentyPayment = $pluginPaymentService->addPaymentToOrder(
             $orderId,
             $referenceNumber,
             $mopId,
             $amount,
-            $heidelpayPayment['transaction']['currency']
+            $currency,
+            $paymentHash,
+            $paymentType
         );
         $pluginPaymentService->assignPaymentToContact($plentyPayment, $orderId);
     }
@@ -414,67 +424,85 @@ class PaymentHelper
      *
      * @param PaymentInformation $heidelpayPaymentInformation  Payment transaction data from SDK
      * @param Order $order  Plenty Order
+     * @param int $originalOrderId  Plenty Order ID
      *
-     * @return void
+     * @return array
      */
-    public function cancelTransaction(PaymentInformation $heidelpayPaymentInformation, Order $order)
+    public function cancelTransaction(PaymentInformation $heidelpayPaymentInformation, Order $order, int $originalOrderId)
     {
         if (empty($heidelpayPaymentInformation->transaction)) {
             return;
         }
+
         /** @var mixed $pluginPaymentService */
-        $pluginPaymentService = $this->getPluginPaymentService($order->parentOrder->id);
-        $pluginPaymentService->cancelTransaction($heidelpayPaymentInformation, $order);
+        $pluginPaymentService = $this->getPluginPaymentService($originalOrderId);
+
+        return $pluginPaymentService->cancelTransaction($heidelpayPaymentInformation, $order, $originalOrderId);
     }
 
     /**
-     * Handle Heidelpay webhook event
+     * Handle heidelpay webhook event
      *
-     * @param array $hook  Heidelpay webhook information array
-     * @param array $libResponse  Heidelpay payment information from SDK
+     * @param array $paymentResource  heidelpay payment information from SDK
      *
      * @return bool
      */
-    public function handleWebhook(array $hook, array $libResponse): bool
+    public function handleWebhook(array $paymentResource): bool
     {
-        if ($hook['event'] === self::PAYMENT_PENDING) {
+        if (empty($paymentResource['paymentResourceId'])) {
             return true;
         }
-        if (empty($libResponse['paymentResourceId'])) {
+
+        if ($paymentResource['stateName'] === self::PAYMENT_PENDING) {
             return true;
         }
+        
         /** @var PaymentInformation $heidelpayPaymentInfo */
-        $heidelpayPaymentInfo = $this->heidelpayPaymentInformationRepo->getByResourceId($libResponse['paymentResourceId']);
+        $heidelpayPaymentInfo = $this->heidelpayPaymentInformationRepo->getByResourceId($paymentResource['paymentResourceId']);
         if (empty($heidelpayPaymentInfo) || empty($heidelpayPaymentInfo->orderId)) {
             return false;
         }
         
-        $updated = false;
+        /** @var Order $order */
+        $order = $this->orderHelper->findOrderById((int)$heidelpayPaymentInfo->orderId);
         /** @var mixed $pluginPaymentService */
         $pluginPaymentService = $this->getPluginPaymentService((int)$heidelpayPaymentInfo->orderId);
-        // payment completed logic
-        if ($hook['event'] === self::PAYMENT_COMPLETED) {
-            /** @var Order $order */
-            $order = pluginApp(OrderHelper::class)->findOrderById((int)$heidelpayPaymentInfo->orderId);
-            // don't duplicate amount
-            if ($order->paymentStatus !== 'fullyPaid') {
-                $updated = $pluginPaymentService->updatePlentyPaymentPaidAmount((int)$heidelpayPaymentInfo->orderId, (int)($libResponse['total'] * 100), Payment::STATUS_CAPTURED);
-            } else {
-                $updated = true;
-            }
+        
+        try {
+            //sync payments
+            $this->handleHeidelpayCharges($paymentResource, $order);
+            $this->handleHeidelpayRefunds($paymentResource, $order);
+            $updated = true;
+        } catch (\Exception $e) {
+            $this->getLogger(__METHOD__)->exception(
+                'translation.exception',
+                [
+                    'error' => $e->getMessage(),
+                    'getCode' => $e->getCode(),
+                    'getFile' => $e->getFile(),
+                    'getLine' => $e->getLine(),
+                    'getTraceAsString' => $e->getTraceAsString(),
+                ]
+            );
+            
+            $updated = false;
         }
-        // payment partially completed logic
-        if ($hook['event'] === self::PAYMENT_PARTLY) {
-            $updated = $pluginPaymentService->updatePlentyPaymentPaidAmount((int)$heidelpayPaymentInfo->orderId, (int)($libResponse['total'] * 100), Payment::STATUS_PARTIALLY_CAPTURED);
-        }
+
         // payment canceled logic
-        if ($hook['event'] === self::PAYMENT_CANCELED) {
-            $updated = $pluginPaymentService->cancelPlentyPayment($heidelpayPaymentInfo->externalOrderId);
+        if ($paymentResource['stateName'] === self::PAYMENT_CANCELED) {
             try {
-                /** @var Order $order */
-                $order = pluginApp(OrderHelper::class)->findOrderById((int)$heidelpayPaymentInfo->orderId);
                 $order->statusId = self::ORDER_CANCELED;
-                pluginApp(OrderHelper::class)->updateOrder($order->toArray(), (int)$heidelpayPaymentInfo->orderId);
+                $this->orderHelper->updateOrder($order->toArray(), (int)$heidelpayPaymentInfo->orderId);
+                
+                $commentText = implode('<br />', [
+                    $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.addedByPlugin'),
+                    $this->translator->trans(PluginConfiguration::PLUGIN_NAME.'::translation.paymentCanceled')
+                ]);
+                $pluginPaymentService->createOrderComment(
+                    $order->id,
+                    $commentText
+                );
+                $updated = true;
             } catch (\Exception $e) {
                 $this->getLogger(__METHOD__)->exception(
                     'translation.exception',
@@ -489,10 +517,9 @@ class PaymentHelper
         $this->getLogger(__METHOD__)->debug(
             'translation.paymentEvent',
             [
-                'hook' => $hook,
-                'libResponse' => $libResponse,
+                'paymentResource' => $paymentResource,
                 'heidelpayPaymentInfo' => $heidelpayPaymentInfo,
-                'updated' => $updated
+                'updated' => $updated,
             ]
         );
 
@@ -566,6 +593,85 @@ class PaymentHelper
             $orderPdfGeneration->advice   = $text;
             
             return $orderPdfGeneration;
+        }
+    }
+
+    public function generatePaymentHash(int $orderId, string $paymentId, string $chargeId, string $cancellationId = ""): string
+    {
+        $hash = "$orderId:$paymentId:$chargeId";
+        if (!empty($cancellationId)) {
+            $hash = "$orderId:$paymentId:$chargeId:$cancellationId";
+        }
+        return $hash;
+    }
+
+    public function hasPayment(Order $order, string $paymentHash): bool
+    {
+        /** @var Payment $payment */
+        foreach ($order->payments as $payment) {
+            if ($payment->hash === $paymentHash) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function handleHeidelpayCharges(array $paymentResource, Order $order)
+    {
+        foreach ($paymentResource['charges'] as $heidelpayCharge) {
+            $paymentHash = $this->generatePaymentHash($order->id, $paymentResource['paymentId'], $heidelpayCharge['id']);
+            // if order already has this charge or charge is pending, skip
+            if ($this->hasPayment($order, $paymentHash) || $heidelpayCharge['isPending']) {
+                continue;
+            }
+            $paymentReference = 'charge: '.$heidelpayCharge['shortId'].' paymentId: '.$paymentResource['paymentId'];
+            $this->addPayment(
+                $order->id,
+                $order->methodOfPaymentId,
+                $paymentResource['currency'],
+                $paymentReference,
+                $heidelpayCharge['amount'],
+                $paymentHash,
+                Payment::PAYMENT_TYPE_CREDIT
+            );
+        }
+    }
+
+    public function handleHeidelpayRefunds(array $paymentResource, Order $order)
+    {
+        // if order has credit note, credit note should have cancellation already added
+        $creditNode = $this->orderHelper->findCreditNoteOrderUnauthorized($order);
+        if (!empty($creditNode)) {
+            return;
+        }
+        foreach ($paymentResource['cancellations'] as $heidelpayCancellation) {
+            // handle refunds and not reversals
+            if (empty($heidelpayCancellation['chargeId'])) {
+                continue;
+            }
+            $paymentHash = $this->generatePaymentHash(
+                $order->id,
+                $paymentResource['paymentId'],
+                $heidelpayCancellation['chargeId'],
+                $heidelpayCancellation['id']
+            );
+            // if order already has this cancellation, skip
+            if ($this->hasPayment($order, $paymentHash)) {
+                continue;
+            }
+            $paymentReference = 'cancellation: '.$heidelpayCancellation['shortId'];
+            $paymentReference .= ' charge: '.$heidelpayCancellation['chargeShortId'];
+            $paymentReference .= ' paymentId: '.$paymentResource['paymentId'];
+            $this->addPayment(
+                $order->id,
+                $order->methodOfPaymentId,
+                $paymentResource['currency'],
+                $paymentReference,
+                $heidelpayCancellation['amount'],
+                $paymentHash,
+                Payment::PAYMENT_TYPE_DEBIT
+            );
         }
     }
 }

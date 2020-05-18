@@ -8,7 +8,7 @@
     "namespace": "HeidelpayMGW",
 
     "type": "payment",
-    "version": "0.7.0",
+    "version": "1.0.0",
     "license": "Apache-2.0",
     "isClosedSource": false,
     "price": 0.00,
@@ -19,7 +19,7 @@
     },
     "categories": ["3519"],
     "keywords": ["heidelpay", "plentymarkets", "plugin", "payment", "payment method", "credit card", "debit card", "invoice"],
-    "author": "hashtagES GmbH",
+    "author": "heidelpay GmbH",
     "authorIcon": "icon_author_xs.png",
     "pluginIcon": "icon_plugin.png",
     "email"  : "support@heidelpay.com",
@@ -90,35 +90,35 @@
         {
             "key"           :"HeidelpayMGW\\Containers\\CreditCardContainer",
             "name"          :"CreditCardContainer",
-            "description"   :"Heidelpay Credit card form",
+            "description"   :"heidelpay Credit/Debit card form",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         },
         {
             "key"           :"HeidelpayMGW\\Containers\\SepaContainer",
             "name"          :"SepaContainer",
-            "description"   :"Heidelpay Sepa form",
+            "description"   :"heidelpay SEPA Direct Debit form",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         },
         {
             "key"           :"HeidelpayMGW\\Containers\\SepaGuaranteedContainer",
             "name"          :"SepaGuaranteedContainer",
-            "description"   :"Heidelpay Sepa guaranteed form",
+            "description"   :"heidelpay SEPA Direct Debit guaranteed form",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         },
         {
             "key"           :"HeidelpayMGW\\Containers\\PaypalContainer",
             "name"          :"PaypalContainer",
-            "description"   :"Heidelpay Paypal form",
+            "description"   :"heidelpay PayPal form",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         },
         {
             "key"           :"HeidelpayMGW\\Containers\\IdealContainer",
             "name"          :"IdealContainer",
-            "description"   :"Heidelpay iDEAL form",
+            "description"   :"heidelpay iDEAL form",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         }

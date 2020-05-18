@@ -7,7 +7,7 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Model;
 /**
  * PluginSetting model
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,13 +32,13 @@ class PluginSetting extends Model
     /** @var int $id Model ID in the database. We don't need autoincrement so we set ID always to 1 */
     public $id = 1;
 
-    /** @var string $publicKey Heidelpay API key */
+    /** @var string $publicKey heidelpay API key */
     public $publicKey = '';
 
-    /** @var string $privateKey Heidelpay API key */
+    /** @var string $privateKey heidelpay API key */
     public $privateKey = '';
 
-    /** @var string $apiMode Heidelpay API mode */
+    /** @var string $apiMode heidelpay API mode */
     public $apiMode = '';
 
     /**
@@ -48,7 +48,8 @@ class PluginSetting extends Model
      */
     public function getTableName(): string
     {
-        return PluginConfiguration::PLUGIN_NAME.'::'.explode('\\', __CLASS__)[2];
+        /** @noinspection OffsetOperationsInspection */
+        return PluginConfiguration::PLUGIN_NAME.'::'. explode('\\', __CLASS__)[2];
     }
 
     /**

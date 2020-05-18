@@ -17,7 +17,7 @@ use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
 /**
  * Invoice Guaranteed payment service class
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,12 +91,13 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
     /**
      * Make API call to cancel charge
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param Order $order  Plenty Order
+     * @param int $originalOrderId Original Plenty Order ID
      *
      * @return array  Response from SDK
      */
-    public function cancelTransaction(PaymentInformation $paymentInformation, Order $order): array
+    public function cancelTransaction(PaymentInformation $paymentInformation, Order $order, int $originalOrderId): array
     {
         /** @var array $data */
         $data = parent::prepareCancelTransactionRequest($paymentInformation, $order);
@@ -139,7 +140,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
                 ]
             );
         }
-        $this->createOrderComment($order->parentOrder->id, $commentText);
+        $this->createOrderComment($originalOrderId, $commentText);
 
         $this->getLogger(__METHOD__)->debug(
             'translation.cancelTransaction',
@@ -156,7 +157,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
      * Update plentymarkets Order with external Order ID and comment
      *
      * @param int $orderId  Plenty Order ID
-     * @param string $externalOrderId  Heidelpay Order ID
+     * @param string $externalOrderId  heidelpay Order ID
      *
      * @return void
      */
@@ -183,7 +184,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
     /**
      * Make API call ship to finalize transaction
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param integer $orderId  Plenty Order ID
      *
      * @throws Exception
@@ -231,7 +232,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
         
         if (!$libResponse['success']) {
             $this->getLogger(__METHOD__)->error(
-                PluginConfiguration::PLUGIN_NAME.'translation.errorShip',
+                PluginConfiguration::PLUGIN_NAME.'::translation.errorShip',
                 [
                     'error' => $libResponse
                 ]

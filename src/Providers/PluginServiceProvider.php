@@ -28,8 +28,10 @@ use Plenty\Modules\Basket\Events\Basket\AfterBasketCreate;
 use Plenty\Modules\Payment\Events\Checkout\ExecutePayment;
 use HeidelpayMGW\Methods\InvoiceGuaranteedPaymentMethodB2B;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
+use HeidelpayMGW\EventProcedures\RefundTransactionProcedure;
 use Plenty\Modules\Order\Pdf\Events\OrderPdfGenerationEvent;
 use HeidelpayMGW\EventProcedures\AuthorizationChargeProcedure;
+use HeidelpayMGW\EventProcedures\FinalizeTransactionProcedure;
 use Plenty\Modules\Basket\Events\BasketItem\AfterBasketItemAdd;
 use Plenty\Modules\EventProcedures\Services\Entries\ProcedureEntry;
 use Plenty\Modules\EventProcedures\Services\EventProceduresService;
@@ -39,7 +41,7 @@ use Plenty\Modules\Payment\Method\Contracts\PaymentMethodContainer;
 /**
  * Service provider of plugin
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +72,7 @@ class PluginServiceProvider extends ServiceProvider
     {
         $this->getApplication()->register(PluginRouteServiceProvider::class);
     }
-    
+
     /**
      * Everything that needs constant attention goes here. Like system events and so on.
      *
@@ -78,7 +80,8 @@ class PluginServiceProvider extends ServiceProvider
      * @param PaymentMethodContainer $payContainer  Plentymarkets PaymentMethodContainer
      * @param SessionHelper $sessionHelper  Helper class to save information to session
      * @param Dispatcher $eventDispatcher  Plentymarkets event Dispatcher
-     * @param PaymentInformationRepository $paymentInformationRepository  Heidelpay payment information repository
+     * @param PaymentInformationRepository $paymentInformationRepository  heidelpay payment information repository
+     * @param EventProceduresService $eventProceduresService
      *
      * @return void
      */
@@ -153,14 +156,13 @@ class PluginServiceProvider extends ServiceProvider
             SofortPaymentMethod::class,
             $this->paymentMethodEvents()
         );
-        //Flexipay
+        //FlexiPay
         $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_FLEXIPAY);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_FLEXIPAY,
             FlexipayPaymentMethod::class,
             $this->paymentMethodEvents()
         );
-
 
         //charge authorization event
         $eventProceduresService->registerProcedure(
@@ -171,6 +173,26 @@ class PluginServiceProvider extends ServiceProvider
                 'en' => 'Authorization charge ('.PluginConfiguration::PLUGIN_NAME.')'
             ],
             AuthorizationChargeProcedure::class . '@handle'
+        );
+        //perform finalize transaction
+        $eventProceduresService->registerProcedure(
+            'finalizeTransaction',
+            ProcedureEntry::EVENT_TYPE_ORDER,
+            [
+                'de' => 'Finalize transaction ('.PluginConfiguration::PLUGIN_NAME.')',
+                'en' => 'Finalize transaction ('.PluginConfiguration::PLUGIN_NAME.')'
+            ],
+            FinalizeTransactionProcedure::class . '@handle'
+        );
+        //perform refund transaction
+        $eventProceduresService->registerProcedure(
+            'finalizeTransaction',
+            ProcedureEntry::EVENT_TYPE_ORDER,
+            [
+                'de' => 'Cancel transaction ('.PluginConfiguration::PLUGIN_NAME.')',
+                'en' => 'Cancel transaction ('.PluginConfiguration::PLUGIN_NAME.')'
+            ],
+            RefundTransactionProcedure::class . '@handle'
         );
 
         $logger = $this->getLogger(__METHOD__);
@@ -227,11 +249,15 @@ class PluginServiceProvider extends ServiceProvider
                     if (!$paymentHelper->isHeidelpayMGWMOP($event->getMop())) {
                         return $event->setType(GetPaymentMethodContent::RETURN_TYPE_CONTINUE);
                     }
-                    /** @var array $paymentResource */
-                    $paymentResource = $sessionHelper->getValue('paymentInformation');
-                    if (!empty($paymentResource)) {
-                        $paymentInformationRepository->updateOrderId($paymentResource['paymentType'], (string)$event->getOrderId());
-                        $paymentHelper->handlePayment($paymentResource, $event->getOrderId(), $event->getMop());
+                    /** @var array $paymentInformation */
+                    $paymentInformation = $sessionHelper->getValue('paymentInformation');
+                    if (!empty($paymentInformation)) {
+                        $paymentInformationRepository->updateOrderId($paymentInformation['paymentType'], (string)$event->getOrderId());
+                        /** @var mixed $pluginPaymentService */
+                        $pluginPaymentService = $paymentHelper->getPluginPaymentService($event->getOrderId());
+                        $pluginPaymentService->addExternalOrderId($event->getOrderId(), $sessionHelper->getValue('externalOrderId'));
+                        // use paymentResource from RedirectController@processRedirect
+                        $paymentHelper->handleWebhook($sessionHelper->getValue('paymentResource'));
                     }
                 } catch (\Exception $e) {
                     $logger->exception(
@@ -276,14 +302,6 @@ class PluginServiceProvider extends ServiceProvider
                             if ($orderPdfGeneration instanceof OrderPdfGeneration) {
                                 $event->addOrderPdfGeneration($orderPdfGeneration);
                             }
-                            break;
-                        case Document::DELIVERY_NOTE:
-                            //perform finalize transaction
-                            $paymentHelper->executeShipment($orderId, $paymentInformation);
-                            break;
-                        case Document::RETURN_NOTE:
-                                // perform refund transaction
-                                $paymentHelper->cancelTransaction($paymentInformation, $order);
                             break;
                         default:
                             //do nothing

@@ -16,7 +16,7 @@ use Plenty\Modules\System\Contracts\WebstoreConfigurationRepositoryContract;
 /**
  * Invoice settings controller for UI settings
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -161,6 +161,6 @@ class PluginSettingsController extends Controller
         $webstoreConfig = pluginApp(WebstoreConfigurationRepositoryContract::class);
         $webstore = $webstoreConfig->findByPlentyId(pluginApp(Application::class)->getPlentyId());
         
-        return ($webstore->domainSsl ?? $webstore->domain).'/'.PluginConfiguration::PLUGIN_NAME.'/webhooks';
+        return ($webstore->domainSsl ?? $webstore->domain).'/'.PluginConfiguration::PLUGIN_NAME.'/webhooks/';
     }
 }

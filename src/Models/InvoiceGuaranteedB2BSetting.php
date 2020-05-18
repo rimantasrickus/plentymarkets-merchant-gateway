@@ -8,7 +8,7 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Model;
 /**
  * InvoiceGuaranteedB2BSetting model
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ class InvoiceGuaranteedB2BSetting extends Model
     public $isActive = false;
 
     /** @var string $displayName  Payment method display name */
-    public $displayName = 'Invoice B2B guaranteed';
+    public $displayName = 'Invoice guaranteed B2B';
 
     /** @var string $basketMinTotal  Minimum basket amount for payment method */
     public $basketMinTotal = '';
@@ -67,7 +67,8 @@ class InvoiceGuaranteedB2BSetting extends Model
      */
     public function getTableName(): string
     {
-        return PluginConfiguration::PLUGIN_NAME.'::'.explode('\\', __CLASS__)[2];
+        /** @noinspection OffsetOperationsInspection */
+        return PluginConfiguration::PLUGIN_NAME.'::'. explode('\\', __CLASS__)[2];
     }
 
     /**
@@ -85,7 +86,7 @@ class InvoiceGuaranteedB2BSetting extends Model
         $this->basketMinTotal = $data['basketMinTotal'] ?? '';
         $this->basketMaxTotal = $data['basketMaxTotal'] ?? '';
         $this->iconURL = $data['iconURL'] ?? '';
-        $this->guaranteedOrFactoring = $data['guaranteedOrFactoring'] ?? false;
+        $this->guaranteedOrFactoring = false; // $data['guaranteedOrFactoring'] ?? false;
         $this->reasonCodeCancel = $data['reasonCodeCancel'] ?? '';
         $this->reasonCodeReturn = $data['reasonCodeReturn'] ?? '';
         $this->reasonCodeCredit = $data['reasonCodeCredit'] ?? '';

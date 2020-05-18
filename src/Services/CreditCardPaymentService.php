@@ -12,7 +12,7 @@ use HeidelpayMGW\Repositories\CreditCardSettingRepository;
 /**
  * Card payment service
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,7 +112,7 @@ class CreditCardPaymentService extends AbstractPaymentService
      * Update plentymarkets Order with external Order ID and comment
      *
      * @param int $orderId  Plenty Order ID
-     * @param string $externalOrderId  Heidelpay Order ID
+     * @param string $externalOrderId  heidelpay Order ID
      *
      * @return void
      */
@@ -136,18 +136,13 @@ class CreditCardPaymentService extends AbstractPaymentService
     /**
      * Make API call ship to finalize transaction
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param integer $orderId  Plenty Order ID
      *
      * @return array
      */
     public function ship(PaymentInformation $paymentInformation, int $orderId): array
     {
-        if ($this->creditCardSettings->mode == PluginConfiguration::AUTHORIZATION_CAPTURE) {
-            $order = $this->orderHelper->findOrderById($orderId);
-            $this->chargeAuthorization($paymentInformation, $order);
-        }
-
         return parent::ship($paymentInformation, $orderId);
     }
 
@@ -177,7 +172,7 @@ class CreditCardPaymentService extends AbstractPaymentService
         ]);
         if (!$libResponse['success']) {
             $this->getLogger(__METHOD__)->error(
-                'translation.errorChargeAuthorization',
+                PluginConfiguration::PLUGIN_NAME.'::translation.errorChargeAuthorization',
                 [
                     'error' => $libResponse
                 ]

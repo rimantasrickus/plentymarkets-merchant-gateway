@@ -8,7 +8,7 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Model;
 /**
  * SofortSetting model
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,8 @@ class SofortSetting extends Model
      */
     public function getTableName(): string
     {
-        return PluginConfiguration::PLUGIN_NAME.'::'.explode('\\', __CLASS__)[2];
+        /** @noinspection OffsetOperationsInspection */
+        return PluginConfiguration::PLUGIN_NAME.'::'. explode('\\', __CLASS__)[2];
     }
 
     /**

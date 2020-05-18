@@ -9,7 +9,7 @@ use HeidelpayMGW\Repositories\PaymentInformationRepository;
 use Plenty\Modules\EventProcedures\Events\EventProceduresTriggered;
 
 /**
- * Authorization charge event
+ * Finalize transaction event
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -31,14 +31,14 @@ use Plenty\Modules\EventProcedures\Events\EventProceduresTriggered;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class AuthorizationChargeProcedure
+class FinalizeTransactionProcedure
 {
     public function __construct()
     {
     }
 
     /**
-     * Handle authorization charge event
+     * Finalize transaction event
      *
      * @param EventProceduresTriggered $event
      * @param PaymentHelper $paymentHelper
@@ -54,15 +54,12 @@ class AuthorizationChargeProcedure
     ) {
         /** @var Order $order */
         $order = $event->getOrder();
-        /** @var Order $originalOrder */
-        $originalOrder = $orderHelper->getOriginalOrder($order);
-        
-        $paymentInformation = $paymentInformationRepository->getByOrderId($originalOrder->id);
+        /** @var int $originalOrderId */
+        $originalOrderId = $orderHelper->getOriginalOrderId($order);
+        $paymentInformation = $paymentInformationRepository->getByOrderId($originalOrderId);
         if (empty($paymentInformation)) {
             return;
         }
-        
-        $paymentService = $paymentHelper->getPluginPaymentService($originalOrder->id, (int)$originalOrder->methodOfPaymentId);
-        $paymentService->chargeAuthorization($paymentInformation, $order);
+        $paymentHelper->executeShipment($originalOrderId, $paymentInformation);
     }
 }

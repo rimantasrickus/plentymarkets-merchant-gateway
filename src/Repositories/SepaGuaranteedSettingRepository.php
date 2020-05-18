@@ -7,7 +7,7 @@ use HeidelpayMGW\Models\SepaGuaranteedSetting;
 /**
  * SEPA guaranteed settings reporitory
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response as BaseResponse;
 /**
  * Class for Database manipulation
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,14 +99,5 @@ class TestController extends Controller
         $model = $request->get('model');
         
         return $response->json(pluginApp(DataBase::class)->query(PluginConfiguration::PLUGIN_NAME.'\\Models\\'.$model)->get());
-    }
-
-    public function test(Response $response)
-    {
-        return $response->json([
-            'class' => __CLASS__,
-            'get_class' => get_class($this),
-            'explode' => explode('\\', __CLASS__)[2],
-        ]);
     }
 }

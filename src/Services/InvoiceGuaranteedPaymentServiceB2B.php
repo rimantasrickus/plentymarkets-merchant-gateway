@@ -16,7 +16,7 @@ use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
 /**
  * Invoice Guaranteed B2B payment service class
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,12 +91,13 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
     /**
      * Make API call to cancel charge
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param Order $order  Plenty Order
+     * @param int $originalOrderId Original Plenty Order ID
      *
      * @return array  Response from SDK
      */
-    public function cancelTransaction(PaymentInformation $paymentInformation, Order $order): array
+    public function cancelTransaction(PaymentInformation $paymentInformation, Order $order, int $originalOrderId): array
     {
         /** @var array $data */
         $data = parent::prepareCancelTransactionRequest($paymentInformation, $order);
@@ -139,7 +140,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
                 ]
             );
         }
-        $this->createOrderComment($order->parentOrder->id, $commentText);
+        $this->createOrderComment($originalOrderId, $commentText);
 
         $this->getLogger(__METHOD__)->debug(
             'translation.cancelTransaction',
@@ -153,11 +154,11 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
     }
 
     /**
-     * Return array with contact information for Heidelpay customer object
+     * Return array with contact information for heidelpay customer object
      *
      * @param Address $address  Plenty Address model
      *
-     * @return array  Data for Heidelpay B2B customer object
+     * @return array  Data for heidelpay B2B customer object
      */
     public function contactInformation(Address $address): array
     {
@@ -172,7 +173,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
      * Update plentymarkets Order with external Order ID and comment
      *
      * @param int $orderId  Plenty Order ID
-     * @param string $externalOrderId  Heidelpay Order ID
+     * @param string $externalOrderId  heidelpay Order ID
      *
      * @return void
      */
@@ -199,7 +200,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
     /**
      * Make API call ship to finalize transaction
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param integer $orderId  Plenty Order ID
      *
      * @throws Exception
@@ -246,7 +247,7 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
 
         if (!$libResponse['success']) {
             $this->getLogger(__METHOD__)->error(
-                PluginConfiguration::PLUGIN_NAME.'translation.errorShip',
+                PluginConfiguration::PLUGIN_NAME.'::translation.errorShip',
                 [
                     'error' => $libResponse
                 ]
