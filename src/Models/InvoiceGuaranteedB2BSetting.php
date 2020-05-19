@@ -86,7 +86,7 @@ class InvoiceGuaranteedB2BSetting extends Model
         $this->basketMinTotal = $data['basketMinTotal'] ?? '';
         $this->basketMaxTotal = $data['basketMaxTotal'] ?? '';
         $this->iconURL = $data['iconURL'] ?? '';
-        $this->guaranteedOrFactoring = false; // $data['guaranteedOrFactoring'] ?? false;
+        $this->guaranteedOrFactoring = false;
         $this->reasonCodeCancel = $data['reasonCodeCancel'] ?? '';
         $this->reasonCodeReturn = $data['reasonCodeReturn'] ?? '';
         $this->reasonCodeCredit = $data['reasonCodeCredit'] ?? '';
