@@ -28,10 +28,10 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class CreateFlexipayDirectSettingTable extends BasePluginMigration
+class CreateFlexiPayDirectSettingTable extends BasePluginMigration
 {
     /**
-     * Create FlexipayDirectSetting model's table
+     * Create FlexiPayDirectSetting model's table
      *
      * @param Migrate $migrate
      *
