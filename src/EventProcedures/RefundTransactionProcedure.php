@@ -81,7 +81,7 @@ class RefundTransactionProcedure
         $paymentId = $paymentInformation->transaction['paymentId'];
         foreach ($cancellations as $heidelpayCancellation) {
             // add payment only for charged transactions
-            if (empty($heidelpayCancellation['chargeId']) || $heidelpayCancellation['chargePending']) {
+            if (empty($heidelpayCancellation['chargeId']) || !$heidelpayCancellation['chargeSuccess']) {
                 continue;
             }
             $paymentHash = $this->paymentHelper->generatePaymentHash(

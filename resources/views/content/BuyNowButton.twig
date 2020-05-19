@@ -1,4 +1,4 @@
-<button id="checkoutButtonHeidelpay" class="btn btn-success btn-block" onclick="prepareHeidelpayPayment()" :disabled="waiting">
+<button id="checkoutButtonHeidelpay" class="btn btn-block btn-primary btn-appearance" onclick="prepareHeidelpayPayment()" :disabled="waiting">
     <i id="checkoutButtonHeidelpayArrow" class="fa fa-arrow-right" aria-hidden="true"></i>
     {{ trans("Ceres::Template.checkoutBuyNow") }}
 </button>
@@ -30,6 +30,7 @@ function prepareHeidelpayPayment() {
         for (mop of mopList) {
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{invoice}}') {
                 heidelpayPayment(placeOrderComponent, heidelpayInstance.Invoice());
+                return;
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{invoiceGuaranteed}}') {
                 if (!isBirthDateAvailable() && !heidelpayBirthDate) {
@@ -49,6 +50,7 @@ function prepareHeidelpayPayment() {
                         heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
                     }
                 }
+                return;
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{invoiceGuaranteedB2B}}') {
                 // Creating a customer instance
@@ -71,6 +73,7 @@ function prepareHeidelpayPayment() {
                         }
                     }
                 };
+                return;
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{cards}}') {
                 showheidelpayCardsModal();
@@ -95,6 +98,7 @@ function prepareHeidelpayPayment() {
                     document.getElementById('ccModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
                     heidelpayPayment(placeOrderComponent, card);
                 };
+                return;
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{sepaDirectDebit}}') {
                 showHeidelpaySepaDirectDebitModal();
@@ -113,6 +117,7 @@ function prepareHeidelpayPayment() {
                         showErrorNotification('{{sepaDirectDebitMandateError}}');
                     }
                 };
+                return;
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{sepaDirectDebitGuaranteed}}') {
                 if (!isBirthDateAvailable() && !heidelpayBirthDate) {
@@ -142,6 +147,7 @@ function prepareHeidelpayPayment() {
                         }
                     };
                  }
+                 return;
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{paypal}}') {
                 showHeidelpayPaypalModal();
@@ -158,6 +164,7 @@ function prepareHeidelpayPayment() {
                     document.getElementById('paypalModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
                     heidelpayPayment(placeOrderComponent, paypal);
                 };
+                return;
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{ideal}}') {
                 showHeidelpayIdealModal();
@@ -173,16 +180,20 @@ function prepareHeidelpayPayment() {
                     document.getElementById('idealModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
                     heidelpayPayment(placeOrderComponent, ideal);
                 };
+                return;
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{sofort}}') {
                 document.getElementById('checkoutButtonHeidelpay').disabled = true;
                 heidelpayPayment(placeOrderComponent, heidelpayInstance.Sofort());
+                return;
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{flexipayDirect}}') {
                 document.getElementById('checkoutButtonHeidelpay').disabled = true;
                 heidelpayPayment(placeOrderComponent, heidelpayInstance.FlexiPayDirect());
+                return;
             }
         }
+        placeOrderComponent.preparePayment();
     }
 }
 

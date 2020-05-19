@@ -42,10 +42,6 @@ class SepaDirectDebitGuaranteedPaymentMethod extends BasePaymentMethod
      */
     public function isActive(): bool
     {
-        if ($this->basketService->isBasketB2B()) {
-            return false;
-        }
-        
         return parent::isActive();
     }
 }

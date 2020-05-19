@@ -24,7 +24,6 @@ use HeidelpayMGW\Services\InvoiceGuaranteedPaymentService;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
 use Plenty\Modules\Order\Property\Models\OrderPropertyType;
 use HeidelpayMGW\Services\InvoiceGuaranteedPaymentServiceB2B;
-use Plenty\Modules\Order\Models\OrderType;
 use Plenty\Modules\Payment\Events\Checkout\GetPaymentMethodContent;
 use Plenty\Modules\Payment\Method\Contracts\PaymentMethodRepositoryContract;
 
@@ -622,7 +621,7 @@ class PaymentHelper
         foreach ($paymentResource['charges'] as $heidelpayCharge) {
             $paymentHash = $this->generatePaymentHash($order->id, $paymentResource['paymentId'], $heidelpayCharge['id']);
             // if order already has this charge or charge is pending, skip
-            if ($this->hasPayment($order, $paymentHash) || $heidelpayCharge['isPending']) {
+            if ($this->hasPayment($order, $paymentHash) || !$heidelpayCharge['isSuccess']) {
                 continue;
             }
             $paymentReference = 'charge: '.$heidelpayCharge['shortId'].' paymentId: '.$paymentResource['paymentId'];
@@ -647,7 +646,7 @@ class PaymentHelper
         }
         foreach ($paymentResource['cancellations'] as $heidelpayCancellation) {
             // handle refunds and not reversals
-            if (empty($heidelpayCancellation['chargeId'])) {
+            if (empty($heidelpayCancellation['chargeId']) || !$heidelpayCancellation['chargeSuccess']) {
                 continue;
             }
             $paymentHash = $this->generatePaymentHash(
