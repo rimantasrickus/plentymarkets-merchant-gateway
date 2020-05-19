@@ -61,8 +61,8 @@ class PluginRouteServiceProvider extends RouteServiceProvider
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/invoice-guaranteed-settings', 'InvoiceGuaranteedSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/invoice-guaranteed-settings', 'InvoiceGuaranteedSettingsController@saveSettings');
                 // Invoice guaranteed B2B settings
-                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/invoice-guaranteedb2b-settings', 'InvoiceGuaranteedB2BSettingsController@getSettings');
-                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/invoice-guaranteedb2b-settings', 'InvoiceGuaranteedB2BSettingsController@saveSettings');
+                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/invoice-guaranteed-b2b-settings', 'InvoiceGuaranteedB2BSettingsController@getSettings');
+                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/invoice-guaranteed-b2b-settings', 'InvoiceGuaranteedB2BSettingsController@saveSettings');
                 // Credit / Debit card settings
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/cards-settings', 'CardsSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/cards-settings', 'CardsSettingsController@saveSettings');

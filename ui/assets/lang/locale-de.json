@@ -29,6 +29,7 @@
 	"production": "Produktion",
 	"apiMode": "Test-/Livesystem",
 	"sepaDirectDebitSettings": "SEPA Lastschrift",
+	"sepaDirectDebitGuaranteedSettings": "SEPA versicherte Lastschrift",
 	"companyName": "Firmenname",
 	"paypalSettings": "PayPal",
 	"idealSettings": "iDEAL",
