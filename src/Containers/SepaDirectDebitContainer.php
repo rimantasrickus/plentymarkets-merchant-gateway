@@ -4,10 +4,10 @@ namespace HeidelpayMGW\Containers;
 
 use Plenty\Plugin\Templates\Twig;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Repositories\SepaGuaranteedSettingRepository;
+use HeidelpayMGW\Repositories\SepaDirectDebitSettingRepository;
 
 /**
- * SEPA guaranteed container
+ * SEPA Direct Debit container
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -29,13 +29,13 @@ use HeidelpayMGW\Repositories\SepaGuaranteedSettingRepository;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class SepaGuaranteedContainer
+class SepaDirectDebitContainer
 {
     public function call(Twig $twig)
     {
-        $settings = pluginApp(SepaGuaranteedSettingRepository::class)->get();
+        $settings = pluginApp(SepaDirectDebitSettingRepository::class)->get();
         
-        return $twig->render(PluginConfiguration::PLUGIN_NAME.'::content.SepaGuaranteed', [
+        return $twig->render(PluginConfiguration::PLUGIN_NAME.'::content.SepaDirectDebit', [
             'companyName' => $settings->companyName
         ]);
     }

@@ -35,13 +35,13 @@
         "HeidelpayMGW\\Migrations\\CreatePaymentInformationTable",
         "HeidelpayMGW\\Migrations\\CreateInvoiceGuaranteedSettingTable",
         "HeidelpayMGW\\Migrations\\CreateInvoiceGuaranteedB2BSettingTable",
-        "HeidelpayMGW\\Migrations\\CreateCreditCardSettingTable",
-        "HeidelpayMGW\\Migrations\\CreateSepaSettingTable",
-        "HeidelpayMGW\\Migrations\\CreateSepaGuaranteedSettingTable",
+        "HeidelpayMGW\\Migrations\\CreateCardsSettingTable",
+        "HeidelpayMGW\\Migrations\\CreateSepaDirectDebitSettingTable",
+        "HeidelpayMGW\\Migrations\\CreateSepaDirectDebitGuaranteedSettingTable",
         "HeidelpayMGW\\Migrations\\CreatePaypalSettingTable",
         "HeidelpayMGW\\Migrations\\CreateIdealSettingTable",
         "HeidelpayMGW\\Migrations\\CreateSofortSettingTable",
-        "HeidelpayMGW\\Migrations\\CreateFlexipaySettingTable"
+        "HeidelpayMGW\\Migrations\\CreateFlexiPayDirectSettingTable"
     ],
     "dataProviders":
     [
@@ -88,22 +88,22 @@
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         },
         {
-            "key"           :"HeidelpayMGW\\Containers\\CreditCardContainer",
-            "name"          :"CreditCardContainer",
+            "key"           :"HeidelpayMGW\\Containers\\CardsContainer",
+            "name"          :"CardsContainer",
             "description"   :"heidelpay Credit/Debit card form",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         },
         {
-            "key"           :"HeidelpayMGW\\Containers\\SepaContainer",
-            "name"          :"SepaContainer",
+            "key"           :"HeidelpayMGW\\Containers\\SepaDirectDebitContainer",
+            "name"          :"SepaDirectDebitContainer",
             "description"   :"heidelpay SEPA Direct Debit form",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         },
         {
-            "key"           :"HeidelpayMGW\\Containers\\SepaGuaranteedContainer",
-            "name"          :"SepaGuaranteedContainer",
+            "key"           :"HeidelpayMGW\\Containers\\SepaDirectDebitGuaranteedContainer",
+            "name"          :"SepaDirectDebitGuaranteedContainer",
             "description"   :"heidelpay SEPA Direct Debit guaranteed form",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"

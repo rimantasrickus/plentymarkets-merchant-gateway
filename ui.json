@@ -27,22 +27,22 @@
             "entryPoint": "index.html?action=invoice-guaranteedb2b-settings"
         },
         {
-            "label": "menu.creditCardSettings",
+            "label": "menu.cardsSettings",
             "menu": "settings/orders/payment/Plugins/Heidelpay",
-            "urlKey": "credit-card-settings",
-            "entryPoint": "index.html?action=credit-card-settings"
+            "urlKey": "cards-settings",
+            "entryPoint": "index.html?action=cards-settings"
         },
         {
-            "label": "menu.sepaSettings",
+            "label": "menu.sepaDirectDebitSettings",
             "menu": "settings/orders/payment/Plugins/Heidelpay",
-            "urlKey": "sepa-settings",
-            "entryPoint": "index.html?action=sepa-settings"
+            "urlKey": "sepa-direct-debit-settings",
+            "entryPoint": "index.html?action=sepa-direct-debit-settings"
         },
         {
-            "label": "menu.sepaGuaranteedSettings",
+            "label": "menu.sepaDirectDebitGuaranteedSettings",
             "menu": "settings/orders/payment/Plugins/Heidelpay",
-            "urlKey": "sepa-guaranteed-settings",
-            "entryPoint": "index.html?action=sepa-guaranteed-settings"
+            "urlKey": "sepa-direct-debit-guaranteed-settings",
+            "entryPoint": "index.html?action=sepa-direct-debit-guaranteed-settings"
         },
         {
             "label": "menu.paypalSettings",
@@ -63,10 +63,10 @@
             "entryPoint": "index.html?action=sofort-settings"
         },
         {
-            "label": "menu.flexipaySettings",
+            "label": "menu.flexipayDirectSettings",
             "menu": "settings/orders/payment/Plugins/Heidelpay",
-            "urlKey": "flexipay-settings",
-            "entryPoint": "index.html?action=flexipay-settings"
+            "urlKey": "flexipay-direct-settings",
+            "entryPoint": "index.html?action=flexipay-direct-settings"
         }
     ]
 }

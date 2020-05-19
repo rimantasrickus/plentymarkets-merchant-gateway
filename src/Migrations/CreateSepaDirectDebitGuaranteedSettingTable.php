@@ -1,13 +1,12 @@
 <?php
 
-namespace HeidelpayMGW\Containers;
+namespace HeidelpayMGW\Migrations;
 
-use Plenty\Plugin\Templates\Twig;
-use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Repositories\SepaSettingRepository;
+use HeidelpayMGW\Models\SepaDirectDebitGuaranteedSetting;
+use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
 /**
- * SEPA container
+ * SEPA Direct Debit guaranteed settings table migration
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -25,18 +24,21 @@ use HeidelpayMGW\Repositories\SepaSettingRepository;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/containers
+ * @package  heidelpayMGW/migrations
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class SepaContainer
+class CreateSepaDirectDebitGuaranteedSettingTable extends BasePluginMigration
 {
-    public function call(Twig $twig)
+    /**
+     * Create SepaDirectDebitGuaranteedSetting model's table
+     *
+     * @param Migrate $migrate
+     *
+     * @return void
+     */
+    public function run(Migrate $migrate)
     {
-        $settings = pluginApp(SepaSettingRepository::class)->get();
-        
-        return $twig->render(PluginConfiguration::PLUGIN_NAME.'::content.Sepa', [
-            'companyName' => $settings->companyName
-        ]);
+        $this->createTable($migrate, SepaDirectDebitGuaranteedSetting::class);
     }
 }

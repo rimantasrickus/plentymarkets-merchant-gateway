@@ -3,10 +3,10 @@
 namespace HeidelpayMGW\Methods;
 
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Repositories\FlexipaySettingRepository;
+use HeidelpayMGW\Repositories\FlexiPayDirectSettingRepository;
 
 /**
-* FlexiPay payment method class
+* FlexiPay Direct payment method class
 *
 * Copyright (C) 2020 heidelpay GmbH
 *
@@ -28,15 +28,15 @@ use HeidelpayMGW\Repositories\FlexipaySettingRepository;
 *
 * @package  heidelpayMGW/methods
 */
-class FlexipayPaymentMethod extends BasePaymentMethod
+class FlexiPayDirectPaymentMethod extends BasePaymentMethod
 {
     /**
-     * FlexipayPaymentMethod constructor
+     * FlexipayDirectPaymentMethod constructor
      * Provide our settings repository to base payment method
      */
     public function __construct()
     {
-        parent::__construct(pluginApp(FlexipaySettingRepository::class));
+        parent::__construct(pluginApp(FlexiPayDirectSettingRepository::class));
     }
 
     /**

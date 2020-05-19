@@ -1,12 +1,11 @@
 <?php
 
-namespace HeidelpayMGW\Methods;
+namespace HeidelpayMGW\Repositories;
 
-use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Repositories\SepaGuaranteedSettingRepository;
+use HeidelpayMGW\Models\CardsSetting;
 
 /**
- * SEPA guaranteed payment method
+ * Cards payment settings repository
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -24,28 +23,17 @@ use HeidelpayMGW\Repositories\SepaGuaranteedSettingRepository;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/methods
+ * @package  heidelpayMGW/repositories
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class SepaGuaranteedPaymentMethod extends BasePaymentMethod
+class CardsSettingRepository extends BaseSettingRepository
 {
+    /**
+     * CardsSettingRepository constructor
+     */
     public function __construct()
     {
-        parent::__construct(pluginApp(SepaGuaranteedSettingRepository::class));
-    }
-
-    /**
-     * Check whether the plugin is active.
-     *
-     * @return bool
-     */
-    public function isActive(): bool
-    {
-        if ($this->basketService->isBasketB2B()) {
-            return false;
-        }
-        
-        return parent::isActive();
+        parent::__construct(pluginApp(CardsSetting::class));
     }
 }

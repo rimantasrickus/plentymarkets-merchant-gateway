@@ -2,10 +2,10 @@
 
 namespace HeidelpayMGW\Repositories;
 
-use HeidelpayMGW\Models\FlexipaySetting;
+use HeidelpayMGW\Models\SepaDirectDebitSetting;
 
 /**
- * Invoice settings repository
+ * SEPA Direct Debit settings repository
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -27,13 +27,13 @@ use HeidelpayMGW\Models\FlexipaySetting;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class FlexipaySettingRepository extends BaseSettingRepository
+class SepaDirectDebitSettingRepository extends BaseSettingRepository
 {
     /**
-     * InvoiceGuaranteedSettingRepository constructor
+     * SepaDirectDebitSettingRepository constructor
      */
     public function __construct()
     {
-        parent::__construct(pluginApp(FlexipaySetting::class));
+        parent::__construct(pluginApp(SepaDirectDebitSetting::class));
     }
 }

@@ -6,7 +6,7 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
 use Plenty\Modules\Plugin\DataBase\Contracts\Model;
 
 /**
- * FlexipaySetting model
+ * Flexipay Direct Setting model
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -28,7 +28,7 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Model;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class FlexipaySetting extends Model
+class FlexiPayDirectSetting extends Model
 {
     /** @var int $id Model ID in the database. We don't need autoincrement so we set ID always to 1 */
     public $id = 1;
@@ -37,7 +37,7 @@ class FlexipaySetting extends Model
     public $isActive = false;
 
     /** @var string $displayName  Payment method display name */
-    public $displayName = 'FlexiPay direct/ PIS';
+    public $displayName = 'FlexiPay direct';
 
     /** @var string $basketMinTotal  Minimum basket amount for payment method */
     public $basketMinTotal = '';
@@ -64,9 +64,9 @@ class FlexipaySetting extends Model
      *
      * @param array $data  Parameters to set
      *
-     * @return FlexipaySetting
+     * @return FlexiPayDirectSetting
      */
-    public function set($data): FlexipaySetting
+    public function set($data): FlexiPayDirectSetting
     {
         // if parameter is null we set default value
         $this->isActive = $data['isActive'] ?? false;

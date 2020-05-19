@@ -6,11 +6,11 @@ use Plenty\Plugin\Controller;
 use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\Http\Response;
 use HeidelpayMGW\Helpers\Loggable;
-use HeidelpayMGW\Repositories\FlexipaySettingRepository;
+use HeidelpayMGW\Repositories\FlexiPayDirectSettingRepository;
 use Symfony\Component\HttpFoundation\Response as BaseResponse;
 
 /**
- * FlexiPay settings controller for UI settings
+ * FlexiPay Direct settings controller for UI settings
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -32,11 +32,11 @@ use Symfony\Component\HttpFoundation\Response as BaseResponse;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class FlexipaySettingsController extends Controller
+class FlexiPayDirectSettingsController extends Controller
 {
     use Loggable;
 
-    /** @var FlexipaySettingRepository $settingRepository */
+    /** @var FlexiPayDirectSettingRepository $settingRepository */
     private $settingRepository;
 
     /** @var Response $response */
@@ -46,13 +46,13 @@ class FlexipaySettingsController extends Controller
     private $request;
 
     /**
-     * FlexipaySettingsController constructor
+     * FlexiPayDirectSettingsController constructor
      *
-     * @param FlexipaySettingRepository $settingRepository  Repository class from which we get settings
+     * @param FlexiPayDirectSettingRepository $settingRepository  Repository class from which we get settings
      * @param Response $response
      * @param Request $request
      */
-    public function __construct(FlexipaySettingRepository $settingRepository, Response $response, Request $request)
+    public function __construct(FlexiPayDirectSettingRepository $settingRepository, Response $response, Request $request)
     {
         $this->settingRepository = $settingRepository;
         $this->response = $response;

@@ -6,11 +6,11 @@ use Plenty\Plugin\Controller;
 use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\Http\Response;
 use HeidelpayMGW\Helpers\Loggable;
-use HeidelpayMGW\Repositories\SepaSettingRepository;
+use HeidelpayMGW\Repositories\SepaDirectDebitGuaranteedSettingRepository;
 use Symfony\Component\HttpFoundation\Response as BaseResponse;
 
 /**
- * SEPA settings controller
+ * SEPA Direct Debit guaranteed settings controller
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -32,11 +32,11 @@ use Symfony\Component\HttpFoundation\Response as BaseResponse;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class SepaSettingsController extends Controller
+class SepaDirectDebitGuaranteedSettingsController extends Controller
 {
     use Loggable;
 
-    /** @var SepaSettingRepository $settingRepository */
+    /** @var SepaDirectDebitGuaranteedSettingRepository $settingRepository */
     private $settingRepository;
 
     /** @var Response $response */
@@ -46,13 +46,13 @@ class SepaSettingsController extends Controller
     private $request;
 
     /**
-     * SepaSettingRepository constructor
+     * SepaDirectDebitGuaranteedSettingsController constructor
      *
-     * @param SepaSettingRepository $settingRepository  Repository class from which we get settings
+     * @param SepaDirectDebitGuaranteedSettingRepository $settingRepository  Repository class from which we get settings
      * @param Response $response
      * @param Request $request
      */
-    public function __construct(SepaSettingRepository $settingRepository, Response $response, Request $request)
+    public function __construct(SepaDirectDebitGuaranteedSettingRepository $settingRepository, Response $response, Request $request)
     {
         $this->settingRepository = $settingRepository;
         $this->response = $response;

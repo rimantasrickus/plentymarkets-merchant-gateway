@@ -2,7 +2,7 @@
 
 namespace HeidelpayMGW\Migrations;
 
-use HeidelpayMGW\Models\CreditCardSetting;
+use HeidelpayMGW\Models\CardsSetting;
 use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
 /**
@@ -28,10 +28,10 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class CreateCreditCardSettingTable extends BasePluginMigration
+class CreateCardsSettingTable extends BasePluginMigration
 {
     /**
-     * Create CreditCardSetting model's table
+     * Create CardsSetting model's table
      *
      * @param Migrate $migrate
      *
@@ -39,6 +39,6 @@ class CreateCreditCardSettingTable extends BasePluginMigration
      */
     public function run(Migrate $migrate)
     {
-        $this->createTable($migrate, CreditCardSetting::class);
+        $this->createTable($migrate, CardsSetting::class);
     }
 }

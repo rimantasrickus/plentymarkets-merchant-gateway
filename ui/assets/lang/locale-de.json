@@ -21,17 +21,17 @@
 	"reasonCodeCredit": "Auszahlung",
 	"invoiceGuaranteedSettings": "Versicherter Rechnungskauf B2C",
 	"invoiceGuaranteedB2BSettings": "Versicherter Rechnungskauf B2B",
-	"creditCardSettings": "Kredit-/Debitkarte",
-	"creditCardMode": "Transaktionsmodus",
-	"directDebit": "SEPA Lastschrift",
+	"cardsSettings": "Kredit-/Debitkarte",
+	"paymentMode": "Transaktionsmodus",
+	"sepaDirectDebit": "SEPA Lastschrift",
 	"authorizationCapture": "Autorisation mit Erfassung",
 	"sandbox": "Sandbox",
 	"production": "Produktion",
-	"apiMode": "API Modus",
-	"sepaSettings": "SEPA Lastschrift",
+	"apiMode": "Test-/Livesystem",
+	"sepaDirectDebitSettings": "SEPA Lastschrift",
 	"companyName": "Firmenname",
 	"paypalSettings": "PayPal",
 	"idealSettings": "iDEAL",
 	"sofortSettings": "SOFORT",
-	"flexipaySettings": "FlexiPay Direct"
+	"flexipayDirectSettings": "FlexiPay Direct"
 }

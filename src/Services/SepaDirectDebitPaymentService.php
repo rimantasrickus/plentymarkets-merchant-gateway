@@ -9,7 +9,7 @@ use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 
 /**
- * FlexiPay payment service
+ * SEPA Direct Debit payment service
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -27,11 +27,11 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/services
+ * @package  heidelpayMGW/
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class FlexipayPaymentService extends AbstractPaymentService
+class SepaDirectDebitPaymentService extends AbstractPaymentService
 {
     use Loggable;
 
@@ -42,10 +42,10 @@ class FlexipayPaymentService extends AbstractPaymentService
     private $orderHelper;
 
     /**
-     * FlexipayPaymentService constructor
+     * SepaPaymentService constructor
      *
-     * @param SessionHelper $sessionHelper  Saves information for current plugin session
-     * @param OrderHelper $orderHelper  Order manipulation with AuthHelper
+     * @param SessionHelper $sessionHelper
+     * @param OrderHelper $orderHelper
      */
     public function __construct(
         SessionHelper $sessionHelper,
@@ -60,16 +60,15 @@ class FlexipayPaymentService extends AbstractPaymentService
     /**
      * Make a charge call with HeidelpayMGW PHP-SDK
      *
-     * @param array $payment  Payment type information from Frontend JS
+     * @param array $payment
      *
-     * @return array  Payment information from SDK
+     * @return array
      */
     public function charge(array $payment): array
     {
         $data = $this->prepareChargeRequest($payment);
-
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::directDebit', $data);
-
+        
         $this->getLogger(__METHOD__)->debug(
             'translation.charge',
             [
@@ -124,8 +123,8 @@ class FlexipayPaymentService extends AbstractPaymentService
     /**
      * Make API call ship to finalize transaction
      *
-     * @param PaymentInformation $paymentInformation  heidelpay payment information
-     * @param integer $orderId  Plenty Order ID
+     * @param PaymentInformation $paymentInformation
+     * @param integer $orderId
      *
      * @return array
      */

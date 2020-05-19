@@ -1,12 +1,11 @@
 <?php
 
-namespace HeidelpayMGW\Methods;
+namespace HeidelpayMGW\Repositories;
 
-use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Repositories\SepaSettingRepository;
+use HeidelpayMGW\Models\FlexiPayDirectSetting;
 
 /**
- * SEPA payment method
+ * FlexiPay Direct settings repository
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -24,28 +23,17 @@ use HeidelpayMGW\Repositories\SepaSettingRepository;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/methods
+ * @package  heidelpayMGW/repositories
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class SepaPaymentMethod extends BasePaymentMethod
+class FlexiPayDirectSettingRepository extends BaseSettingRepository
 {
+    /**
+     * InvoiceGuaranteedSettingRepository constructor
+     */
     public function __construct()
     {
-        parent::__construct(pluginApp(SepaSettingRepository::class));
-    }
-
-    /**
-     * Check whether the plugin is active.
-     *
-     * @return bool
-     */
-    public function isActive(): bool
-    {
-        if ($this->basketService->isBasketB2B()) {
-            return false;
-        }
-        
-        return parent::isActive();
+        parent::__construct(pluginApp(FlexiPayDirectSetting::class));
     }
 }

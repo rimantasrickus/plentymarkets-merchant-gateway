@@ -2,10 +2,10 @@
 
 namespace HeidelpayMGW\Repositories;
 
-use HeidelpayMGW\Models\SepaGuaranteedSetting;
+use HeidelpayMGW\Models\SepaDirectDebitGuaranteedSetting;
 
 /**
- * SEPA guaranteed settings reporitory
+ * SEPA Direct Debit guaranteed settings reporitory
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -27,13 +27,13 @@ use HeidelpayMGW\Models\SepaGuaranteedSetting;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class SepaGuaranteedSettingRepository extends BaseSettingRepository
+class SepaDirectDebitGuaranteedSettingRepository extends BaseSettingRepository
 {
     /**
-     * SepaGuaranteedSettingRepository constructor
+     * SepaDirectDebitGuaranteedSettingRepository constructor
      */
     public function __construct()
     {
-        parent::__construct(pluginApp(SepaGuaranteedSetting::class));
+        parent::__construct(pluginApp(SepaDirectDebitGuaranteedSetting::class));
     }
 }

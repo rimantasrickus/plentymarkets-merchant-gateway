@@ -9,7 +9,7 @@ use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 
 /**
- * SEPA payment service
+ * SEPA Direct Debit guaranteed payment service
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -27,11 +27,11 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/
+ * @package  heidelpayMGW/services
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class SepaPaymentService extends AbstractPaymentService
+class SepaDirectDebitGuaranteedPaymentService extends AbstractPaymentService
 {
     use Loggable;
 
@@ -41,12 +41,6 @@ class SepaPaymentService extends AbstractPaymentService
     /** @var OrderHelper $orderHelper  Order manipulation with AuthHelper */
     private $orderHelper;
 
-    /**
-     * SepaPaymentService constructor
-     *
-     * @param SessionHelper $sessionHelper
-     * @param OrderHelper $orderHelper
-     */
     public function __construct(
         SessionHelper $sessionHelper,
         OrderHelper $orderHelper
@@ -67,7 +61,7 @@ class SepaPaymentService extends AbstractPaymentService
     public function charge(array $payment): array
     {
         $data = $this->prepareChargeRequest($payment);
-        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::directDebit', $data);
+        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::sepaDirectDebit', $data);
         
         $this->getLogger(__METHOD__)->debug(
             'translation.charge',
@@ -122,6 +116,7 @@ class SepaPaymentService extends AbstractPaymentService
 
     /**
      * Make API call ship to finalize transaction
+     * Since we don't need to make ship call, skip this
      *
      * @param PaymentInformation $paymentInformation
      * @param integer $orderId

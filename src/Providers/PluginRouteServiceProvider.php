@@ -51,39 +51,39 @@ class PluginRouteServiceProvider extends RouteServiceProvider
             ['v1'],
             ['namespace' => 'HeidelpayMGW\Controllers', 'middleware' => 'oauth'],
             function ($apiRouter) {
-                //Plugin settings
+                // Plugin settings
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/plugin-settings', 'PluginSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/plugin-settings', 'PluginSettingsController@saveSettings');
-                //Invoice settings
+                // Invoice settings
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/invoice-settings', 'InvoiceSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/invoice-settings', 'InvoiceSettingsController@saveSettings');
-                //Invoice guaranteed B2C settings
+                // Invoice guaranteed B2C settings
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/invoice-guaranteed-settings', 'InvoiceGuaranteedSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/invoice-guaranteed-settings', 'InvoiceGuaranteedSettingsController@saveSettings');
-                //Invoice guaranteed B2B settings
+                // Invoice guaranteed B2B settings
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/invoice-guaranteedb2b-settings', 'InvoiceGuaranteedB2BSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/invoice-guaranteedb2b-settings', 'InvoiceGuaranteedB2BSettingsController@saveSettings');
-                //Credit / Debit card settings
-                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/credit-card-settings', 'CreditCardSettingsController@getSettings');
-                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/credit-card-settings', 'CreditCardSettingsController@saveSettings');
-                //SEPA settings
-                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/sepa-settings', 'SepaSettingsController@getSettings');
-                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/sepa-settings', 'SepaSettingsController@saveSettings');
-                //SEPA guaranteed settings
-                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/sepa-guaranteed-settings', 'SepaGuaranteedSettingsController@getSettings');
-                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/sepa-guaranteed-settings', 'SepaGuaranteedSettingsController@saveSettings');
-                //PayPAL settings
+                // Credit / Debit card settings
+                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/cards-settings', 'CardsSettingsController@getSettings');
+                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/cards-settings', 'CardsSettingsController@saveSettings');
+                // SEPA Direct Debit settings
+                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/sepa-direct-debit-settings', 'SepaDirectDebitSettingsController@getSettings');
+                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/sepa-direct-debit-settings', 'SepaDirectDebitSettingsController@saveSettings');
+                // SEPA Direct Debit guaranteed settings
+                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/sepa-direct-debit-guaranteed-settings', 'sepaDirectDebitGuaranteedSettingsController@getSettings');
+                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/sepa-direct-debit-guaranteed-settings', 'sepaDirectDebitGuaranteedSettingsController@saveSettings');
+                // PayPal settings
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/paypal-settings', 'PaypalSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/paypal-settings', 'PaypalSettingsController@saveSettings');
-                //iDEAL settings
+                // iDEAL settings
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/ideal-settings', 'IdealSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/ideal-settings', 'IdealSettingsController@saveSettings');
-                //Sofort settings
+                // Sofort settings
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/sofort-settings', 'SofortSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/sofort-settings', 'SofortSettingsController@saveSettings');
-                //FlexiPay settings
-                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/flexipay-settings', 'FlexipaySettingsController@getSettings');
-                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/flexipay-settings', 'FlexipaySettingsController@saveSettings');
+                // FlexiPay Direct settings
+                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/flexipay-direct-settings', 'FlexipayDirectSettingsController@getSettings');
+                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/flexipay-direct-settings', 'FlexipayDirectSettingsController@saveSettings');
 
                 //Test
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/show', 'TestController@show');

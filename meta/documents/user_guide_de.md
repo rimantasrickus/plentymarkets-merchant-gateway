@@ -8,12 +8,11 @@ Folgende Zahlungsarten werden aktuell unterstützt:
 * Versicherter Rechnungskauf B2C
 * Versicherter Rechnungskauf B2B
 * Kreditkarte und Debitkarte
-* SEPA Lastschrift und garantiert
-* Versicherte SEPA Lastschrift
+* SEPA (versicherte) Lastschrift
 * PayPal
 * SOFORT
 * IDEAL
-* FlexiPay Direkt
+* FlexiPay Direct
 
 ## ANFORDERUNGEN
 * Dieses Plugin ist entwickelt für Plentymarkets 7.

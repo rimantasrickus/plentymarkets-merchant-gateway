@@ -9,15 +9,15 @@ use HeidelpayMGW\Helpers\SessionHelper;
 use Plenty\Plugin\Translation\Translator;
 use Plenty\Modules\Payment\Models\Payment;
 use HeidelpayMGW\Models\PaymentInformation;
-use HeidelpayMGW\Services\SepaPaymentService;
+use HeidelpayMGW\Services\SepaDirectDebitPaymentService;
 use HeidelpayMGW\Services\IdealPaymentService;
 use HeidelpayMGW\Services\PaypalPaymentService;
 use HeidelpayMGW\Services\SofortPaymentService;
 use HeidelpayMGW\Services\InvoicePaymentService;
-use HeidelpayMGW\Services\FlexipayPaymentService;
+use HeidelpayMGW\Services\FlexipayDirectPaymentService;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Services\CreditCardPaymentService;
-use HeidelpayMGW\Services\SepaGuaranteedPaymentService;
+use HeidelpayMGW\Services\CardsPaymentService;
+use HeidelpayMGW\Services\SepaDirectDebitGuaranteedPaymentService;
 use Plenty\Modules\Order\Pdf\Models\OrderPdfGeneration;
 use Plenty\Modules\Payment\Method\Models\PaymentMethod;
 use HeidelpayMGW\Services\InvoiceGuaranteedPaymentService;
@@ -141,18 +141,18 @@ class PaymentHelper
                 ];
             }
             // SEPA Direct Debit
-            if ($payment === PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT) {
+            if ($payment === PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
-                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT,
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT,
                     'name' => PluginConfiguration::DIRECT_DEBIT_FRONTEND_NAME
                 ];
             }
             // SEPA Direct Debit guaranteed
-            if ($payment === PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT_GUARANTEED) {
+            if ($payment === PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT_GUARANTEED) {
                 $plentyPaymentMethodData = [
                     'pluginKey' => PluginConfiguration::PLUGIN_KEY,
-                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT_GUARANTEED,
+                    'paymentKey' => PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT_GUARANTEED,
                     'name' => PluginConfiguration::DIRECT_DEBIT_GUARANTEED_FRONTEND_NAME
                 ];
             }
@@ -356,13 +356,13 @@ class PaymentHelper
                     return pluginApp(InvoiceGuaranteedPaymentServiceB2B::class);
                 }
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_CARDS) {
-                    return pluginApp(CreditCardPaymentService::class);
+                    return pluginApp(CardsPaymentService::class);
                 }
-                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT) {
-                    return pluginApp(SepaPaymentService::class);
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT) {
+                    return pluginApp(SepaDirectDebitPaymentService::class);
                 }
-                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_DIRECT_DEBIT_GUARANTEED) {
-                    return pluginApp(SepaGuaranteedPaymentService::class);
+                if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT_GUARANTEED) {
+                    return pluginApp(SepaDirectDebitGuaranteedPaymentService::class);
                 }
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_PAYPAL) {
                     return pluginApp(PaypalPaymentService::class);
@@ -374,7 +374,7 @@ class PaymentHelper
                     return pluginApp(SofortPaymentService::class);
                 }
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT) {
-                    return pluginApp(FlexipayPaymentService::class);
+                    return pluginApp(FlexipayDirectPaymentService::class);
                 }
             }
         }

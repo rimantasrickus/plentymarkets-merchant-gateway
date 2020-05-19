@@ -3,10 +3,10 @@
 namespace HeidelpayMGW\Methods;
 
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Repositories\CreditCardSettingRepository;
+use HeidelpayMGW\Repositories\CardsSettingRepository;
 
 /**
- * Card payment method
+ * Cards payment method
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -28,11 +28,11 @@ use HeidelpayMGW\Repositories\CreditCardSettingRepository;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class CreditCardPaymentMethod extends BasePaymentMethod
+class CardsPaymentMethod extends BasePaymentMethod
 {
     public function __construct()
     {
-        parent::__construct(pluginApp(CreditCardSettingRepository::class));
+        parent::__construct(pluginApp(CardsSettingRepository::class));
     }
 
     /**

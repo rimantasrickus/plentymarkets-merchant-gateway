@@ -7,10 +7,10 @@ use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\SessionHelper;
 use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Repositories\CreditCardSettingRepository;
+use HeidelpayMGW\Repositories\CardsSettingRepository;
 
 /**
- * Card payment service
+ * Cards payment service
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -32,7 +32,7 @@ use HeidelpayMGW\Repositories\CreditCardSettingRepository;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class CreditCardPaymentService extends AbstractPaymentService
+class CardsPaymentService extends AbstractPaymentService
 {
     use Loggable;
 
@@ -42,24 +42,24 @@ class CreditCardPaymentService extends AbstractPaymentService
     /** @var OrderHelper $orderHelper  Order manipulation with AuthHelper */
     private $orderHelper;
 
-    /** @var CreditCardSettingRepository $creditCardSettings  Card settings repository*/
-    private $creditCardSettings;
+    /** @var CardsSettingRepository $cardsSettings  Card settings repository */
+    private $cardsSettings;
 
     /**
-     * CreditCardPaymentService constructor
+     * CardsPaymentService constructor
      *
      * @param SessionHelper $sessionHelper  Saves information for current plugin session
      * @param OrderHelper $orderHelper  Order manipulation with AuthHelper
-     * @param CreditCardSettingRepository $creditCardSettingRepository  Card settings repository
+     * @param CardsSettingRepository $cardsSettingRepository  Card settings repository
      */
     public function __construct(
         SessionHelper $sessionHelper,
         OrderHelper $orderHelper,
-        CreditCardSettingRepository $creditCardSettingRepository
+        CardsSettingRepository $cardsSettingRepository
     ) {
         $this->sessionHelper = $sessionHelper;
         $this->orderHelper = $orderHelper;
-        $this->creditCardSettings = $creditCardSettingRepository->get();
+        $this->cardsSettings = $cardsSettingRepository->get();
 
         parent::__construct();
     }
@@ -75,7 +75,7 @@ class CreditCardPaymentService extends AbstractPaymentService
     {
         $data = $this->prepareChargeRequest($payment);
         
-        if ($this->creditCardSettings->mode === PluginConfiguration::AUTHORIZATION_CAPTURE) {
+        if ($this->cardsSettings->mode === PluginConfiguration::AUTHORIZATION_CAPTURE) {
             $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::authorisationCapture', $data);
         } else {
             $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::directDebit', $data);
@@ -84,7 +84,7 @@ class CreditCardPaymentService extends AbstractPaymentService
         $this->getLogger(__METHOD__)->debug(
             'translation.charge',
             [
-                'creditCardMode' => $this->creditCardSettings->mode,
+                'paymentMode' => $this->cardsSettings->mode,
                 'data' => $data,
                 'libResponse' => $libResponse
             ]

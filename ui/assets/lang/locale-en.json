@@ -21,17 +21,17 @@
 	"reasonCodeCredit": "Reason for CREDIT",
 	"invoiceGuaranteedSettings": "Invoice guaranteed",
 	"invoiceGuaranteedB2BSettings": "Invoice guaranteed B2B",
-	"creditCardSettings": "Credit/Debit Card",
+	"cardsSettings": "Credit/Debit Card",
 	"paymentMode": "Transaction mode",
-	"directDebit": "SEPA Direct Debit",
+	"sepaDirectDebit": "SEPA Direct Debit",
 	"authorizationCapture": "Authorization with Capture",
 	"sandbox": "Sandbox",
 	"production": "Production",
 	"apiMode": "Test-/Livesystem",
-	"sepaSettings": "SEPA Direct Debit",
+	"sepaDirectDebitSettings": "SEPA Direct Debit",
 	"companyName": "Company name",
 	"paypalSettings": "PayPal",
 	"idealSettings": "iDEAL",
 	"sofortSettings": "SOFORT",
-	"flexipaySettings": "FlexiPay Direct"
+	"flexipayDirectSettings": "FlexiPay Direct"
 }

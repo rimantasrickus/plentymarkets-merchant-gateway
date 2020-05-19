@@ -28,7 +28,7 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Model;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class CreditCardSetting extends Model
+class CardsSetting extends Model
 {
     /** @var int $id Model ID in the database. We don't need autoincrement so we set ID always to 1 */
     public $id = 1;
@@ -67,9 +67,9 @@ class CreditCardSetting extends Model
      *
      * @param array $data
      *
-     * @return CreditCardSetting
+     * @return CardsSetting
      */
-    public function set(array $data): CreditCardSetting
+    public function set(array $data): CardsSetting
     {
         // if parameter is null we set default value
         $this->isActive = $data['isActive'] ?? false;

@@ -9,7 +9,7 @@ use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 
 /**
- * SEPA guaranteed payment service
+ * FlexiPay Direct payment service
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -31,7 +31,7 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class SepaGuaranteedPaymentService extends AbstractPaymentService
+class FlexipayDirectPaymentService extends AbstractPaymentService
 {
     use Loggable;
 
@@ -41,6 +41,12 @@ class SepaGuaranteedPaymentService extends AbstractPaymentService
     /** @var OrderHelper $orderHelper  Order manipulation with AuthHelper */
     private $orderHelper;
 
+    /**
+     * FlexipayDirectPaymentService constructor
+     *
+     * @param SessionHelper $sessionHelper  Saves information for current plugin session
+     * @param OrderHelper $orderHelper  Order manipulation with AuthHelper
+     */
     public function __construct(
         SessionHelper $sessionHelper,
         OrderHelper $orderHelper
@@ -54,15 +60,16 @@ class SepaGuaranteedPaymentService extends AbstractPaymentService
     /**
      * Make a charge call with HeidelpayMGW PHP-SDK
      *
-     * @param array $payment
+     * @param array $payment  Payment type information from Frontend JS
      *
-     * @return array
+     * @return array  Payment information from SDK
      */
     public function charge(array $payment): array
     {
         $data = $this->prepareChargeRequest($payment);
-        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::directDebit', $data);
-        
+
+        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::sepaDirectDebit', $data);
+
         $this->getLogger(__METHOD__)->debug(
             'translation.charge',
             [
@@ -116,10 +123,9 @@ class SepaGuaranteedPaymentService extends AbstractPaymentService
 
     /**
      * Make API call ship to finalize transaction
-     * Since we don't need to make ship call, skip this
      *
-     * @param PaymentInformation $paymentInformation
-     * @param integer $orderId
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
+     * @param integer $orderId  Plenty Order ID
      *
      * @return array
      */

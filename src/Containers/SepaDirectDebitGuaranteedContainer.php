@@ -1,11 +1,13 @@
 <?php
 
-namespace HeidelpayMGW\Repositories;
+namespace HeidelpayMGW\Containers;
 
-use HeidelpayMGW\Models\CreditCardSetting;
+use Plenty\Plugin\Templates\Twig;
+use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Repositories\SepaDirectDebitGuaranteedSettingRepository;
 
 /**
- * Card payment settings repository
+ * SEPA Direct Debit guaranteed container
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -23,17 +25,18 @@ use HeidelpayMGW\Models\CreditCardSetting;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/repositories
+ * @package  heidelpayMGW/containers
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class CreditCardSettingRepository extends BaseSettingRepository
+class SepaDirectDebitGuaranteedContainer
 {
-    /**
-     * CreditCardSettingRepository constructor
-     */
-    public function __construct()
+    public function call(Twig $twig)
     {
-        parent::__construct(pluginApp(CreditCardSetting::class));
+        $settings = pluginApp(SepaDirectDebitGuaranteedSettingRepository::class)->get();
+        
+        return $twig->render(PluginConfiguration::PLUGIN_NAME.'::content.SepaDirectDebitGuaranteed', [
+            'companyName' => $settings->companyName
+        ]);
     }
 }

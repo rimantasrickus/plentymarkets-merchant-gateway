@@ -1,14 +1,14 @@
-<div tabindex="-1" role="dialog" id="heidelpayCCModal" class="modal fade" style="z-index:1071;display:none;">
+<div tabindex="-1" role="dialog" id="heidelpayCardsModal" class="modal fade" style="z-index:1071;display:none;">
     <div role="document" class="modal-dialog">
-        <div class="modal-content" id="heidelpayCCModalContent">
+        <div class="modal-content" id="heidelpayCardsModalContent">
             <div class="modal-header">
-                <button type="button" aria-label="Close" class="close" onclick="closeHeidelpayCCModal(true);">
+                <button type="button" aria-label="Close" class="close" onclick="closeHeidelpayCardsModal(true);">
                     <span aria-hidden="true">×</span>
                 </button> 
-                <h4 class="modal-title">{{ trans("HeidelpayMGW::Frontend.ccModalTitle") }}</h4>
+                <h4 class="modal-title">{{ trans("HeidelpayMGW::Frontend.cardsModalTitle") }}</h4>
             </div> 
-            <div class="modal-body" id="heidelpayCCModalBody">
-                <div id="heidelpay-CC-form" class="heidelpayUI form" novalidate>
+            <div class="modal-body" id="heidelpayCardsModalBody">
+                <div id="heidelpay-Cards-form" class="heidelpayUI form" novalidate>
                     <div class="field">
                         <div id="card-element-id-number" class="heidelpayInput">
                             <!-- Card number UI Element will be inserted here. -->
@@ -27,9 +27,9 @@
                         </div>
                     </div>
                     <div class="field">
-                        <button id="heidelpayCCSubmit" class="heidelpayUI primary button fluid">
-                            <i id="ccModalPayButtonArrow" aria-hidden="true"></i>
-                            {{ trans("HeidelpayMGW::Frontend.ccModalPay") }}
+                        <button id="heidelpayCardsSubmit" class="heidelpayUI primary button fluid">
+                            <i id="cardsModalPayButtonArrow" aria-hidden="true"></i>
+                            {{ trans("HeidelpayMGW::Frontend.cardsModalPay") }}
                         </button>
                     </div>
                 </div>
@@ -39,7 +39,7 @@
 </div>
 
 <script type="text/javascript">
-function closeHeidelpayCCModal(selfClose) {
+function closeHeidelpayCardsModal(selfClose) {
     if (selfClose) {
         document.getElementById('checkoutButtonHeidelpay').disabled = false;
         document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-arrow-right';
@@ -50,8 +50,8 @@ function closeHeidelpayCCModal(selfClose) {
         document.body.removeChild(document.getElementById("modalFadeBackground"));
     }
 
-    document.getElementById("heidelpayCCModal").className = "modal fade";
-    document.getElementById("heidelpayCCModal").style.display = "none";
+    document.getElementById("heidelpayCardsModal").className = "modal fade";
+    document.getElementById("heidelpayCardsModal").style.display = "none";
 
     for (let child of document.getElementById("card-element-id-number").childNodes) {
         document.getElementById("card-element-id-number").removeChild(child);
@@ -64,7 +64,7 @@ function closeHeidelpayCCModal(selfClose) {
     }
 }
 
-function showHeidelpayCCModal() {
+function showheidelpayCardsModal() {
     document.getElementById('checkoutButtonHeidelpay').disabled = true;
     document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-circle-o-notch fa-spin';
 
@@ -74,7 +74,7 @@ function showHeidelpayCCModal() {
     document.body.appendChild(elem);
     document.body.classList = 'page-checkout page-category category- no-touch modal-open';
 
-    document.getElementById("heidelpayCCModal").className = "modal fade in show";
-    document.getElementById("heidelpayCCModal").style.display = "block";
+    document.getElementById("heidelpayCardsModal").className = "modal fade in show";
+    document.getElementById("heidelpayCardsModal").style.display = "block";
 }
 </script>

@@ -6,7 +6,7 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Model;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 
 /**
- * SEPA settings model
+ * SEPA Direct Debit settings model
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -28,7 +28,7 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class SepaSetting extends Model
+class SepaDirectDebitSetting extends Model
 {
     /** @var int $id Model ID in the database. We don't need autoincrement so we set ID always to 1 */
     public $id = 1;
@@ -48,7 +48,7 @@ class SepaSetting extends Model
     /** @var string $iconURL  Path to icon of payment method */
     public $iconURL = '';
 
-    /** @var string $companyName  Company name to display in checkout in SEPA popup */
+    /** @var string $companyName  Company name to display in checkout in SEPA direct debit popup */
     public $companyName = '';
 
     /**
@@ -67,9 +67,9 @@ class SepaSetting extends Model
      *
      * @param array $data
      *
-     * @return SepaSetting
+     * @return SepaDirectDebitSetting
      */
-    public function set($data): SepaSetting
+    public function set($data): SepaDirectDebitSetting
     {
         // if parameter is null we set default value
         $this->isActive = $data['isActive'] ?? false;

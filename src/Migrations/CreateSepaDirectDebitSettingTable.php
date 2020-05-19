@@ -1,12 +1,12 @@
 <?php
 
-namespace HeidelpayMGW\Containers;
+namespace HeidelpayMGW\Migrations;
 
-use Plenty\Plugin\Templates\Twig;
-use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Models\SepaDirectDebitSetting;
+use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
 /**
- * Credit card container
+ * SEPA Direct Debit settings table migration
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -24,14 +24,21 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/container
+ * @package  heidelpayMGW/
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class CreditCardContainer
+class CreateSepaDirectDebitSettingTable extends BasePluginMigration
 {
-    public function call(Twig $twig)
+    /**
+     * Create SepaDirectDebitSetting model's table
+     *
+     * @param Migrate $migrate
+     *
+     * @return void
+     */
+    public function run(Migrate $migrate)
     {
-        return $twig->render(PluginConfiguration::PLUGIN_NAME.'::content.CreditCard', []);
+        $this->createTable($migrate, SepaDirectDebitSetting::class);
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace HeidelpayMGW\Repositories;
+namespace HeidelpayMGW\Containers;
 
-use HeidelpayMGW\Models\SepaSetting;
+use Plenty\Plugin\Templates\Twig;
+use HeidelpayMGW\Configuration\PluginConfiguration;
 
 /**
- * SEPA settings repository
+ * Cards container
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -23,17 +24,14 @@ use HeidelpayMGW\Models\SepaSetting;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/repositories
+ * @package  heidelpayMGW/container
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class SepaSettingRepository extends BaseSettingRepository
+class CardsContainer
 {
-    /**
-     * SepaSettingRepository constructor
-     */
-    public function __construct()
+    public function call(Twig $twig)
     {
-        parent::__construct(pluginApp(SepaSetting::class));
+        return $twig->render(PluginConfiguration::PLUGIN_NAME.'::content.Cards', []);
     }
 }

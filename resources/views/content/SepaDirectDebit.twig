@@ -1,31 +1,31 @@
-<div tabindex="-1" role="dialog" id="heidelpaySepaGuaranteedModal" class="modal fade" style="z-index:1071;display:none;">
+<div tabindex="-1" role="dialog" id="heidelpaySepaDirectDebitModal" class="modal fade" style="z-index:1071;display:none;">
     <div role="document" class="modal-dialog">
-        <div class="modal-content" id="heidelpaySepaGuaranteedModalContent">
+        <div class="modal-content" id="heidelpaySepaDirectDebitModalContent">
             <div class="modal-header">
-                <button type="button" aria-label="Close" class="close" onclick="closeHeidelpaySepaGuaranteedModal(true);">
+                <button type="button" aria-label="Close" class="close" onclick="closeHeidelpaySepaDirectDebitModal(true);">
                     <span aria-hidden="true">×</span>
                 </button> 
-                <h4 class="modal-title">{{ trans("HeidelpayMGW::Frontend.sepaGuaranteedModalTitle") }}</h4>
+                <h4 class="modal-title">{{ trans("HeidelpayMGW::Frontend.sepaDirectDebitModalTitle") }}</h4>
             </div> 
-            <div class="modal-body" id="heidelpaySepaGuaranteedModalBody">
-                <div id="heidelpay-sepa-form" class="heidelpayUI form" novalidate>
+            <div class="modal-body" id="heidelpaySepaDirectDebitModalBody">
+                <div id="heidelpay-sepa-direct-debit-form" class="heidelpayUI form" novalidate>
                     <div class="field" id="sepaDirectDebitMandateText">
                         <h3>{{ trans("HeidelpayMGW::Frontend.sepaDirectDebitMandateTitle") }}</h3><br />
                         {{ trans("HeidelpayMGW::Frontend.sepaDirectDebitMandateText1") }}<br /><br />
                         {{ trans("HeidelpayMGW::Frontend.sepaDirectDebitMandateText2") }}<br /><br />
                         {{ trans("HeidelpayMGW::Frontend.sepaDirectDebitMandateText3") }}
                     </div>
-                    <div>
-                        <input type="checkbox" id="SepaGuaranteedMandate" name="SepaGuaranteedMandate" style="-webkit-appearance:checkbox;">
-                        <label for="SepaGuaranteedMandate" name="SepaGuaranteedMandate" style="padding-left:5px;">I agree</label>
+                    <div> 
+                        <input type="checkbox" id="SepaDirectDebitMandate" name="SepaDirectDebitMandate" style="-webkit-appearance:checkbox;">
+                        <label for="SepaDirectDebitMandate" name="SepaDirectDebitMandate" style="padding-left:5px;">I agree</label>
                     </div>
-                    <div id="sepa-guaranteed-IBAN" class="field">
+                    <div id="sepa-direct-debit-IBAN" class="field">
                         <!-- The IBAN field UI Element will be inserted here -->
                     </div>
                     <div class="field">
-                        <button id="heidelpaySepaGuaranteedSubmit" class="heidelpayUI primary button fluid">
-                            <i id="sepaGuaranteedModalPayButtonArrow" aria-hidden="true"></i>
-                            {{ trans("HeidelpayMGW::Frontend.sepaModalPay") }}
+                        <button id="heidelpaySepaDirectDebitSubmit" class="heidelpayUI primary button fluid">
+                            <i id="sepaDirectDebitModalPayButtonArrow" aria-hidden="true"></i>
+                            {{ trans("HeidelpayMGW::Frontend.sepaDirectDebitModalPay") }}
                         </button>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
 <script type="text/javascript">
 document.getElementById('sepaDirectDebitMandateText').innerHTML = document.getElementById('sepaDirectDebitMandateText').innerHTML.replace(/\{NAME OF MERCHANT\}/g, '<b>{{companyName}}<\/b>');
 
-function closeHeidelpaySepaGuaranteedModal(selfClose) {
+function closeHeidelpaySepaDirectDebitModal(selfClose) {
     if (selfClose) {
         document.getElementById('checkoutButtonHeidelpay').disabled = false;
         document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-arrow-right';
@@ -48,15 +48,15 @@ function closeHeidelpaySepaGuaranteedModal(selfClose) {
         document.body.removeChild(document.getElementById("modalFadeBackground"));
     }
 
-    document.getElementById("heidelpaySepaGuaranteedModal").className = "modal fade";
-    document.getElementById("heidelpaySepaGuaranteedModal").style.display = "none";
+    document.getElementById("heidelpaySepaDirectDebitModal").className = "modal fade";
+    document.getElementById("heidelpaySepaDirectDebitModal").style.display = "none";
 
-    for (let child of document.getElementById("sepa-guaranteed-IBAN").childNodes) {
-        document.getElementById("sepa-guaranteed-IBAN").removeChild(child);
+    for (let child of document.getElementById("sepa-direct-debit-IBAN").childNodes) {
+        document.getElementById("sepa-direct-debit-IBAN").removeChild(child);
     }
 }
 
-function showHeidelpaySepaGuaranteedModal() {
+function showHeidelpaySepaDirectDebitModal() {
     document.getElementById('checkoutButtonHeidelpay').disabled = true;
     document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-circle-o-notch fa-spin';
 
@@ -66,7 +66,7 @@ function showHeidelpaySepaGuaranteedModal() {
     document.body.appendChild(elem);
     document.body.classList = 'page-checkout page-category category- no-touch modal-open';
 
-    document.getElementById("heidelpaySepaGuaranteedModal").className = "modal fade in show";
-    document.getElementById("heidelpaySepaGuaranteedModal").style.display = "block";
+    document.getElementById("heidelpaySepaDirectDebitModal").className = "modal fade in show";
+    document.getElementById("heidelpaySepaDirectDebitModal").style.display = "block";
 }
 </script>

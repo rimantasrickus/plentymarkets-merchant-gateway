@@ -1,12 +1,12 @@
 <?php
 
-namespace HeidelpayMGW\Migrations;
+namespace HeidelpayMGW\Methods;
 
-use HeidelpayMGW\Models\SepaGuaranteedSetting;
-use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
+use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Repositories\SepaDirectDebitSettingRepository;
 
 /**
- * SEPA guaranteed settings table migration
+ * SEPA Direct Debit payment method
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -24,21 +24,28 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/migrations
+ * @package  heidelpayMGW/methods
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class CreateSepaGuaranteedSettingTable extends BasePluginMigration
+class SepaDirectDebitPaymentMethod extends BasePaymentMethod
 {
-    /**
-     * Create SepaGuaranteedSetting model's table
-     *
-     * @param Migrate $migrate
-     *
-     * @return void
-     */
-    public function run(Migrate $migrate)
+    public function __construct()
     {
-        $this->createTable($migrate, SepaGuaranteedSetting::class);
+        parent::__construct(pluginApp(SepaDirectDebitSettingRepository::class));
+    }
+
+    /**
+     * Check whether the plugin is active.
+     *
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        if ($this->basketService->isBasketB2B()) {
+            return false;
+        }
+        
+        return parent::isActive();
     }
 }

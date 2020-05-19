@@ -7,8 +7,8 @@ Currently supported payment methods are:
 * Invoice
 * Invoice secured B2C
 * Invoice secured B2B
-* Card
-* SEPA Direct Debit and Guaranteed
+* Cards (Credit and Debit)
+* SEPA Direct Debit (guaranteed)
 * PayPal
 * SOFORT
 * iDEAL

@@ -2,11 +2,11 @@
 
 namespace HeidelpayMGW\Migrations;
 
-use HeidelpayMGW\Models\SepaSetting;
+use HeidelpayMGW\Models\FlexiPayDirectSetting;
 use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
 /**
- * SEPA settings table migration
+ * FlexiPay Direct settings table migration
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -24,14 +24,14 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
  *
  * @link https://docs.heidelpay.com/
  *
- * @package  heidelpayMGW/
+ * @package  heidelpayMGW/migrations
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class CreateSepaSettingTable extends BasePluginMigration
+class CreateFlexipayDirectSettingTable extends BasePluginMigration
 {
     /**
-     * Create SepaSetting model's table
+     * Create FlexipayDirectSetting model's table
      *
      * @param Migrate $migrate
      *
@@ -39,6 +39,6 @@ class CreateSepaSettingTable extends BasePluginMigration
      */
     public function run(Migrate $migrate)
     {
-        $this->createTable($migrate, SepaSetting::class);
+        $this->createTable($migrate, FlexiPayDirectSetting::class);
     }
 }
