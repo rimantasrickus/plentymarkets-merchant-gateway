@@ -61,7 +61,7 @@ class SepaDirectDebitGuaranteedPaymentService extends AbstractPaymentService
     public function charge(array $payment): array
     {
         $data = $this->prepareChargeRequest($payment);
-        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::sepaDirectDebit', $data);
+        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::charge', $data);
         
         $this->getLogger(__METHOD__)->debug(
             'translation.charge',

@@ -62,6 +62,6 @@ class PluginConfiguration
     const INVOICE = 'invoice';
 
     // Payment mode
-    const DEBIT = 'debit';
+    const CHARGE = 'charge';
     const AUTHORIZATION_CAPTURE = 'authorizationCapture';
 }

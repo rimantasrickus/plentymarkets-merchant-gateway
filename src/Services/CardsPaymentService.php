@@ -78,7 +78,7 @@ class CardsPaymentService extends AbstractPaymentService
         if ($this->cardsSettings->mode === PluginConfiguration::AUTHORIZATION_CAPTURE) {
             $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::authorisationCapture', $data);
         } else {
-            $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::directDebit', $data);
+            $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::charge', $data);
         }
         
         $this->getLogger(__METHOD__)->debug(

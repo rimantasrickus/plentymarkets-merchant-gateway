@@ -68,7 +68,7 @@ class SofortPaymentService extends AbstractPaymentService
     {
         $data = $this->prepareChargeRequest($payment);
 
-        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::directDebit', $data);
+        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::charge', $data);
 
         $this->getLogger(__METHOD__)->debug(
             'translation.charge',

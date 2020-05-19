@@ -23,7 +23,7 @@
 	"invoiceGuaranteedB2BSettings": "Versicherter Rechnungskauf B2B",
 	"cardsSettings": "Kredit-/Debitkarte",
 	"paymentMode": "Transaktionsmodus",
-	"sepaDirectDebit": "SEPA Lastschrift",
+	"charge": "Lastschrift",
 	"authorizationCapture": "Autorisation mit Erfassung",
 	"sandbox": "Sandbox",
 	"production": "Produktion",

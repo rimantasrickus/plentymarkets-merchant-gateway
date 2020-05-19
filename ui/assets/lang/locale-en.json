@@ -23,7 +23,7 @@
 	"invoiceGuaranteedB2BSettings": "Invoice guaranteed B2B",
 	"cardsSettings": "Credit/Debit Card",
 	"paymentMode": "Transaction mode",
-	"sepaDirectDebit": "SEPA Direct Debit",
+	"charge": "Debit",
 	"authorizationCapture": "Authorization with Capture",
 	"sandbox": "Sandbox",
 	"production": "Production",

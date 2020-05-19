@@ -75,10 +75,10 @@ class PaypalPaymentService extends AbstractPaymentService
     {
         $data = $this->prepareChargeRequest($payment);
         
-        if ($this->paypalSettings->mode == PluginConfiguration::AUTHORIZATION_CAPTURE) {
+        if ($this->paypalSettings->mode === PluginConfiguration::AUTHORIZATION_CAPTURE) {
             $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::authorisationCapture', $data);
         } else {
-            $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::directDebit', $data);
+            $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::charge', $data);
         }
         
         $this->getLogger(__METHOD__)->debug(

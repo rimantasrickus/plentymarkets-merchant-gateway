@@ -48,7 +48,7 @@ class CardsSetting extends Model
     /** @var string $iconURL  Path to icon of payment method */
     public $iconURL = '';
 
-    /** @var string $mode  Card payment mode: directDebit or authorizationCapture */
+    /** @var string $mode  Card payment mode: debit or authorizationCapture */
     public $mode = '';
 
     /**
