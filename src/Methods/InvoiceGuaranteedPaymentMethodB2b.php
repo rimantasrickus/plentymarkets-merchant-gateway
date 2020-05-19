@@ -3,7 +3,7 @@
 namespace HeidelpayMGW\Methods;
 
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Repositories\InvoiceGuaranteedB2BSettingRepository;
+use HeidelpayMGW\Repositories\InvoiceGuaranteedB2bSettingRepository;
 
 /**
 * Invoice guaranteed B2B payment method class
@@ -28,17 +28,17 @@ use HeidelpayMGW\Repositories\InvoiceGuaranteedB2BSettingRepository;
 *
 * @package  heidelpayMGW/methods
 */
-class InvoiceGuaranteedPaymentMethodB2B extends BasePaymentMethod
+class InvoiceGuaranteedPaymentMethodB2b extends BasePaymentMethod
 {
     const AVAILABLE_COUNTRIES = ['DE', 'AT'];
 
     /**
-     * InvoiceGuaranteedPaymentMethodB2B constructor
+     * InvoiceGuaranteedPaymentMethodB2b constructor
      * Provide our settings repository to base payment method
      */
     public function __construct()
     {
-        parent::__construct(pluginApp(InvoiceGuaranteedB2BSettingRepository::class));
+        parent::__construct(pluginApp(InvoiceGuaranteedB2bSettingRepository::class));
     }
 
     /**
@@ -48,7 +48,7 @@ class InvoiceGuaranteedPaymentMethodB2B extends BasePaymentMethod
      */
     public function isActive(): bool
     {
-        if (!$this->basketService->isBasketB2B()) {
+        if (!$this->basketService->isBasketB2b()) {
             return false;
         }
         

@@ -34,7 +34,7 @@
         "HeidelpayMGW\\Migrations\\CreateInvoiceSettingTable",
         "HeidelpayMGW\\Migrations\\CreatePaymentInformationTable",
         "HeidelpayMGW\\Migrations\\CreateInvoiceGuaranteedSettingTable",
-        "HeidelpayMGW\\Migrations\\CreateInvoiceGuaranteedB2BSettingTable",
+        "HeidelpayMGW\\Migrations\\CreateInvoiceGuaranteedB2bSettingTable",
         "HeidelpayMGW\\Migrations\\CreateCardsSettingTable",
         "HeidelpayMGW\\Migrations\\CreateSepaDirectDebitSettingTable",
         "HeidelpayMGW\\Migrations\\CreateSepaDirectDebitGuaranteedSettingTable",
@@ -81,8 +81,8 @@
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"
         },
         {
-            "key"           :"HeidelpayMGW\\Containers\\InvoiceGuaranteedB2BContainer",
-            "name"          :"InvoiceGuaranteedB2BContainer",
+            "key"           :"HeidelpayMGW\\Containers\\InvoiceGuaranteedB2bContainer",
+            "name"          :"InvoiceGuaranteedB2bContainer",
             "description"   :"heidelpay MGW B2B customer modal",
             "multiple"      : false,
             "defaultLayoutContainer": "Ceres::Checkout.AfterPaymentList"

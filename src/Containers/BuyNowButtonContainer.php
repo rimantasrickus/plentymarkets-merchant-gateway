@@ -7,7 +7,7 @@ use HeidelpayMGW\Helpers\ApiKeysHelper;
 use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Configuration\PluginConfiguration;
 use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
-use HeidelpayMGW\Repositories\InvoiceGuaranteedB2BSettingRepository;
+use HeidelpayMGW\Repositories\InvoiceGuaranteedB2bSettingRepository;
 
 /**
 * Returns rendered BuyNowButton twig template
@@ -40,7 +40,7 @@ class BuyNowButtonContainer
      * @param Twig $twig  Twig templating engine
      * @param PaymentHelper $paymentHelper  Payment helper class
      * @param InvoiceGuaranteedSettingRepository $invoiceGuaranteedRepo  Invoice guaranteed settings repository to get guaranteed or factoring flag
-     * @param InvoiceGuaranteedB2BSettingRepository $invoiceGuaranteedB2BRepo  Invoice guaranteed B2B settings repository to get guaranteed or factoring flag
+     * @param InvoiceGuaranteedB2bSettingRepository $invoiceGuaranteedB2bRepo  Invoice guaranteed B2B settings repository to get guaranteed or factoring flag
      * @param ApiKeysHelper $apiKeysHelper  Returns Api keys depending if it's sandbox or production mode
      *
      * @return string
@@ -49,7 +49,7 @@ class BuyNowButtonContainer
         Twig $twig,
         PaymentHelper $paymentHelper,
         InvoiceGuaranteedSettingRepository $invoiceGuaranteedRepo,
-        InvoiceGuaranteedB2BSettingRepository $invoiceGuaranteedB2BRepo,
+        InvoiceGuaranteedB2bSettingRepository $invoiceGuaranteedB2bRepo,
         ApiKeysHelper $apiKeysHelper
     ): string {
         $data = [
@@ -59,8 +59,8 @@ class BuyNowButtonContainer
             'invoice' => PluginConfiguration::PAYMENT_KEY_INVOICE,
             'invoiceGuaranteed' => PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED,
             'useInvoiceFactoring' => $invoiceGuaranteedRepo->get()->guaranteedOrFactoring,
-            'invoiceGuaranteedB2B' => PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B,
-            'useInvoiceB2BFactoring' => $invoiceGuaranteedB2BRepo->get()->guaranteedOrFactoring,
+            'invoiceGuaranteedB2b' => PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B,
+            'useInvoiceB2bFactoring' => $invoiceGuaranteedB2bRepo->get()->guaranteedOrFactoring,
             'cards' => PluginConfiguration::PAYMENT_KEY_CARDS,
             'sepaDirectDebit' => PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT,
             'sepaDirectDebitGuaranteed' => PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT_GUARANTEED,

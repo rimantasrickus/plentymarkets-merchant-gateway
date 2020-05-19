@@ -2,7 +2,7 @@
 
 namespace HeidelpayMGW\Repositories;
 
-use HeidelpayMGW\Models\InvoiceGuaranteedB2BSetting;
+use HeidelpayMGW\Models\InvoiceGuaranteedB2bSetting;
 
 /**
  * Invoice guaranteed B2B settings repository
@@ -27,14 +27,14 @@ use HeidelpayMGW\Models\InvoiceGuaranteedB2BSetting;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class InvoiceGuaranteedB2BSettingRepository extends BaseSettingRepository
+class InvoiceGuaranteedB2bSettingRepository extends BaseSettingRepository
 {
     /**
-     * InvoiceGuaranteedB2BSettingRepository constructor
+     * InvoiceGuaranteedB2bSettingRepository constructor
      */
     public function __construct()
     {
-        parent::__construct(pluginApp(InvoiceGuaranteedB2BSetting::class));
+        parent::__construct(pluginApp(InvoiceGuaranteedB2bSetting::class));
     }
 
     /**

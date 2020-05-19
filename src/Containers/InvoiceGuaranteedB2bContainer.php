@@ -5,7 +5,7 @@ namespace HeidelpayMGW\Containers;
 use Plenty\Plugin\Templates\Twig;
 
 /**
-* Returns rendered BirthDate twig template
+* Returns rendered invoice guaranteed twig template
 *
 * Copyright (C) 2020 heidelpay GmbH
 *
@@ -27,7 +27,7 @@ use Plenty\Plugin\Templates\Twig;
 *
 * @package  heidelpayMGW/containers
 */
-class InvoiceGuaranteedB2BContainer
+class InvoiceGuaranteedB2bContainer
 {
     /**
      * Return rendered twig template with required data
@@ -38,6 +38,6 @@ class InvoiceGuaranteedB2BContainer
      */
     public function call(Twig $twig): string
     {
-        return $twig->render('HeidelpayMGW::content.InvoiceGuaranteedB2B', []);
+        return $twig->render('HeidelpayMGW::content.InvoiceGuaranteedB2b', []);
     }
 }

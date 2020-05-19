@@ -23,7 +23,7 @@ use Plenty\Modules\Payment\Method\Models\PaymentMethod;
 use HeidelpayMGW\Services\InvoiceGuaranteedPaymentService;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
 use Plenty\Modules\Order\Property\Models\OrderPropertyType;
-use HeidelpayMGW\Services\InvoiceGuaranteedPaymentServiceB2B;
+use HeidelpayMGW\Services\InvoiceGuaranteedPaymentServiceB2b;
 use Plenty\Modules\Payment\Events\Checkout\GetPaymentMethodContent;
 use Plenty\Modules\Payment\Method\Contracts\PaymentMethodRepositoryContract;
 
@@ -352,7 +352,7 @@ class PaymentHelper
                     return pluginApp(InvoiceGuaranteedPaymentService::class);
                 }
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B) {
-                    return pluginApp(InvoiceGuaranteedPaymentServiceB2B::class);
+                    return pluginApp(InvoiceGuaranteedPaymentServiceB2b::class);
                 }
                 if ($mop['paymentKey'] === PluginConfiguration::PAYMENT_KEY_CARDS) {
                     return pluginApp(CardsPaymentService::class);

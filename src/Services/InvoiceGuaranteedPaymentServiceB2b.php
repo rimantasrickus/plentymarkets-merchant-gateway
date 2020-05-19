@@ -36,7 +36,7 @@ use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
+class InvoiceGuaranteedPaymentServiceB2b extends AbstractPaymentService
 {
     use Loggable;
 
@@ -73,9 +73,9 @@ class InvoiceGuaranteedPaymentServiceB2B extends AbstractPaymentService
     {
         /** @var array $data */
         $data = parent::prepareChargeRequest($payment);
-        $data['b2bCustomer'] = $this->sessionHelper->getValue('heidelpayB2BCustomer');
+        $data['b2bCustomer'] = $this->sessionHelper->getValue('heidelpayB2bCustomer');
         /** @var array $libResponse */
-        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceGuaranteedB2B', $data);
+        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::invoiceGuaranteedB2b', $data);
         
         $this->getLogger(__METHOD__)->debug(
             'translation.charge',

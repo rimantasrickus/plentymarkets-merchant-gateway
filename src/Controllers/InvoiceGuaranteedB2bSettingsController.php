@@ -7,7 +7,7 @@ use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\Http\Response;
 use HeidelpayMGW\Helpers\Loggable;
 use Symfony\Component\HttpFoundation\Response as BaseResponse;
-use HeidelpayMGW\Repositories\InvoiceGuaranteedB2BSettingRepository;
+use HeidelpayMGW\Repositories\InvoiceGuaranteedB2bSettingRepository;
 use Plenty\Modules\Order\ReturnReason\Contracts\ReturnReasonRepositoryContract;
 
 /**
@@ -33,11 +33,11 @@ use Plenty\Modules\Order\ReturnReason\Contracts\ReturnReasonRepositoryContract;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class InvoiceGuaranteedB2BSettingsController extends Controller
+class InvoiceGuaranteedB2bSettingsController extends Controller
 {
     use Loggable;
 
-    /** @var InvoiceGuaranteedB2BSettingRepository $settingRepository */
+    /** @var InvoiceGuaranteedB2bSettingRepository $settingRepository */
     private $settingRepository;
 
     /** @var Response $response */
@@ -47,13 +47,13 @@ class InvoiceGuaranteedB2BSettingsController extends Controller
     private $request;
 
     /**
-     * InvoiceGuaranteedB2BSettingsController constructor
+     * InvoiceGuaranteedB2bSettingsController constructor
      *
-     * @param InvoiceGuaranteedB2BSettingRepository $settingRepository  Repository class from which we get settings
+     * @param InvoiceGuaranteedB2bSettingRepository $settingRepository  Repository class from which we get settings
      * @param Response $response
      * @param Request $request
      */
-    public function __construct(InvoiceGuaranteedB2BSettingRepository $settingRepository, Response $response, Request $request)
+    public function __construct(InvoiceGuaranteedB2bSettingRepository $settingRepository, Response $response, Request $request)
     {
         $this->settingRepository = $settingRepository;
         $this->response = $response;

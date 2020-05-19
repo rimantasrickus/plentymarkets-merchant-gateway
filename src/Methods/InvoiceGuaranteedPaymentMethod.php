@@ -51,7 +51,7 @@ class InvoiceGuaranteedPaymentMethod extends BasePaymentMethod
      */
     public function isActive(): bool
     {
-        if ($this->basketService->isBasketB2B()) {
+        if ($this->basketService->isBasketB2b()) {
             return false;
         }
         

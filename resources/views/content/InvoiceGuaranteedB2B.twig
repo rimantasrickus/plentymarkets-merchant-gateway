@@ -1,18 +1,18 @@
-<div tabindex="-1" role="dialog" id="heidelpayB2BCustomerModal" class="modal fade" style="z-index:1071;display:none;">
+<div tabindex="-1" role="dialog" id="heidelpayB2bCustomerModal" class="modal fade" style="z-index:1071;display:none;">
     <div role="document" class="modal-dialog">
-        <div class="modal-content" id="heidelpayB2BCustomerModalContent">
+        <div class="modal-content" id="heidelpayB2bCustomerModalContent">
             <div class="modal-header">
                 <h4 class="modal-title">{{ trans("HeidelpayMGW::Frontend.b2bCustomerModalTitle") }}</h4>
-                <button type="button" aria-label="Close" class="close" onclick="closeHeidelpayB2BCustomerModal(true);">
+                <button type="button" aria-label="Close" class="close" onclick="closeHeidelpayB2bCustomerModal(true);">
                     <span aria-hidden="true">×</span>
                 </button> 
             </div> 
-            <div class="modal-body" id="heidelpayB2BCustomerModalBody">
-                <div id="customerB2B" class="field">
+            <div class="modal-body" id="heidelpayB2bCustomerModalBody">
+                <div id="customerB2b" class="field">
                 </div>
                 <div class="field pt-3">
-                    <button id="heidelpayB2BCustomerSubmit" class="heidelpayUI primary button fluid" onclick="validateB2BCustomer()">
-                        <i id="heidelpayB2BCustomerButtonArrow" aria-hidden="true"></i>
+                    <button id="heidelpayB2bCustomerSubmit" class="heidelpayUI primary button fluid" onclick="validateB2bCustomer()">
+                        <i id="heidelpayB2bCustomerButtonArrow" aria-hidden="true"></i>
                         {{ trans("HeidelpayMGW::Frontend.b2bCustomerModalOK") }}
                     </button>
                 </div>
@@ -22,7 +22,7 @@
 </div>
 
 <script type="text/javascript">
-function closeHeidelpayB2BCustomerModal(selfClose) {
+function closeHeidelpayB2bCustomerModal(selfClose) {
     if (selfClose) {
         document.getElementById('checkoutButtonHeidelpay').disabled = false;
         document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-arrow-right';
@@ -32,18 +32,18 @@ function closeHeidelpayB2BCustomerModal(selfClose) {
         document.body.removeChild(document.getElementById("modalFadeBackground"));
     }
 
-    let rootNode = document.getElementById("customerB2B");
+    let rootNode = document.getElementById("customerB2b");
     while (rootNode.lastChild) {
         rootNode.removeChild(rootNode.lastChild);
     }
 
-    document.getElementById("heidelpayB2BCustomerModal").className = "modal fade";
-    document.getElementById("heidelpayB2BCustomerModal").style.display = "none";
+    document.getElementById("heidelpayB2bCustomerModal").className = "modal fade";
+    document.getElementById("heidelpayB2bCustomerModal").style.display = "none";
 
 }
 
-function showHeidelpayB2BCustomerModal() {
-    matchHeidelpayB2BData();
+function showHeidelpayB2bCustomerModal() {
+    matchHeidelpayB2bData();
     document.getElementById('checkoutButtonHeidelpay').disabled = true;
     document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-circle-o-notch fa-spin';
 
@@ -53,11 +53,11 @@ function showHeidelpayB2BCustomerModal() {
     document.body.appendChild(elem);
     document.body.classList = 'page-checkout page-category category- no-touch modal-open';
 
-    document.getElementById("heidelpayB2BCustomerModal").className = "modal fade in show";
-    document.getElementById("heidelpayB2BCustomerModal").style.display = "block";
+    document.getElementById("heidelpayB2bCustomerModal").className = "modal fade in show";
+    document.getElementById("heidelpayB2bCustomerModal").style.display = "block";
 }
 
-function matchHeidelpayB2BData() {
+function matchHeidelpayB2bData() {
     let address = vueApp.$store.state.address.billingAddress;
     let b2bCustomer = window.b2bCustomer;
     // customer
@@ -72,8 +72,8 @@ function matchHeidelpayB2BData() {
     jQuery('input[name ="zip-'+b2bCustomer.ts+'"]').val(address.postalCode);
 }
 
-function gatherHeidelpayB2BData(b2bCustomer) {
-    if (!jQuery('input[name ="checkbox-customerB2B-'+b2bCustomer.ts+'"]')[0].checked) {
+function gatherHeidelpayB2bData(b2bCustomer) {
+    if (!jQuery('input[name ="checkbox-customerB2b-'+b2bCustomer.ts+'"]')[0].checked) {
         return {
             'company': jQuery('input[name ="company-'+b2bCustomer.ts+'"]').val(),
             'city': jQuery('input[name ="city-'+b2bCustomer.ts+'"]').val(),
@@ -97,7 +97,7 @@ function gatherHeidelpayB2BData(b2bCustomer) {
         'zip': jQuery('input[name ="zip-'+b2bCustomer.ts+'"]').val(),
         'country': jQuery(".countryCombobox option:selected").val(),
         'commercialSector': jQuery(".commercialSectorCombobox option:selected").val(),
-        'salutation': jQuery(".salutation-customerB2B :checked").val(),
+        'salutation': jQuery(".salutation-customerB2b :checked").val(),
         'companyRegistered': 'unregistered'
     };
 }

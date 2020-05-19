@@ -20,7 +20,7 @@
 	"reasonCodeReturn": "Reason for RETURN",
 	"reasonCodeCredit": "Reason for CREDIT",
 	"invoiceGuaranteedSettings": "Invoice guaranteed",
-	"invoiceGuaranteedB2BSettings": "Invoice guaranteed B2B",
+	"invoiceGuaranteedB2bSettings": "Invoice guaranteed B2B",
 	"cardsSettings": "Credit/Debit Card",
 	"paymentMode": "Transaction mode",
 	"charge": "Debit",

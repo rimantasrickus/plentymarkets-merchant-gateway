@@ -40,7 +40,7 @@ class PluginConfiguration
     const PAYMENT_KEY_INVOICE_GUARANTEED = "HeidelpayMGWINVOICEGUARANTEED";
     const INVOICE_GUARANTEED_FRONTEND_NAME = "HeidelpayMGWInvoiceGuaranteed";
     const PAYMENT_KEY_INVOICE_GUARANTEED_B2B = "HeidelpayMGWINVOICEGUARANTEEDB2B";
-    const INVOICE_GUARANTEED_FRONTEND_NAME_B2B = "HeidelpayMGWInvoiceGuaranteedB2B";
+    const INVOICE_GUARANTEED_FRONTEND_NAME_B2B = "HeidelpayMGWInvoiceGuaranteedB2b";
     const PAYMENT_KEY_CARDS = "HeidelpayMGWCARDS";
     const CARDS_FRONTEND_NAME = "HeidelpayMGWCards";
     const PAYMENT_KEY_SEPA_DIRECT_DEBIT = "HeidelpayMGWSepaDirectDebit";

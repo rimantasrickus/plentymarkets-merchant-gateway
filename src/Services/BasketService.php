@@ -95,7 +95,7 @@ class BasketService
      *
      * @return bool
      */
-    public function isBasketB2B(): bool
+    public function isBasketB2b(): bool
     {
         $billingAddress = $this->getCustomerAddressData()['billing'];
 

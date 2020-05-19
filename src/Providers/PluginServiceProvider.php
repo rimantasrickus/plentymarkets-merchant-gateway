@@ -26,7 +26,7 @@ use Plenty\Modules\Order\Pdf\Models\OrderPdfGeneration;
 use HeidelpayMGW\Methods\InvoiceGuaranteedPaymentMethod;
 use Plenty\Modules\Basket\Events\Basket\AfterBasketCreate;
 use Plenty\Modules\Payment\Events\Checkout\ExecutePayment;
-use HeidelpayMGW\Methods\InvoiceGuaranteedPaymentMethodB2B;
+use HeidelpayMGW\Methods\InvoiceGuaranteedPaymentMethodB2b;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
 use HeidelpayMGW\EventProcedures\RefundTransactionProcedure;
 use Plenty\Modules\Order\Pdf\Events\OrderPdfGenerationEvent;
@@ -111,7 +111,7 @@ class PluginServiceProvider extends ServiceProvider
         $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B,
-            InvoiceGuaranteedPaymentMethodB2B::class,
+            InvoiceGuaranteedPaymentMethodB2b::class,
             $this->paymentMethodEvents()
         );
         // Credit/Debit card

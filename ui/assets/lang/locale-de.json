@@ -20,7 +20,7 @@
 	"reasonCodeReturn": "Retoure",
 	"reasonCodeCredit": "Auszahlung",
 	"invoiceGuaranteedSettings": "Versicherter Rechnungskauf B2C",
-	"invoiceGuaranteedB2BSettings": "Versicherter Rechnungskauf B2B",
+	"invoiceGuaranteedB2bSettings": "Versicherter Rechnungskauf B2B",
 	"cardsSettings": "Kredit-/Debitkarte",
 	"paymentMode": "Transaktionsmodus",
 	"charge": "Lastschrift",

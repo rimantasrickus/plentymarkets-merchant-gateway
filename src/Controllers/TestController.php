@@ -74,7 +74,7 @@ class TestController extends Controller
             $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\PluginSetting');
             $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\InvoiceSetting');
             $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\InvoiceGuaranteedSetting');
-            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\InvoiceGuaranteedB2BSetting');
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\InvoiceGuaranteedB2bSetting');
             $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\CardsSetting');
             $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\PaypalSetting');
             $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\SepaDirectDebitSetting');

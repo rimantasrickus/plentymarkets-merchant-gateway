@@ -6,7 +6,7 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
 use Plenty\Modules\Plugin\DataBase\Contracts\Model;
 
 /**
- * InvoiceGuaranteedB2BSetting model
+ * InvoiceGuaranteedB2bSetting model
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -28,7 +28,7 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Model;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class InvoiceGuaranteedB2BSetting extends Model
+class InvoiceGuaranteedB2bSetting extends Model
 {
     /** @var int $id Model ID in the database. We don't need autoincrement so we set ID always to 1 */
     public $id = 1;
@@ -76,9 +76,9 @@ class InvoiceGuaranteedB2BSetting extends Model
      *
      * @param array $data  Parameters to set
      *
-     * @return InvoiceGuaranteedB2BSetting
+     * @return InvoiceGuaranteedB2bSetting
      */
-    public function set(array $data): InvoiceGuaranteedB2BSetting
+    public function set(array $data): InvoiceGuaranteedB2bSetting
     {
         // if parameter is null we set default value
         $this->isActive = $data['isActive'] ?? false;

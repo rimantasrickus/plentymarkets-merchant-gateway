@@ -3,10 +3,10 @@ namespace HeidelpayMGW\Migrations;
 
 use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
-use HeidelpayMGW\Models\InvoiceGuaranteedB2BSetting;
+use HeidelpayMGW\Models\InvoiceGuaranteedB2bSetting;
 
 /**
- * Create InvoiceGuaranteedB2B model's table
+ * Create InvoiceGuaranteedB2b model's table
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
@@ -28,10 +28,10 @@ use HeidelpayMGW\Models\InvoiceGuaranteedB2BSetting;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class CreateInvoiceGuaranteedB2BSettingTable extends BasePluginMigration
+class CreateInvoiceGuaranteedB2bSettingTable extends BasePluginMigration
 {
     /**
-     * Create InvoiceGuaranteedB2BSetting model's table
+     * Create InvoiceGuaranteedB2bSetting model's table
      *
      * @param Migrate $migrate
      *
@@ -39,6 +39,6 @@ class CreateInvoiceGuaranteedB2BSettingTable extends BasePluginMigration
      */
     public function run(Migrate $migrate)
     {
-        $this->createTable($migrate, InvoiceGuaranteedB2BSetting::class);
+        $this->createTable($migrate, InvoiceGuaranteedB2bSetting::class);
     }
 }
