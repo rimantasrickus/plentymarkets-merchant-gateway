@@ -36,9 +36,6 @@ For some payment types `Date of birth` is necessary. To enable it:
 
 Alternatively if address will not have `Date of birth` pop-up box with `Date of birth` field will appear.
 
-### Return reasons
-Invoice factoring payment method needs to have return reason when Order is canceled. To add return reason in Plentymarkets navigate to `System`->`Orders`->`Order types`->`Return`. Here added return reasons, You can select latter when creating return Order. 
-
 ## Plugin settings
 ##### Public / Private key
 Public key is required to create payment types by the browser.
@@ -70,22 +67,6 @@ Prerequisites for the url string:
 * it must start with 'http://' or 'https://'
 * it must end with '.jpg', '.png' or '.gif'
 
-##### Use Invoice Factoring instead of Invoice Guaranteed
-When using `Invoice Guaranteed` You can change payment to use `Invoice Factoring` payment method instead.\
-> In essence, Invoice factoring is the same as Invoice guaranteed with the only difference being the insurance company. Instead of an insurance company in the background a third party business takes care of the invoice, thus guaranteeing your payment.
-
-##### Invoice Factoring payment cancel reasons
-How to add return reasons in Plentymarkets refer to section [Return reasons](#return-reasons).
-
-##### Reason for CANCEL
-Map Plentymarkets item return reason from the list to heidelpay `CANCEL`
-
-##### Reason for RETURN
-Map Plentymarkets item return reason from the list to heidelpay `RETURN`
-
-##### Reason for CREDIT
-Map Plentymarkets item return reason from the list to heidelpay `CREDIT`
-
 ## Workflow description
 ### Logging
 To see Logs of Plentymarkets system navigate to `Data`->`Log` page. There You will see all the Logs of Plentymarkets system. Normally heidelpayMGW plugin will show only `error` level logs. Additionally You can enable `debug` level logs and this will show much more information of what is happening behind the scenes. To enable `debug` level logs, press `Configure logs` at the top-middle section of the `Log` page. In opened popup select `HeidelpayMGW` plugin, check `Active` checkbox, select duration for how long this configuration should be active and select `Debug` from `Log level` list.
@@ -105,7 +86,7 @@ To create Delivery note document for the Order, navigate to `Edit orders` page. 
 > If for some reason You are not able to create Delivery note document, You need to check Your document template. Go to `System`->`Client`->`{your shop}`->`Locations`->`Deutschland (standard)`->`Documents`->`Delivery note` to do that.
 
 ### Finalize invoice payment
-> This section is relevant for `Invoice guaranteed` and `Invoice factoring` payment methods
+> This section is relevant for `Invoice guaranteed` payment methods
 
 In order to start the insurance of a payment you need to trigger a finalize transaction. To do this there are two possibilities:
 * You can do this in your hIP account (heidelpay Intelligence Platform)
@@ -116,7 +97,7 @@ In order to start the insurance of a payment you need to trigger a finalize tran
 * The plugin will then update payment linked to the corresponding order.
 
 ### Cancel payment
-To cancel payment You will need to create `Return order`. First You need to navigate to original Order. Open this Order. In the `Overview` tab You will see list box named `Return...`. From list select `create`. In the opened popup select items You want to return. Select return reason (see [Return reasons](#return-reasons)). Press save button. Plentymarkets will create new return Order. Navigate to `Receipts` tab from the `Create receipt` list select `Return slip`. Adjust settings if needed and press `Save`. Document generation will trigger `cancel charge` in heidelpay system with the amount of the return Order. 
+To cancel payment You will need to create `Return order`. First You need to navigate to original Order. Open this Order. In the `Overview` tab You will see list box named `Return...`. From list select `create`. In the opened popup select items you want to return. Press save button. Plentymarkets will create new return Order. Navigate to `Receipts` tab from the `Create receipt` list select `Return slip`. Adjust settings if needed and press `Save`. Document generation will trigger `cancel charge` in heidelpay system with the amount of the return Order. 
 
 ### Invoice payment methods
 > _Invoice and Invoice secured B2C_ is only available under the following conditions:

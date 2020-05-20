@@ -48,18 +48,6 @@ class InvoiceGuaranteedB2bSetting extends Model
     /** @var string $iconURL  Path to icon of payment method */
     public $iconURL = '';
 
-    /** @var bool $guaranteedOrFactoring  Use invoice guaranteed or factoring */
-    public $guaranteedOrFactoring = false;
-
-    /** @var string $reasonCodeCancel  ID of Plenty return reason */
-    public $reasonCodeCancel = '';
-
-    /** @var string $reasonCodeReturn  ID of Plenty return reason */
-    public $reasonCodeReturn = '';
-
-    /** @var string $reasonCodeCredit  ID of Plenty return reason */
-    public $reasonCodeCredit = '';
-
     /**
      * Database table name
      *
@@ -86,11 +74,7 @@ class InvoiceGuaranteedB2bSetting extends Model
         $this->basketMinTotal = $data['basketMinTotal'] ?? '';
         $this->basketMaxTotal = $data['basketMaxTotal'] ?? '';
         $this->iconURL = $data['iconURL'] ?? '';
-        $this->guaranteedOrFactoring = false;
-        $this->reasonCodeCancel = $data['reasonCodeCancel'] ?? '';
-        $this->reasonCodeReturn = $data['reasonCodeReturn'] ?? '';
-        $this->reasonCodeCredit = $data['reasonCodeCredit'] ?? '';
-        
+
         return $this;
     }
 }

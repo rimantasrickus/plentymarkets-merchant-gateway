@@ -8,7 +8,6 @@ use Plenty\Plugin\Http\Response;
 use HeidelpayMGW\Helpers\Loggable;
 use Symfony\Component\HttpFoundation\Response as BaseResponse;
 use HeidelpayMGW\Repositories\InvoiceGuaranteedB2bSettingRepository;
-use Plenty\Modules\Order\ReturnReason\Contracts\ReturnReasonRepositoryContract;
 
 /**
  * Invoice guaranteed B2B settings controller for UI settings
@@ -71,7 +70,6 @@ class InvoiceGuaranteedB2bSettingsController extends Controller
             return $this->response->json([
                 'success' => true,
                 'settings' => $this->settingRepository->get(),
-                'returnReasonList' => pluginApp(ReturnReasonRepositoryContract::class)->all()
             ]);
         } catch (\Exception $e) {
             $this->getLogger(__METHOD__)->exception(

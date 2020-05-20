@@ -36,28 +36,4 @@ class InvoiceGuaranteedSettingRepository extends BaseSettingRepository
     {
         parent::__construct(pluginApp(InvoiceGuaranteedSetting::class));
     }
-
-    /**
-     * Get heidelpay return reason
-     *
-     * @param string $returnId  Plenty return reason ID
-     *
-     * @return string
-     */
-    public function getReturnCode(string $returnId): string
-    {
-        $model = $this->get();
-
-        if ($model->reasonCodeCancel === $returnId) {
-            return 'CANCEL';
-        }
-        if ($model->reasonCodeReturn === $returnId) {
-            return 'RETURN';
-        }
-        if ($model->reasonCodeCredit === $returnId) {
-            return 'CREDIT';
-        }
-
-        return 'CANCEL';
-    }
 }

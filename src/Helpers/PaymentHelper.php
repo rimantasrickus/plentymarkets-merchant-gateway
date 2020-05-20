@@ -563,7 +563,6 @@ class PaymentHelper
         // invoice payment's additional info
         if ($paymentInformation->paymentMethod === PluginConfiguration::INVOICE
             || $paymentInformation->paymentMethod === PluginConfiguration::INVOICE_GUARANTEED
-            || $paymentInformation->paymentMethod === PluginConfiguration::INVOICE_FACTORING
         ) {
             if (empty($paymentInformation->transaction)) {
                 return;

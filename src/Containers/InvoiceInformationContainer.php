@@ -58,8 +58,7 @@ class InvoiceInformationContainer
             $paymentInformation = $paymentInfoRepository->getByOrderId($order['id']);
             if (!empty($paymentInformation)
                 && ($paymentInformation->paymentMethod === PluginConfiguration::INVOICE
-                || $paymentInformation->paymentMethod === PluginConfiguration::INVOICE_GUARANTEED
-                || $paymentInformation->paymentMethod === PluginConfiguration::INVOICE_FACTORING)
+                || $paymentInformation->paymentMethod === PluginConfiguration::INVOICE_GUARANTEED)
             ) {
                 return $twig->render(
                     PluginConfiguration::PLUGIN_NAME.'::content.InvoiceInformation',

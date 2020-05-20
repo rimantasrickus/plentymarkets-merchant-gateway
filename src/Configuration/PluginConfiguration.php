@@ -56,7 +56,6 @@ class PluginConfiguration
     
     // heidelpay payment methods
     const INVOICE_GUARANTEED = 'invoice-guaranteed';
-    const INVOICE_FACTORING = 'invoice-factoring';
     const INVOICE = 'invoice';
 
     // Payment mode

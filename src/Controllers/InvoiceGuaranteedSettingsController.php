@@ -2,13 +2,13 @@
 
 namespace HeidelpayMGW\Controllers;
 
+use Exception;
 use Plenty\Plugin\Controller;
 use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\Http\Response;
 use HeidelpayMGW\Helpers\Loggable;
 use Symfony\Component\HttpFoundation\Response as BaseResponse;
 use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
-use Plenty\Modules\Order\ReturnReason\Contracts\ReturnReasonRepositoryContract;
 
 /**
  * Invoice guaranteed settings controller for UI settings
@@ -70,10 +70,9 @@ class InvoiceGuaranteedSettingsController extends Controller
         try {
             return $this->response->json([
                 'success' => true,
-                'settings' => $this->settingRepository->get(),
-                'returnReasonList' => pluginApp(ReturnReasonRepositoryContract::class)->all()
+                'settings' => $this->settingRepository->get()
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->getLogger(__METHOD__)->exception(
                 'translation.exception',
                 [
@@ -100,7 +99,7 @@ class InvoiceGuaranteedSettingsController extends Controller
                 'success' => true,
                 'settings' => $this->settingRepository->save($this->request->except('plentymarkets'))
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->getLogger(__METHOD__)->exception(
                 'translation.exception',
                 [

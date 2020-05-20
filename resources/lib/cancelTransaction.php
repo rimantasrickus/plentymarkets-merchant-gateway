@@ -10,7 +10,7 @@ try {
     $heidelpay = new Heidelpay(SdkRestApi::getParam('privateKey'));
     
     $payment = $heidelpay->fetchPayment(SdkRestApi::getParam('paymentId'));
-    $cancelCharges = $payment->cancelAmount(SdkRestApi::getParam('amount'), SdkRestApi::getParam('reason'));
+    $cancelCharges = $payment->cancelAmount(SdkRestApi::getParam('amount'));
     $resourceService = $heidelpay->getResourceService();
     $cancellations = array();
     /** @var Cancellation $cancellation */

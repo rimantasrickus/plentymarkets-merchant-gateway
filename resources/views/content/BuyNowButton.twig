@@ -44,11 +44,7 @@ function prepareHeidelpayPayment() {
                     showHeidelpayBirthDateModal();
                 }
                 if (isBirthDateAvailable() || heidelpayBirthDate) {
-                    if ({{useInvoiceFactoring}}) {
-                        heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceFactoring());
-                    } else {
-                        heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
-                    }
+                    heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
                 }
                 return;
             }
@@ -66,11 +62,7 @@ function prepareHeidelpayPayment() {
                     if (isB2bCustomerValid()) {
                         document.getElementById('heidelpayB2bCustomerSubmit').disabled = true;
                         document.getElementById('heidelpayB2bCustomerButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
-                        if ({{useInvoiceB2bFactoring}}) {
-                            heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceFactoring());
-                        } else {
-                            heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
-                        }
+                        heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
                     }
                 };
                 return;

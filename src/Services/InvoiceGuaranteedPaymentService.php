@@ -102,22 +102,6 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
         /** @var array $data */
         $data = parent::prepareCancelTransactionRequest($paymentInformation, $order);
 
-        if ($paymentInformation->paymentMethod === PluginConfiguration::INVOICE_FACTORING) {
-            /** @var InvoiceGuaranteedSettingRepository $invoiceGuaranteedSettingRepo */
-            $invoiceGuaranteedSettingRepo = pluginApp(InvoiceGuaranteedSettingRepository::class);
-            $reason = '';
-            /** @var OrderItem $item */
-            foreach ($order->orderItems as $item) {
-                /** @var OrderItemProperty $property */
-                foreach ($item->properties as $property) {
-                    if ($property->typeId === OrderPropertyType::RETURNS_REASON) {
-                        /** @var string $reason */
-                        $reason = $invoiceGuaranteedSettingRepo->getReturnCode($property->value);
-                    }
-                }
-            }
-            $data['reason'] = $reason;
-        }
         /** @var array $libResponse */
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelTransaction', $data);
         /** @var string $commentText */

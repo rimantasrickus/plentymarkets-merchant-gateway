@@ -32,9 +32,6 @@ This module is based on the heidelpay php-sdk (https://github.com/heidelpay/heid
 + Select `Default container links` tab. Select all elements in the list and save configuration.
 + For the plugin configuration please go to `System`->`Orders`->`Payment`->`Plugins`.
 
-### Return reasons
-Invoice factoring payment method needs to have return reason when Order is canceled. To add return reason in Plentymarkets navigate to `System`->`Orders`->`Order types`->`Return`. Here added return reasons, You can select latter when creating return Order. 
-
 ## Plugin settings
 ##### Public / Private key
 Public key is required to create payment types by the browser.
@@ -71,7 +68,7 @@ Card payments can be used in two different ways:
 * Direct charge: the bank account of the customer is charged directly.
 * Authorize and charge: First you reserve money on the customer's account and later you charge the money.
 
-If customer has a card that uses 3D security, then during the checkout, customer will be redirected to a page where he can authorize his payment. If for some reason customer will not be able to authorize, he will be redirected back to the checkout. On the other hand if everything is OK, the Plentysystem will create an Order and customer will be redirected to Order status page.
+If customer has a card that uses 3D security, then during the checkout, customer will be redirected to a page where he can authorize his payment. If the customer is not able to authorize, he will be redirected back to the checkout. On the other hand if everything is OK, the Plentysystem will create an Order and customer will be redirected to Order status page.
 
 ## Workflow description
 ### Logging
