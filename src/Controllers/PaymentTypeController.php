@@ -36,23 +36,20 @@ class PaymentTypeController extends Controller
 {
     use Loggable;
 
-
-    public function __construct()
-    {
-    }
-
     /**
      * Set session value to payment from Frontend
      *
-     * @param Response  $response
-     * @param Request   $request
+     * @param Response $response
+     * @param Request $request
+     * @param SessionHelper $sessionHelper
      *
      * @return string
      */
-    public function heidelpayMGWPaymentType(Response $response, Request $request, SessionHelper $sessionHelper): BaseResponse
+    public function heidelpayMGWPaymentType(Response $response, Request $request, SessionHelper $sessionHelper): string
     {
         /** @var array $frontendData */
         $frontendData = $request->except('plentyMarkets');
+
         /** @var array $data */
         $data = $frontendData['data'];
         /** @var string $heidelpayBirthDate */

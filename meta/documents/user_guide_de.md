@@ -11,7 +11,7 @@ Folgende Zahlungsarten werden aktuell unterstützt:
 * SEPA (versicherte) Lastschrift
 * PayPal
 * SOFORT
-* IDEAL
+* iDEAL
 * FlexiPay Direct
 
 ## ANFORDERUNGEN

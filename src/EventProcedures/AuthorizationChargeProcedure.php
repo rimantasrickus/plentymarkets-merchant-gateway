@@ -7,6 +7,7 @@ use Plenty\Modules\Order\Models\Order;
 use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
 use Plenty\Modules\EventProcedures\Events\EventProceduresTriggered;
+use Throwable;
 
 /**
  * Authorization charge event
@@ -33,27 +34,26 @@ use Plenty\Modules\EventProcedures\Events\EventProceduresTriggered;
  */
 class AuthorizationChargeProcedure
 {
-    public function __construct()
-    {
-    }
-
     /**
      * Handle authorization charge event
      *
      * @param EventProceduresTriggered $event
      * @param PaymentHelper $paymentHelper
      * @param PaymentInformationRepository $paymentInformationRepository
+     * @param OrderHelper $orderHelper
      *
      * @return void
+     * @throws Throwable
      */
     public function handle(
         EventProceduresTriggered $event,
         PaymentHelper $paymentHelper,
         PaymentInformationRepository $paymentInformationRepository,
         OrderHelper $orderHelper
-    ) {
+    ): void {
         /** @var Order $order */
         $order = $event->getOrder();
+
         /** @var Order $originalOrder */
         $originalOrder = $orderHelper->getOriginalOrder($order);
         
