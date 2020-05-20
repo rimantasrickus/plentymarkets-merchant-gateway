@@ -6,7 +6,7 @@ use HeidelpayMGW\Models\CardsSetting;
 use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
 /**
- * Card settings table migration
+ * Cards settings table migration
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
