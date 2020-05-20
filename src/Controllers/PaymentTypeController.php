@@ -43,9 +43,9 @@ class PaymentTypeController extends Controller
      * @param Request $request
      * @param SessionHelper $sessionHelper
      *
-     * @return string
+     * @return BaseResponse
      */
-    public function heidelpayMGWPaymentType(Response $response, Request $request, SessionHelper $sessionHelper): string
+    public function heidelpayMGWPaymentType(Response $response, Request $request, SessionHelper $sessionHelper): BaseResponse
     {
         /** @var array $frontendData */
         $frontendData = $request->except('plentyMarkets');
