@@ -33,17 +33,13 @@ Dieses Modul basiert auf dem heidelpay php-sdk (https://github.com/heidelpay/hei
 + Für die Plugin-Konfiguration gehen Sie bitte zu `Einrichtung`->`Aufträge`->`Zahlung`->`Plugins`.
 
 ## Plugin-Einstellungen
-####### Öffentlicher Schlüssel
-Zum Erstellen von Zahlungsarten durch den Browser ist ein öffentlicher Schlüssel erforderlich
+####### Öffentlicher / Privater Schlüssel
+Zum Erstellen von Zahlungsarten durch den Browser ist ein öffentlicher Schlüssel erforderlich.
+Der private Schlüssel ist für die Authentifizierung auf dem heidelpay-Server zur Durchführung von Transaktionen erforderlich.
 
-####### Privater Schlüssel
-Öffentlicher Schlüssel ist für die Authentifizierung auf dem heidelpay-Server erforderlich
-
-###### Api-Modus
-* Wählen Sie den Parameter *'Sandbox'*, um die Verbindung zur Testumgebung zu ermöglichen. In diesem Fall werden alle Transaktionen in die Sandbox übertragen und nicht berechnet.  
-Bitte stellen Sie sicher, dass Sie Test-Anmeldedaten verwenden, wenn diese Option ausgewählt ist (siehe https://dev.heidelpay.com/sandbox-environment/).
-* Wählen Sie den Parameter *'Production'*, um den Live-Modus zu aktivieren, was bedeutet, dass tatsächliche Transaktionen ausgeführt und berechnet werden.
-Bitte stellen Sie sicher, dass Sie Ihre Live-Anmeldedaten verwenden, wenn diese Option ausgewählt ist.
+Der erste Buchstabe des jeweiligen Schlüssels bestimmt die Umgebung in der das Plugin arbeitet:
+* `s` aktiviert den Testmodus, der gegen die Sandbox der API arbeitet (es findet kein Transfer von Geldern statt)
+* `p` versetzt das Plugin in den Produktionsmodus. Hier finden tatsächliche Transaktionen statt.
 
 > Wenn die `Speichern`-Taste gedrückt wird, registriert das Plugin heidelpay webhooks mit den dafür vorgesehenen Tasten.
 

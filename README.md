@@ -40,17 +40,13 @@ Alternatively if address will not have `Date of birth` pop-up box with `Date of 
 Invoice factoring payment method needs to have return reason when Order is canceled. To add return reason in Plentymarkets navigate to `System`->`Orders`->`Order types`->`Return`. Here added return reasons, You can select latter when creating return Order. 
 
 ## Plugin settings
-##### Public key
-Public key is required to create payment types by the browser
+##### Public / Private key
+Public key is required to create payment types by the browser.
+Private key is required for transactions on heidelpay server.
 
-##### Private key
-Public key is required for authentication on heidelpay server
-
-##### Api mode
-* Select parameter *'Sandbox'* to enable connection to the test environment, in which case any transactions will be transferred to the sandbox and will not be charged.  
-Please make sure to use test credentials when this option is selected (ref. https://dev.heidelpay.com/sandbox-environment/).
-* Select parameter *'Production'* to enable live mode which means that actual transactions will be executed and charged.
-Please make sure to use your live credentials when this option is selected.
+The first letter of the keys determine the environment the plugin comunicates with:
+* `s` enables testing against the sandbox environment (no money is transferred).
+* `p` enables production mode in which actual transactions take place and money is transferred.
 
 > When `Save` button is pressed plugin registers heidelpay webhooks with the provided keys.
 

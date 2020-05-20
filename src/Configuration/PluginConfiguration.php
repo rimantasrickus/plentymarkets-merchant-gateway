@@ -31,9 +31,7 @@ class PluginConfiguration
     const PLUGIN_NAME = 'HeidelpayMGW';
     const PLUGIN_VERSION = '1.0.0';
     const PLUGIN_KEY = 'HeidelpayMGWPaymentPlugin';
-    const API_SANDBOX = 'sandbox';
-    const API_PRODUCTION = 'production';
-    
+
     // Plugin payment methods
     const PAYMENT_KEY_INVOICE = "HeidelpayMGWINVOICE";
     const INVOICE_FRONTEND_NAME = "HeidelpayMGWInvoice";

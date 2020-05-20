@@ -41,7 +41,7 @@ class BuyNowButtonContainer
      * @param PaymentHelper $paymentHelper  Payment helper class
      * @param InvoiceGuaranteedSettingRepository $invoiceGuaranteedRepo  Invoice guaranteed settings repository to get guaranteed or factoring flag
      * @param InvoiceGuaranteedB2bSettingRepository $invoiceGuaranteedB2bRepo  Invoice guaranteed B2B settings repository to get guaranteed or factoring flag
-     * @param ApiKeysHelper $apiKeysHelper  Returns Api keys depending if it's sandbox or production mode
+     * @param ApiKeysHelper $apiKeysHelper  Returns Api keys
      *
      * @return string
      */

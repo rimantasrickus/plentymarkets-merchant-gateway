@@ -38,7 +38,7 @@ class WebhooksController extends Controller
 {
     use Loggable;
     
-    /** @var ApiKeysHelper $apiKeysHelper  Returns Api keys depending if it's sandbox or production mode */
+    /** @var ApiKeysHelper $apiKeysHelper */
     private $apiKeysHelper;
 
     /** @var LibraryCallContract $libContract */

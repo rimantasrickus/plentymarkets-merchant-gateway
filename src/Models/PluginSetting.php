@@ -38,9 +38,6 @@ class PluginSetting extends Model
     /** @var string $privateKey heidelpay API key */
     public $privateKey = '';
 
-    /** @var string $apiMode heidelpay API mode */
-    public $apiMode = '';
-
     /**
      * Database table name
      *
@@ -64,8 +61,7 @@ class PluginSetting extends Model
         // if parameter is null we set default value
         $this->publicKey = $data['publicKey'] ?? '';
         $this->privateKey = $data['privateKey'] ?? '';
-        $this->apiMode = $data['apiMode'] ?? '';
-        
+
         return $this;
     }
 }

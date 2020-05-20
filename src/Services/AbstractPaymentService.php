@@ -83,7 +83,7 @@ abstract class AbstractPaymentService
     /** @var SessionHelper $sessionHelper  Saves information for current plugin session */
     private $sessionHelper;
     
-    /** @var ApiKeysHelper $apiKeysHelper  Returns Api keys depending if it's sandbox or production mode */
+    /** @var ApiKeysHelper $apiKeysHelper  Returns the API keys */
     protected $apiKeysHelper;
 
     /** @var Translator $translator  Plenty Translator service */

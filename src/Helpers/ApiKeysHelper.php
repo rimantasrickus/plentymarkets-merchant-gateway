@@ -2,11 +2,11 @@
 
 namespace HeidelpayMGW\Helpers;
 
-use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Models\PluginSetting;
 use HeidelpayMGW\Repositories\PluginSettingRepository;
 
 /**
-* Returns Api keys depending if it's sandbox or production mode
+* Returns the API keys
 *
 * Copyright (C) 2020 heidelpay GmbH
 *
@@ -30,7 +30,7 @@ use HeidelpayMGW\Repositories\PluginSettingRepository;
 */
 class ApiKeysHelper
 {
-    /** @var \HeidelpayMGW\Models\PluginSetting $settings */
+    /** @var PluginSetting $settings */
     private $settings;
 
     public function __construct(PluginSettingRepository $pluginSettingRepository)
@@ -39,41 +39,22 @@ class ApiKeysHelper
     }
 
     /**
-     * Get public API key depending on API mode
+     * Get public API key from settings
      *
      * @return string  Public key
      */
     public function getPublicKey(): string
     {
-        return $this->getKey($this->settings->publicKey);
+        return $this->settings->publicKey;
     }
 
     /**
-     * Get private API key depending on API mode
+     * Get private API key from settings
      *
      * @return string  Private key
      */
     public function getPrivateKey(): string
     {
-        return $this->getKey($this->settings->privateKey);
-    }
-
-    /**
-     * Change first private or public key letter depending on API mode
-     *
-     * @param string $key  Private or public key
-     *
-     * @return string  Private or public key
-     */
-    private function getKey(string $key): string
-    {
-        if ($this->settings->apiMode === PluginConfiguration::API_SANDBOX) {
-            $key[0] = 's';
-        }
-        if ($this->settings->apiMode === PluginConfiguration::API_PRODUCTION) {
-            $key[0] = 'p';
-        }
-
-        return $key;
+        return $this->settings->privateKey;
     }
 }
