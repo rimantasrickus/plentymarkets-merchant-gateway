@@ -6,7 +6,7 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
 use Plenty\Modules\Plugin\DataBase\Contracts\Model;
 
 /**
- * Card settings model
+ * Cards settings model
  *
  * Copyright (C) 2020 heidelpay GmbH
  *
