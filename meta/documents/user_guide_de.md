@@ -1,6 +1,6 @@
 ![Logo](https://dev.heidelpay.com/devHeidelpay_400_180.jpg)
 
-# heidelpay plentymarkets-merchant-gateway-plugin
+# heidelpay plentymarkets-merchant-gateway plugin
 Dieses Plugin stellt eine Integration für die heidelpay Zahlungsarten für Ihren Plentymarkets Shop bereit.
 
 Folgende Zahlungsarten werden aktuell unterstützt:
