@@ -68,25 +68,46 @@ Kartenzahlungen können auf zwei verschiedene Arten verwendet werden:
 * Direktbelastung: das Bankkonto des Kunden wird direkt belastet.
 * Autorisieren und belasten: Zuerst reservieren Sie Geld auf dem Konto des Kunden und später belasten Sie das Geld.
 
-Wenn der Kunde eine Karte hat, die 3D-Sicherheit verwendet, wird er während des Bestellvorgangs auf eine Seite weitergeleitet, auf der er seine Zahlung autorisieren kann. Wenn der Kunde aus irgendeinem Grund nicht in der Lage sein wird, eine Autorisierung vorzunehmen, wird er zurück zur Kasse umgeleitet. Andererseits, wenn alles in Ordnung ist, wird das Plentysystem eine Bestellung erstellen und der Kunde wird zur Bestellstatus-Seite weitergeleitet.
+Wenn der Kunde eine Karte hat, die 3D-Sicherheit verwendet, wird er während des Bestellvorgangs auf eine Seite weitergeleitet, auf der er seine Zahlung autorisieren kann.
+Wenn der Kunde aus irgendeinem Grund nicht in der Lage sein wird, eine Autorisierung vorzunehmen, wird er zurück zur Kasse umgeleitet.
+Andererseits, wenn alles in Ordnung ist, wird das Plentysystem eine Bestellung erstellen und der Kunde wird zur Bestellstatus-Seite weitergeleitet.
 
 ## Workflow-Beschreibung
 ### Protokollierung
-Um das Logs of Plentymarkets System zu sehen, navigieren Sie zur Seite `Daten`->`Log`. Dort sehen Sie das gesamte Logs of Plentymarkets System. Normalerweise zeigt das heidelpayMGW-Plugin nur Protokolle auf der Ebene `Fehler` an. Zusätzlich können Sie `debug`-Level-Logs aktivieren um zusätzliche Informationen zu erhalten. Um `debug`-Level-Logs zu aktivieren, drücken Sie `Configure logs` in der oberen mittleren Sektion der `Log`-Seite. Im geöffneten Popup-Fenster wählen Sie das Plugin `HeidelpayMGW`, markieren Sie die Checkbox `Aktiv`, wählen Sie die Dauer, wie lange diese Konfiguration aktiv sein soll und wählen Sie `Debug` aus der Liste der `Log-Ebene`.
+Um das Logs of Plentymarkets System zu sehen, navigieren Sie zur Seite `Daten`->`Log`.
+Dort sehen Sie das gesamte Logs of Plentymarkets System.
+Normalerweise zeigt das heidelpayMGW-Plugin nur Protokolle auf der Ebene `Fehler` an.
+Zusätzlich können Sie `debug`-Level-Logs aktivieren um zusätzliche Informationen zu erhalten.
+Um `debug`-Level-Logs zu aktivieren, drücken Sie `Configure logs` in der oberen mittleren Sektion der `Log`-Seite.
+Im geöffneten Popup-Fenster wählen Sie das Plugin `HeidelpayMGW`, markieren Sie die Checkbox `Aktiv`, 
+wählen Sie die Dauer, wie lange diese Konfiguration aktiv sein soll und wählen Sie `Debug` aus der Liste der `Log-Ebene`.
 
 ### Externe Bestellnummer
-Wenn eine Bestellung mit heidelpayMGW plugin erstellt wird, wird die Bestellung mit einer `Externen Bestellnummer` versehen. Diese Nummer ist die Bestell-ID in Ihrem hIP (heidelpay Intelligence Platform). Um diese Nummer im Plentymarkets System zu finden, navigieren Sie zur Seite `Orders bearbeiten`. Suchen Sie nach der mit dem heidelpayMGW-Plugin erstellten Order und öffnen Sie diese. In der geöffneten Order gehen Sie zum Reiter `Einstellungen` und dort sehen Sie `Ext. Ordernummer`.
+Wenn eine Bestellung mit heidelpayMGW plugin erstellt wird, wird die Bestellung mit einer `Externen Bestellnummer` versehen. 
+Diese Nummer ist die Bestell-ID in Ihrem hIP (heidelpay Intelligence Platform). 
+Um diese Nummer im Plentymarkets System zu finden, navigieren Sie zur Seite `Orders bearbeiten`. 
+Suchen Sie nach der mit dem heidelpayMGW-Plugin erstellten Order und öffnen Sie diese. 
+In der geöffneten Order gehen Sie zum Reiter `Einstellungen` und dort sehen Sie `Ext. Ordernummer`.
 
 ### Status einer Zahlung
-Um zu sehen, welchen Status eine Zahlung für einen bestimmten Auftrag hat, öffnen Sie diesen Auftrag. Navigieren Sie zur Registerkarte `Zahlung`. Dort sehen Sie, welchen Status die Zahlung im Moment hat. Wenn sich die Zahlung im heidelpay-System ändert, erhält das Plugin das Ereignis, dass sich die Zahlung geändert hat und ändert den Status einer Zahlung im Plentymarkets-System automatisch.
+Um zu sehen, welchen Status eine Zahlung für einen bestimmten Auftrag hat, öffnen Sie diesen Auftrag. Navigieren Sie zur Registerkarte `Zahlung`.
+Dort sehen Sie, welchen Status die Zahlung im Moment hat. Wenn sich die Zahlung im heidelpay-System ändert, erhält das Plugin das Ereignis, dass sich die Zahlung geändert hat und ändert den Status einer Zahlung im Plentymarkets-System automatisch.
 
 ### Rechnung erstellen
-Um ein Rechnungsdokument für die Bestellung zu erstellen, navigieren Sie zur Seite `Bestellungen bearbeiten`. Suchen Sie nach der Bestellung, für die Sie eine Rechnung erstellen möchten, und klicken Sie darauf. In der geöffneten Bestellung gehen Sie zur Registerkarte `Quittungen`. Wählen Sie aus der Liste `Quittung erstellen` die Option `Rechnung`. In dem neuen Fenster nehmen Sie gegebenenfalls Änderungen vor und drücken Sie die Schaltfläche "Speichern". Danach werden Sie das erstellte Rechnungsdokument sehen. Für die Zahlungsmethoden der "Rechnung" werden die zusätzlichen Zahlungsinformationen automatisch zum Rechnungsdokument hinzugefügt.
-> Wenn Sie aus irgendeinem Grund nicht in der Lage sind, ein Rechnungsdokument zu erstellen, müssen Sie Ihre Rechnungsvorlage überprüfen. Gehen Sie zu `System`->`Kunde`->`{Ihr Geschäft}`->`Standorte`->`Deutschland (Standard)`->`Dokumente`->`Rechnung`, um dies zu tun.
+Um ein Rechnungsdokument für die Bestellung zu erstellen, navigieren Sie zur Seite `Bestellungen bearbeiten`.
+Suchen Sie nach der Bestellung, für die Sie eine Rechnung erstellen möchten, und klicken Sie darauf. In der geöffneten Bestellung gehen Sie zur Registerkarte `Quittungen`.
+Wählen Sie aus der Liste `Quittung erstellen` die Option `Rechnung`. In dem neuen Fenster nehmen Sie gegebenenfalls Änderungen vor und drücken Sie die Schaltfläche "Speichern".
+Danach werden Sie das erstellte Rechnungsdokument sehen. Für die Zahlungsmethoden der "Rechnung" werden die zusätzlichen Zahlungsinformationen automatisch zum Rechnungsdokument hinzugefügt.
+> Wenn Sie aus irgendeinem Grund nicht in der Lage sind, ein Rechnungsdokument zu erstellen, müssen Sie Ihre Rechnungsvorlage überprüfen.
+>Gehen Sie zu `System`->`Kunde`->`{Ihr Geschäft}`->`Standorte`->`Deutschland (Standard)`->`Dokumente`->`Rechnung`, um dies zu tun.
 
 ### Lieferschein erstellen
-Um ein Lieferscheindokument für die Bestellung zu erstellen, navigieren Sie zur Seite `Bestellungen bearbeiten`. Suchen Sie nach der Bestellung, für die Sie ein Dokument erstellen möchten, und klicken Sie darauf. In der geöffneten Bestellung gehen Sie zur Registerkarte `Quittungen`. Wählen Sie aus der Liste `Quittung erstellen` die Option `Lieferschein`. In dem neuen Fenster nehmen Sie gegebenenfalls Änderungen vor und drücken Sie die Schaltfläche "Speichern". Danach werden Sie das erstellte Dokument sehen.
-> Wenn Sie aus irgendeinem Grund nicht in der Lage sind, ein Lieferscheindokument zu erstellen, müssen Sie Ihre Dokumentvorlage überprüfen. Gehen Sie zu `System`->`Kunde`->`{Ihr Geschäft}`->`Standorte`->`Deutschland (Standard)`->`Dokumente`->`Lieferschein`, um dies zu tun.
+Um ein Lieferscheindokument für die Bestellung zu erstellen, navigieren Sie zur Seite `Bestellungen bearbeiten`.
+Suchen Sie nach der Bestellung, für die Sie ein Dokument erstellen möchten, und klicken Sie darauf.
+In der geöffneten Bestellung gehen Sie zur Registerkarte `Quittungen`. Wählen Sie aus der Liste `Quittung erstellen` die Option `Lieferschein`.
+In dem neuen Fenster nehmen Sie gegebenenfalls Änderungen vor und drücken Sie die Schaltfläche "Speichern". Danach werden Sie das erstellte Dokument sehen.
+> Wenn Sie aus irgendeinem Grund nicht in der Lage sind, ein Lieferscheindokument zu erstellen, müssen Sie Ihre Dokumentvorlage überprüfen.
+>Gehen Sie zu `System`->`Kunde`->`{Ihr Geschäft}`->`Standorte`->`Deutschland (Standard)`->`Dokumente`->`Lieferschein`, um dies zu tun.
 
 ### Rechnungszahlung abschließen
 > Dieser Abschnitt ist relevant für `versicherte Rechnungskauf` Zahlungsmethoden
@@ -103,11 +124,18 @@ Um die Versicherung einer Zahlung zu starten, müssen Sie eine Finalize Transakt
 ### Zahlung stornieren
 Um die Zahlung zu stornieren, müssen Sie im Shop-Backend eine Ereignisprozedur (Transaktion stornieren (HeidelpayMGW)) erstellen (siehe [Ereignisprozedur erstellen](#Ereignisprozedur erstellen).
 > Es wird empfohlen, eine Ereignisprozedur zu erstellen, wenn ein Kredit-Knotenpunkt-Dokument erstellt wird (siehe [#Ereignisprozedur erstellen](#Ereignisprozedur erstellen)).
-Der übliche Arbeitsablauf würde darin bestehen, zur ursprünglichen Bestellung zu navigieren. Im Reiter `Übersicht` sehen Sie eine Listbox mit dem Namen `Gutschrift...`. Wählen Sie aus der Liste `von einzelnen Positionen` oder `von allen Positionen`. Im geöffneten Popup wählen Sie die Positionen aus, die Sie erstatten möchten. Drücken Sie die Schaltfläche "Speichern". Plentymarkets wird einen neuen Gutschriftsauftrag erstellen. Navigieren Sie zum Reiter `Quittungen` und wählen Sie aus der Liste `Quittung erstellen` die Option `Gutschrift`. Passen Sie bei Bedarf die Einstellungen an und drücken Sie `Speichern`. Wenn die Ereignisprozedur so konfiguriert ist, dass sie beim Generieren einer Gutschrift ausgelöst wird, sendet das Plugin den Rückerstattungsbetrag an heidelpay API.
+Der übliche Arbeitsablauf würde darin bestehen, zur ursprünglichen Bestellung zu navigieren. Im Reiter `Übersicht` sehen Sie eine Listbox mit dem Namen `Gutschrift...`. 
+>Wählen Sie aus der Liste `von einzelnen Positionen` oder `von allen Positionen`. Im geöffneten Popup wählen Sie die Positionen aus, die Sie erstatten möchten. Drücken Sie die Schaltfläche "Speichern".
+>Plentymarkets wird einen neuen Gutschriftsauftrag erstellen. Navigieren Sie zum Reiter `Quittungen` und wählen Sie aus der Liste `Quittung erstellen` die Option `Gutschrift`. 
+>Passen Sie bei Bedarf die Einstellungen an und drücken Sie `Speichern`. Wenn die Ereignisprozedur so konfiguriert ist, dass sie beim Generieren einer Gutschrift ausgelöst wird, sendet das Plugin den Rückerstattungsbetrag an heidelpay API.
 
 > Wenn die Gutschriftsbestellung eine teilweise Stornierung der ursprünglichen Bestellung ist, zieht das Plugin die Versandkosten vom Gesamtbetrag der Gutschriftsbestellung ab, wenn es Daten an HeidelpayMGW sendet.
 
-> Wenn der Gutschriftsauftrag eine vollständige Stornierung des ursprünglichen Kundenauftrags darstellt, sendet das Plugin den Gesamtbetrag des Gutschriftsauftrags an HeidelpayMGW. Wenn Sie die Versandkosten nicht in die vollständige Stornierung mit einbeziehen möchten, können Sie Credit Note Order öffnen, zum Reiter `Settings` navigieren und die Versandkosten manuell entfernen. Wenn Sie möchten, dass bei Gutschriftbestellungen die Versandkosten niemals in der ursprünglichen Bestellung enthalten sind, können Sie zu `Setup`->`Bestellungen`->`Einstellungen` navigieren und den Wert `Versandkosten in Gutschrift einbeziehen` in `Nein` ändern.
+> Wenn der Gutschriftsauftrag eine vollständige Stornierung des ursprünglichen Kundenauftrags darstellt, 
+>sendet das Plugin den Gesamtbetrag des Gutschriftsauftrags an HeidelpayMGW. 
+>Wenn Sie die Versandkosten nicht in die vollständige Stornierung mit einbeziehen möchten, können Sie Credit Note Order öffnen, zum Reiter `Settings` navigieren und die Versandkosten manuell entfernen.
+>Wenn Sie möchten, dass bei Gutschriftbestellungen die Versandkosten niemals in der ursprünglichen Bestellung enthalten sind,
+>können Sie zu `Setup`->`Bestellungen`->`Einstellungen` navigieren und den Wert `Versandkosten in Gutschrift einbeziehen` in `Nein` ändern.
 
 ### Ereignisprozedur erstellen
 Um eine neue Ereignisprozedur hinzuzufügen, müssen Sie diese Schritte durchführen:
