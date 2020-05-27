@@ -36,7 +36,7 @@ use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
  *
  * @author Rimantas <development@heidelpay.com>
  */
-class InvoiceGuaranteedPaymentServiceB2b extends AbstractPaymentService
+class InvoiceGuaranteedB2bPaymentService extends AbstractPaymentService
 {
     use Loggable;
 
