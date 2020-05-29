@@ -110,8 +110,6 @@ class PaymentHelper
                     'paymentKey' => PluginConfiguration::PAYMENT_KEY_INVOICE,
                     'name' => PluginConfiguration::INVOICE_FRONTEND_NAME
                 ];
-     
-                $this->plentyPaymentMethodRepository->createPaymentMethod($plentyPaymentMethodData);
             }
             // Invoice guaranteed B2C
             if ($payment == PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED) {
@@ -120,8 +118,6 @@ class PaymentHelper
                     'paymentKey' => PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED,
                     'name' => PluginConfiguration::INVOICE_GUARANTEED_FRONTEND_NAME
                 ];
-     
-                $this->plentyPaymentMethodRepository->createPaymentMethod($plentyPaymentMethodData);
             }
             // Invoice guaranteed B2B
             if ($payment == PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B) {
