@@ -37,19 +37,21 @@ This module is based on the heidelpay php-sdk (https://github.com/heidelpay/heid
 Public key is required to create payment types by the browser.
 Private key is required for transactions on heidelpay server.
 
-The first letter of the keys determine the environment the plugin comunicates with:
+The first letter of the keys determine the environment the plugin communicates with:
 * `s` enables testing against the sandbox environment (no money is transferred).
 * `p` enables production mode in which actual transactions take place and money is transferred.
 
-> When `Save` button is pressed plugin registers heidelpay webhooks with the provided keys.
+> When press the `Save` button the plugin registers heidelpay webhooks with the provided keys.
+> These webhooks are used to synchronize the payments between Plentymarkets and heidelpay
+> For example it updates the status of the payment in plentymarkets if the customer pays an invoice
 
 ##### Payment Method Parameters
 ##### Active
 If checked the payment method will be selectable on the checkout page
 
 ##### Display Name
-The name the payment method is shown under on the checkout page. \
-A default name will be shown if left empty.
+The name of the payment method shown on the checkout page. \
+A default name will be shown if the input is empty.
 
 ##### Min-/Max-Total
 The payment method will only be available if the basket has a total between these values.
@@ -68,7 +70,9 @@ Card payments can be used in two different ways:
 * Direct charge: the bank account of the customer is charged directly.
 * Authorize and charge: First you reserve money on the customer's account and later you charge the money.
 
-If customer has a card that uses 3D security, then during the checkout, customer will be redirected to a page where he can authorize his payment. If the customer is not able to authorize, he will be redirected back to the checkout. On the other hand if everything is OK, the Plentysystem will create an Order and customer will be redirected to Order status page.
+If the customer has a card that uses 3D security, then during the checkout, customer will be redirected to a page where he can authorize his payment.
+If the customer is not able to authorize, he will be redirected back to the checkout.
+On the other hand if everything is OK, the Plentysystem will create an Order and customer will be redirected to Order status page.
 
 ## Manual
 For further information like a workflow description or how to create event procedures,

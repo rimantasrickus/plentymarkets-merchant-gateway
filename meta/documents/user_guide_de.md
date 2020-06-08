@@ -15,7 +15,7 @@ Folgende Zahlungsarten werden aktuell unterstützt:
 * FlexiPay Direct
 
 ## ANFORDERUNGEN
-* Dieses Plugin ist entwickelt für Plentymarkets 7.
+* Dieses Plugin wurde für Plentymarkets 7 entwickelt.
 
 ## Versionshinweise
 Dieses Modul basiert auf dem heidelpay php-sdk (https://github.com/heidelpay/heidelpayPHP).
@@ -47,11 +47,11 @@ Der erste Buchstabe des jeweiligen Schlüssels bestimmt die Umgebung in der das 
 
 ####### Parameter der Zahlungsart
 ###### Aktiv
-Wenn markiert, kann die Zahlungsart auf der Checkout-Seite ausgewählt werden.
+Aktivieren Sie das Häckchen um die Zahlungsart auf der Checkout-Seite zur Verfügung zu stellen.
 
 ###### Anzeigename
 Der Name der Zahlungsart wird auf der Checkout-Seite angezeigt.  
-Ein Standardname wird angezeigt, wenn er leer gelassen wird.
+Ein Standardname wird angezeigt, wenn die Eingabe leer gelassen wird.
 
 ####### Min-/Max-Summe
 Die Zahlungsart steht nur dann zur Verfügung, wenn der Warenkorb eine Summe zwischen diesen Werten aufweist.
@@ -77,4 +77,3 @@ Wenn die Autorisierung erfolgreich durchgeführt wurde, erstellt das Plentymarke
 ## Handbuch
 Für zusätzliche Informationen wie eine Workflow-Beschreibung oder der Erstellung von Ereignisprozeduren,
 verweisen wir auf unser [Handbuch] (https://dev.heidelpay.com)
-
