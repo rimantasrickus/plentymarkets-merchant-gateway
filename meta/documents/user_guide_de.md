@@ -71,4 +71,6 @@ Kartenzahlungen und Paypal können auf zwei verschiedene Arten verwendet werden:
 
 ## Handbuch
 Für zusätzliche Informationen wie eine Workflow-Beschreibung oder der Erstellung von Ereignisprozeduren,
-verweisen wir auf unser [Handbuch] (https://dev.heidelpay.com)
+verweisen wir auf unser [Handbuch] (https://dev.heidelpay.com/user-guide-plentymarkets-mgw-plugin
+                                    
+)
