@@ -22,7 +22,7 @@ This module is based on the heidelpay php-sdk (https://github.com/heidelpay/heid
 
 ## Installation
 + Please refer to [plentyKnowledge](https://knowledge.plentymarkets.com) in order to learn how to install plugins.
-+ After performing the configuration steps described below you should be able to perform some tests with your keypair for the sandbox mode.
++ In order to test the configuration described below please use a test keypair so the plugin will run in sandbox mode  
 + Once you are satisfied with the configuration, you can replace the keypair with one for live mode to use the module productively
 
 ## Configuration
@@ -71,4 +71,6 @@ Card payments and paypal can be used in two different modes:
 
 ## Manual
 For further information like a workflow description or how to create event procedures,
-please refer to our [manual] (https://dev.heidelpay.com)
+please refer to our [manual] (https://dev.heidelpay.com/user-guide-plentymarkets-mgw-plugin
+                              
+)

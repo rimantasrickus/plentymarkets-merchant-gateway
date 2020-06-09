@@ -59,10 +59,10 @@ Wenn Sie einen dieser Werte auf 0 setzen, wird die entsprechende Beschränkung d
 ####### URL zum Zahlungssymbol
 Damit wird ein Icon für die Zahlungsart definiert, das auf der Checkout-Seite zusätzlich zum Anzeigenamen angezeigt wird.
 Wenn das Feld leer gelassen wird, wird das Standardsymbol verwendet.  
-Voraussetzungen für die url-Zeichenfolge:
+Voraussetzungen für die URL-Zeichenfolge:
 * sie muss aus dem Internet erreichbar sein
-* es muss mit 'http://' oder 'https://' beginnen
-* es muss mit '.jpg', '.png' oder '.gif' enden
+* sie muss mit 'http://' oder 'https://' beginnen
+* sie muss mit '.jpg', '.png' oder '.gif' enden
 
 ####### Transaktionsmodus (Kartenzahlung und Paypal)
 Kartenzahlungen und Paypal können auf zwei verschiedene Arten verwendet werden:
