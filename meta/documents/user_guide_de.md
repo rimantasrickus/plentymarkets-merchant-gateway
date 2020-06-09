@@ -37,8 +37,8 @@ Zum Erstellen von Zahlungsarten durch den Browser ist ein öffentlicher Schlüss
 Der private Schlüssel ist für die Authentifizierung auf dem heidelpay-Server zur Durchführung von Transaktionen erforderlich.
 
 Der erste Buchstabe des jeweiligen Schlüssels bestimmt die Umgebung in der das Plugin arbeitet:
-* `s` aktiviert den Testmodus, der gegen die Sandbox der API arbeitet (es findet kein Transfer von Geldern statt)
-* `p` versetzt das Plugin in den Produktionsmodus. Hier finden tatsächliche Transaktionen statt.
+* `s` arbeitet im Testmodus gegen die Sandbox der API (es findet kein Transfer von Geldern statt)
+* `p` identifiziert einen Schlüssel für den Produktionsmodus. Hiermit finden tatsächliche Transaktionen statt.
 
 > Wenn die `Speichern`-Taste gedrückt wird, registriert das heidelpay Plugin Webhooks mit den eingetragenen Schlüsseln.
 > Die Webhooks dienen dazu, Änderungen an den Zahlungen mit dem Plentymarkets System zu synchronisieren.
