@@ -22,7 +22,8 @@ Dieses Modul basiert auf dem heidelpay php-sdk (https://github.com/heidelpay/hei
 
 ## Installation
 + Bitte lesen Sie [plentyKnowledge] (https://knowledge.plentymarkets.com), um zu erfahren, wie man Plugins installiert.
-+ Nachdem Sie die unten beschriebenen Konfigurationsschritte durchgeführt haben, sind Sie in der Lage, einige Tests mit ihrem Schlüsselpaar für den Sandboxmodus durchführen.
++ Verwenden Sie für die unten beschriebenen Konfigurationsschritte ein Test KeyPair,um zu das Plugin im Sandboxmodus zu testen.
+> Ein Test-KeyPair können Sie über den Support (support@heidelpay.com) anfordern.
 + Sobald Sie mit der Konfiguration zufrieden sind, können Sie das Schlüsselpaar durch eines für den Livemodus ersetzen, um das Modul produktiv einzusetzen 
 
 ## Konfiguration
