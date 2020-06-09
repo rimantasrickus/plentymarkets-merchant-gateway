@@ -1,113 +1,67 @@
-![Logo](https://dev.heidelpay.com/devHeidelpay_400_180.jpg)
+[![PHP 7.1](https://img.shields.io/badge/php-7.1-blue.svg)](http://www.php.net)
+[![PHP 7.2](https://img.shields.io/badge/php-7.2-blue.svg)](http://www.php.net)
+[![PHP 7.3](https://img.shields.io/badge/php-7.3-blue.svg)](http://www.php.net)
 
-# heidelpay plentymarkets-merchant-gateway plugin
-This extension provides an integration of the heidelpay payment methods for your plentymarkets shop.
+![Logo](http://dev.heidelpay.com/devHeidelpay_400_180.jpg)
+
+# Payment extension for Plentymarkets and heidelpay merchant gateway (MGW)  
+
+This extension for Plentymarkets provides a direct integration of the heidelpay payment methods to your Plentymarkets shop. 
 
 Currently supported payment methods are:
-* Invoice
-* Invoice secured B2C
-* Invoice secured B2B
+* Cards (Credit and Debit)
+* Direct Debit (guaranteed) B2C
+* FlexiPay direct®
+* iDEAL
+* Invoice (guaranteed) B2C
+* Invoice guaranteed B2B
+* PayPal
+* Sofort
 
-## REQUIREMENTS
-* This plugin is designed fo Plentymarkets 7.
+## SYSTEM REQUIREMENTS
+This extension requires:
+- Plentymarkets 7  
+- Plugin Ceres version 5.0 or above  
+- Plugin IO version 5.0 or above  
 
-## Release notes
-This module is based on the heidelpay php-sdk (https://github.com/heidelpay/heidelpayPHP).
+## LICENSE
+Copyright (C) 2020 heidelpay GmbH
 
-## Installation
-+ Please refer to [plentyKnowledge](https://knowledge.plentymarkets.com) in order to learn how to install plugins.
-+ After performing the configuration steps described below you should be able to perform some tests in staging mode.
-+ If everything is fine you can change the configuration to live mode and deploy the plugin for the productive area to enable it for your clients.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-## Configuration
-### Basic configuration
-+ Select the Plugin-tab and then "Plugin overview"
-+ Select the heidelpay plugin to switch to the configuration overview.
-+ Select `Default container links` tab. Select all elements in the list and save configuration.
-+ For the plugin configuration please go to `System`->`Orders`->`Payment`->`Plugins`.
+http://www.apache.org/licenses/LICENSE-2.0
 
-### Date of birth
-For some payment types `Date of birth` is necessary. To enable it:
- + Select `Ceres` plugin in "Plugin overview"
- + Under `Configuration` menu section select `Checkout and My account`
- + If not activated switch `Toggle deprecated entries` at the top
- + In the `SHOW INVOICE ADDRESS FIELDS IN ADDRESS FORM` list enable `Date of birth`
- + In the `ENABLE INVOICE ADDRESS FIELD VALIDATION` list enable  `Date of birth`
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-Alternatively if address will not have `Date of birth` pop-up box with `Date of birth` field will appear.
+## User Guide
+### English
+* [User Guide](meta/documents/user_guide_en.md)
+* [Changelog](meta/documents/changelog_en.md)
+* [Support Contacts](meta/documents/support_contact_en.md)
 
-## Plugin settings
-##### Public / Private key
-Public key is required to create payment types by the browser.
-Private key is required for transactions on heidelpay server.
+### Deutsch
+* [User Guide](meta/documents/user_guide_de.md)
+* [Changelog](meta/documents/changelog_de.md)
+* [Supportkontakte](meta/documents/support_contact_de.md)
 
-The first letter of the keys determine the environment the plugin comunicates with:
-* `s` enables testing against the sandbox environment (no money is transferred).
-* `p` enables production mode in which actual transactions take place and money is transferred.
+## Support
+For any issues or questions please get in touch with our support.
 
-> When `Save` button is pressed plugin registers heidelpay webhooks with the provided keys.
+#### Web pages
+* https://dev.heidelpay.com/
+* https://docs.heidelpay.com/
+ 
+#### Email
+support@heidelpay.com
+ 
+#### Phone
++49 (0)6221/6471-100
 
-##### Payment Method Parameters
-##### Active
-If checked the payment method will be selectable on the checkout page
-
-##### Display Name
-The name the payment method is shown under on the checkout page. \
-A default name will be shown if left empty.
-
-##### Min-/Max-Total
-The payment method will only be available if the basket has a total between these values.
-Setting one of those values to 0 will disable the corresponding limitation.
-
-##### URL to payment icon
-This defines an icon for the payment method which is shown within checkout in addition to the display name.
-If left empty the default icon is used. \
-Prerequisites for the url string:
-* it must be reachable from the internet
-* it must start with 'http://' or 'https://'
-* it must end with '.jpg', '.png' or '.gif'
-
-## Workflow description
-### Logging
-To see Logs of Plentymarkets system navigate to `Data`->`Log` page. There You will see all the Logs of Plentymarkets system. Normally heidelpayMGW plugin will show only `error` level logs. Additionally You can enable `debug` level logs and this will show much more information of what is happening behind the scenes. To enable `debug` level logs, press `Configure logs` at the top-middle section of the `Log` page. In opened popup select `HeidelpayMGW` plugin, check `Active` checkbox, select duration for how long this configuration should be active and select `Debug` from `Log level` list.
-
-### External Order number
-When an Order is created with heidelpayMGW plugin, Order will have `External Order number` attached. This number is Order ID in your hIP (heidelpay Intelligence Platform). To find this number in Plentymarkets system navigate to `Edit orders` page. Search for the Order created with heidelpayMGW plugin and open it. In opened Order go to `Settings` tab and there You will see `Ext. Order number`.
-
-### Status of a payment
-To see what is the status of a payment for a given Order open that Order. Navigate to `Payment` tab. There You will see what status payment has right now. When payment changes in heidelpay system, plugin will receive event that payment changed and will change status of a payment in Plentymarkets system automatically.
-
-### Creating Invoice
-To create Invoice document for the Order, navigate to `Edit orders` page. Search for the Order You want to create Invoice for and click it. In opened Order go to `Receipts` tab. From the `Create receipt` list select `Invoice`. In the new window make changes if needed and press `Save` button. After that You will see created Invoice document. For the `Invoice` payment methods the additional payment information will be added to Invoice document automatically.
-> If for some reason You are not able to create Invoice document, You need to check Your Invoice template. Go to `System`->`Client`->`{your shop}`->`Locations`->`Deutschland (standard)`->`Documents`->`Invoice` to do that.
-
-### Creating delivery note
-To create Delivery note document for the Order, navigate to `Edit orders` page. Search for the Order You want to create document for and click it. In opened Order go to `Receipts` tab. From the `Create receipt` list select `Delivery note`. In the new window make changes if needed and press `Save` button. After that You will see created document.
-> If for some reason You are not able to create Delivery note document, You need to check Your document template. Go to `System`->`Client`->`{your shop}`->`Locations`->`Deutschland (standard)`->`Documents`->`Delivery note` to do that.
-
-### Finalize invoice payment
-> This section is relevant for `Invoice guaranteed` payment methods
-
-In order to start the insurance of a payment you need to trigger a finalize transaction. To do this there are two possibilities:
-* You can do this in your hIP account (heidelpay Intelligence Platform)
-* You can do this by creating the delivery note within the shop backend (see [Creating delivery note](#creating-delivery-note))
-* The finalize starts the insurance period in which the customer has to pay the total amount of the order.
-* The insurance period is determined within your contract with heidelpay.
-* As soon as the total amount is paid by the customer a receipt transaction (REC) appears within the hIP and is sent to the pushUrl of your shop.
-* The plugin will then update payment linked to the corresponding order.
-
-### Cancel payment
-To cancel payment You will need to create `Return order`. First You need to navigate to original Order. Open this Order. In the `Overview` tab You will see list box named `Return...`. From list select `create`. In the opened popup select items you want to return. Press save button. Plentymarkets will create new return Order. Navigate to `Receipts` tab from the `Create receipt` list select `Return slip`. Adjust settings if needed and press `Save`. Document generation will trigger `cancel charge` in heidelpay system with the amount of the return Order. 
-
-### Invoice payment methods
-> _Invoice and Invoice secured B2C_ is only available under the following conditions:
-> 1. The Country is either Germany or Austria
-> 2. The address does not belong to a company
-
-> _Invoice secured B2B_ is only available under the following conditions:
-> 1. The Country is either Germany or Austria
-> 2. The address does belong to a company
-
-### All payment methods
-* All payment methods will add `shortId` (the id of the transaction which lead to the payment i.e. Receipt, Debit or Capture) to the Order payment (see [Status of a payment](#status-of-a-payment)).
-* In case of an error, error message will be added to the Order note and to the Plentymarkets Logs (see [Logging](#logging)).
+#### Twitter
+@devHeidelpay
