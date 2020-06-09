@@ -28,7 +28,7 @@ Dieses Modul basiert auf dem heidelpay php-sdk (https://github.com/heidelpay/hei
 ### Grundkonfiguration
 + Wählen Sie in der Plugin Übersicht das heidelpay-Plugin, um zur Konfigurationsübersicht zu wechseln.
 + Wechseln Sie zu der Registerkarte `Standard-Containerlinks` und wählen Sie alle Elemente in der Liste aus und speichern Sie die Konfiguration.
-+ Für die Plugin-Konfiguration gehen Sie bitte zu `Einrichtung`->`Aufträge`->`Zahlung`->`Plugins`.
++ Für die Plugin-Konfiguration gehen Sie bitte zu `Einrichtung`->`Aufträge`->`Zahlung`->`Plugins`->`Heidelpay`.
 
 ## Plugin-Einstellungen
 ####### Öffentlicher / Privater Schlüssel
