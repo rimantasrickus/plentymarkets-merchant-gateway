@@ -27,8 +27,8 @@ Dieses Modul basiert auf dem heidelpay php-sdk (https://github.com/heidelpay/hei
 
 ## Konfiguration
 ### Grundkonfiguration
-+ Wählen Sie in der Plugin Übersicht das heidelpay-Plugin, um zur Konfigurationsübersicht zu wechseln.
-+ Wechseln Sie zu der Registerkarte `Standard-Containerlinks` und wählen Sie alle Elemente in der Liste aus und speichern Sie die Konfiguration.
++ Wählen Sie das entsprechende Plugin-Set und dann das Plugin "heidelpay merchant gateway" aus der Pluginliste aus, um zur Konfigurationsübersicht zu wechseln.
++ Wechseln Sie zu der Registerkarte `Standard-Container-Verknüpfung`, wählen Sie alle Elemente in der Liste aus und speichern Sie die Konfiguration.
 + Für die Plugin-Konfiguration gehen Sie bitte zu `Einrichtung`->`Aufträge`->`Zahlung`->`Plugins`->`Heidelpay`.
 
 ## Plugin-Einstellungen

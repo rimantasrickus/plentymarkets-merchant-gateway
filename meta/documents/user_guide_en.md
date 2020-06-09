@@ -27,7 +27,7 @@ This module is based on the heidelpay php-sdk (https://github.com/heidelpay/heid
 
 ## Configuration
 ### Basic configuration
-+ In the Plugin overview select the heidelpay plugin to switch to the configuration overview.
++ In the Plugin overview select your plugin set and in it the "heidelpay merchant gateway" plugin to switch to the configuration overview.
 + Switch to the `Default container links` and select all elements in the list and save the configuration.
 + For the plugin configuration please go to `System`->`Orders`->`Payment`->`Plugins`.
 
