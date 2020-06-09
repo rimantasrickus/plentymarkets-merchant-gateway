@@ -37,8 +37,8 @@ Public key is required to create payment types by the browser.
 Private key is required for transactions on heidelpay server.
 
 The first letter of the keys determine the environment the plugin communicates with:
-* `s` enables testing against the sandbox environment (no money is transferred).
-* `p` enables production mode in which actual transactions take place and money is transferred.
+* `s` identifies the key for the sandbox environment (no money is transferred).
+* `p` identifies the key for production mode in which actual transactions take place and money is transferred.
 
 > When you press the `Save` button the plugin registers heidelpay webhooks with the provided keys.
 > These webhooks are used to synchronize the payments between Plentymarkets and heidelpay
