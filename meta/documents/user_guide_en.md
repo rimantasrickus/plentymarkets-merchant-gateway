@@ -68,6 +68,7 @@ Prerequisites for the URL string:
 Card payments and paypal can be used in two different modes:
 * Direct charge: the bank account of the customer will be charged directly.
 * Authorize and charge: First the total amount will be reserved on the customer's account. Later you charge the money.
+> for further information about the payment method please refer to our manual
 
 ## Manual
 For further information like a workflow description or how to create event procedures,

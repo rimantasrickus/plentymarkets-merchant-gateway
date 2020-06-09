@@ -69,6 +69,7 @@ Voraussetzungen für die URL-Zeichenfolge:
 Kartenzahlungen und Paypal können auf zwei verschiedene Arten verwendet werden:
 * Direktbelastung: das Bankkonto des Kunden wird direkt belastet.
 * Autorisieren und belasten: Zuerst wird eine Summe auf dem Konto des Kunden reserviert und Sie belasten diese Summe zu einem späteren Zeitpunkt.
+> Weitere Informationen zum Transaktionsmodus finden Sie in unserem Handbuch
 
 ## Handbuch
 Für zusätzliche Informationen wie eine Workflow-Beschreibung oder der Erstellung von Ereignisprozeduren,
