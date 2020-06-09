@@ -59,7 +59,7 @@ Setting one of those values to 0 will disable the corresponding limitation.
 ##### URL to payment icon
 This defines an icon for the payment method which is shown within the checkout in addition to the display name.
 A default icon will be shown if the input is empty. \
-Prerequisites for the url string:
+Prerequisites for the URL string:
 * it must be reachable from the internet
 * it must start with 'http://' or 'https://'
 * it must end with '.jpg', '.png' or '.gif'
