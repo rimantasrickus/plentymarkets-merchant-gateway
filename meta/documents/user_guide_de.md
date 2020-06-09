@@ -22,14 +22,12 @@ Dieses Modul basiert auf dem heidelpay php-sdk (https://github.com/heidelpay/hei
 
 ## Installation
 + Bitte lesen Sie [plentyKnowledge] (https://knowledge.plentymarkets.com), um zu erfahren, wie man Plugins installiert.
-+ Nachdem Sie die unten beschriebenen Konfigurationsschritte durchgeführt haben, sind Sie in der Lage, einige Tests im Staging-Modus durchzuführen.
-+ Wenn alles in Ordnung ist, können Sie die Konfiguration in den Live-Modus ändern und das Plugin für den produktiven Bereich einsetzen, um es für Ihre Kunden zu aktivieren.
++ Nachdem Sie die unten beschriebenen Konfigurationsschritte durchgeführt haben, sind Sie in der Lage, einige Tests im Sandbox-Modus durchzuführen.
 
 ## Konfiguration
 ### Grundkonfiguration
-+ Wählen Sie die Plugin-Registerkarte und dann "Plugin-Übersicht".
-+ Wählen Sie das heidelpay-Plugin, um zur Konfigurationsübersicht zu wechseln.
-+ Wählen Sie die Registerkarte `Standard-Containerlinks`. Wählen Sie alle Elemente in der Liste aus und speichern Sie die Konfiguration.
++ Wählen Sie in der Plugin Übersicht das heidelpay-Plugin, um zur Konfigurationsübersicht zu wechseln.
++ Wechseln Sie zu der Registerkarte `Standard-Containerlinks` und wählen Sie alle Elemente in der Liste aus und speichern Sie die Konfiguration.
 + Für die Plugin-Konfiguration gehen Sie bitte zu `Einrichtung`->`Aufträge`->`Zahlung`->`Plugins`.
 
 ## Plugin-Einstellungen
@@ -58,7 +56,7 @@ Die Zahlungsart steht nur dann zur Verfügung, wenn der Warenkorb eine Summe zwi
 Wenn Sie einen dieser Werte auf 0 setzen, wird die entsprechende Beschränkung deaktiviert.
 
 ####### URL zum Zahlungssymbol
-Damit wird ein Symbol für die Zahlungsart definiert, das auf der Checkout-Seite zusätzlich zum Anzeigenamen angezeigt wird.
+Damit wird ein Icon für die Zahlungsart definiert, das auf der Checkout-Seite zusätzlich zum Anzeigenamen angezeigt wird.
 Wenn das Feld leer gelassen wird, wird das Standardsymbol verwendet.  
 Voraussetzungen für die url-Zeichenfolge:
 * sie muss aus dem Internet erreichbar sein
@@ -68,11 +66,7 @@ Voraussetzungen für die url-Zeichenfolge:
 ####### Transaktionsmodus (Kartenzahlung und Paypal)
 Kartenzahlungen und Paypal können auf zwei verschiedene Arten verwendet werden:
 * Direktbelastung: das Bankkonto des Kunden wird direkt belastet.
-* Autorisieren und belasten: Zuerst reservieren Sie eine Summe auf dem Konto des Kunden und später belasten Sie diese Summe.
-
-Wenn der Kunde eine Karte hat, die 3D-Sicherheit verwendet, wird er während des Bestellvorgangs auf eine Seite weitergeleitet, auf der er seine Zahlung autorisieren kann.
-Wenn der Kunde aus irgendeinem Grund nicht in der Lage ist, eine Autorisierung vorzunehmen, wird er zurück zur Kasse umgeleitet.
-Wenn die Autorisierung erfolgreich durchgeführt wurde, erstellt das Plentymarkets System eine Bestellung und der Kunde wird zur Bestellbestätigung-Seite weitergeleitet.
+* Autorisieren und belasten: Zuerst wird eine Summe auf dem Konto des Kunden reserviert und Sie belasten diese Summe zu einem späteren Zeitpunkt.
 
 ## Handbuch
 Für zusätzliche Informationen wie eine Workflow-Beschreibung oder der Erstellung von Ereignisprozeduren,
