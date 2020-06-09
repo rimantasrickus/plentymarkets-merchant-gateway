@@ -22,7 +22,8 @@ This module is based on the heidelpay php-sdk (https://github.com/heidelpay/heid
 
 ## Installation
 + Please refer to [plentyKnowledge](https://knowledge.plentymarkets.com) in order to learn how to install plugins.
-+ After performing the configuration steps described below you should be able to perform some tests in sandbox mode.
++ After performing the configuration steps described below you should be able to perform some tests with your keypair for the sandbox mode.
++ Once you are satisfied with the configuration, you can replace the keypair with one for live mode to use the module productively
 
 ## Configuration
 ### Basic configuration
