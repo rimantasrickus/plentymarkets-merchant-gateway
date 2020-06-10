@@ -3,17 +3,6 @@
 # heidelpay plentymarkets-merchant-gateway plugin
 Dieses Plugin stellt eine Integration für die heidelpay Zahlungsarten für Ihren Plentymarkets Shop bereit.
 
-Folgende Zahlungsarten werden aktuell unterstützt:
-* Rechnungskauf
-* Versicherter Rechnungskauf B2C
-* Versicherter Rechnungskauf B2B
-* Kreditkarte und Debitkarte
-* SEPA (versicherte) Lastschrift
-* PayPal
-* SOFORT
-* iDEAL
-* FlexiPay Direct
-
 ## ANFORDERUNGEN
 * Dieses Plugin wurde für Plentymarkets 7 entwickelt.
 

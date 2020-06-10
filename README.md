@@ -49,19 +49,3 @@ limitations under the License.
 * [User Guide](meta/documents/user_guide_de.md)
 * [Changelog](meta/documents/changelog_de.md)
 * [Supportkontakte](meta/documents/support_contact_de.md)
-
-## Support
-For any issues or questions please get in touch with our support.
-
-#### Web pages
-* https://dev.heidelpay.com/
-* https://docs.heidelpay.com/
- 
-#### Email
-support@heidelpay.com
- 
-#### Phone
-+49 (0)6221/6471-100
-
-#### Twitter
-@devHeidelpay

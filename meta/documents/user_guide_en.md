@@ -3,17 +3,6 @@
 # heidelpay plentymarkets-merchant-gateway plugin
 This extension provides an integration of the heidelpay payment methods for your plentymarkets shop.
 
-Currently supported payment methods are:
-* Invoice
-* Invoice secured B2C
-* Invoice secured B2B
-* Cards (Credit and Debit)
-* SEPA Direct Debit (guaranteed)
-* PayPal
-* SOFORT
-* iDEAL
-* FlexiPay Direct
-
 ## REQUIREMENTS
 * This plugin is designed for Plentymarkets 7.
 
