@@ -11,7 +11,7 @@ use HeidelpayMGW\Configuration\PluginConfiguration;
 /**
  * Sofort payment service
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ class SofortPaymentService extends AbstractPaymentService
     {
         $data = $this->prepareChargeRequest($payment);
 
-        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::directDebit', $data);
+        $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::charge', $data);
 
         $this->getLogger(__METHOD__)->debug(
             'translation.charge',
@@ -124,7 +124,7 @@ class SofortPaymentService extends AbstractPaymentService
     /**
      * Make API call ship to finalize transaction
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param integer $orderId  Plenty Order ID
      *
      * @return array

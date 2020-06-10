@@ -44,39 +44,31 @@ function prepareHeidelpayPayment() {
                     showHeidelpayBirthDateModal();
                 }
                 if (isBirthDateAvailable() || heidelpayBirthDate) {
-                    if ({{useInvoiceFactoring}}) {
-                        heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceFactoring());
-                    } else {
-                        heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
-                    }
+                    heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
                 }
                 return;
             }
-            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{invoiceGuaranteedB2B}}') {
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{invoiceGuaranteedB2b}}') {
                 // Creating a customer instance
-                var Customer = heidelpayInstance.B2BCustomer()
+                var Customer = heidelpayInstance.B2bCustomer()
                 // Rendering the customer form
                 Customer.create({
-                    containerId: 'customerB2B',
+                    containerId: 'customerB2b',
                 });
                 window.b2bCustomer = Customer;
-                showHeidelpayB2BCustomerModal();
+                showHeidelpayB2bCustomerModal();
                 
-                document.getElementById('heidelpayB2BCustomerSubmit').onclick = function() {
-                    if (isB2BCustomerValid()) {
-                        document.getElementById('heidelpayB2BCustomerSubmit').disabled = true;
-                        document.getElementById('heidelpayB2BCustomerButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
-                        if ({{useInvoiceB2BFactoring}}) {
-                            heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceFactoring());
-                        } else {
-                            heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
-                        }
+                document.getElementById('heidelpayB2bCustomerSubmit').onclick = function() {
+                    if (isB2bCustomerValid()) {
+                        document.getElementById('heidelpayB2bCustomerSubmit').disabled = true;
+                        document.getElementById('heidelpayB2bCustomerButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
+                        heidelpayPayment(placeOrderComponent, heidelpayInstance.InvoiceGuaranteed());
                     }
                 };
                 return;
             }
-            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{creditCard}}') {
-                showHeidelpayCCModal();
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{cards}}') {
+                showheidelpayCardsModal();
 
                 let card = heidelpayInstance.Card();
                 // Rendering input fields
@@ -93,33 +85,33 @@ function prepareHeidelpayPayment() {
                     onlyIframe: false
                 });
 
-                document.getElementById('heidelpayCCSubmit').onclick = function() {
-                    document.getElementById('heidelpayCCSubmit').disabled = true;
+                document.getElementById('heidelpayCardsSubmit').onclick = function() {
+                    document.getElementById('heidelpayCardsSubmit').disabled = true;
                     document.getElementById('ccModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
                     heidelpayPayment(placeOrderComponent, card);
                 };
                 return;
             }
-            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{sepa}}') {
-                showHeidelpaySepaModal();
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{sepaDirectDebit}}') {
+                showHeidelpaySepaDirectDebitModal();
 
-                let sepa = heidelpayInstance.SepaDirectDebit();
-                sepa.create('sepa-direct-debit', {
-                    containerId: 'sepa-IBAN'
+                let sepaDirectDebit = heidelpayInstance.SepaDirectDebit();
+                sepaDirectDebit.create('sepa-direct-debit', {
+                    containerId: 'sepa-direct-debit-IBAN'
                 });
 
-                document.getElementById('heidelpaySepaSubmit').onclick = function() {
-                    if (document.getElementById('SepaMandate').checked) {
-                        document.getElementById('heidelpaySepaSubmit').disabled = true;
-                        document.getElementById('sepaModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
-                        heidelpayPayment(placeOrderComponent, sepa);
+                document.getElementById('heidelpaySepaDirectDebitSubmit').onclick = function() {
+                    if (document.getElementById('SepaDirectDebitMandate').checked) {
+                        document.getElementById('heidelpaySepaDirectDebitSubmit').disabled = true;
+                        document.getElementById('sepaDirectDebitModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
+                        heidelpayPayment(placeOrderComponent, sepaDirectDebit);
                     } else {
-                        showErrorNotification('{{sepaMandateError}}');
+                        showErrorNotification('{{sepaDirectDebitMandateError}}');
                     }
                 };
                 return;
             }
-            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{sepaGuaranteed}}') {
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{sepaDirectDebitGuaranteed}}') {
                 if (!isBirthDateAvailable() && !heidelpayBirthDate) {
                     var Customer = heidelpayInstance.Customer()
                     // Rendering the customer form
@@ -131,19 +123,19 @@ function prepareHeidelpayPayment() {
                     showHeidelpayBirthDateModal();
                 }
                  if (isBirthDateAvailable() || heidelpayBirthDate) {
-                    showHeidelpaySepaGuaranteedModal();
-                    let sepaGuaranteed = heidelpayInstance.SepaDirectDebitGuaranteed();
-                    sepaGuaranteed.create('sepa-direct-debit-guaranteed', {
-                        containerId: 'sepa-guaranteed-IBAN'
+                    showHeidelpaySepaDirectDebitGuaranteedModal();
+                    let directDebitGuaranteed = heidelpayInstance.SepaDirectDebitGuaranteed();
+                    directDebitGuaranteed.create('sepa-direct-debit-guaranteed', {
+                        containerId: 'sepa-direct-debit-guaranteed-IBAN'
                     });
 
-                    document.getElementById('heidelpaySepaGuaranteedSubmit').onclick = function() {
-                        if (document.getElementById('SepaGuaranteedMandate').checked) {
-                            document.getElementById('heidelpaySepaGuaranteedSubmit').disabled = true;
-                            document.getElementById('sepaGuaranteedModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
-                            heidelpayPayment(placeOrderComponent, sepaGuaranteed);
+                    document.getElementById('heidelpaySepaDirectDebitGuaranteedSubmit').onclick = function() {
+                        if (document.getElementById('SepaDirectDebitGuaranteedMandate').checked) {
+                            document.getElementById('heidelpaySepaDirectDebitGuaranteedSubmit').disabled = true;
+                            document.getElementById('sepaDirectDebitGuaranteedModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
+                            heidelpayPayment(placeOrderComponent, directDebitGuaranteed);
                         } else {
-                            showErrorNotification('{{sepaMandateError}}');
+                            showErrorNotification('{{sepaDirectDebitMandateError}}');
                         }
                     };
                  }
@@ -187,7 +179,7 @@ function prepareHeidelpayPayment() {
                 heidelpayPayment(placeOrderComponent, heidelpayInstance.Sofort());
                 return;
             }
-            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{flexipay}}') {
+            if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{flexipayDirect}}') {
                 document.getElementById('checkoutButtonHeidelpay').disabled = true;
                 heidelpayPayment(placeOrderComponent, heidelpayInstance.FlexiPayDirect());
                 return;
@@ -221,8 +213,8 @@ function validateBirthDate() {
     }
 }
 
-function isB2BCustomerValid() {
-    let b2bCustomorData = gatherHeidelpayB2BData(window.b2bCustomer);
+function isB2bCustomerValid() {
+    let b2bCustomorData = gatherHeidelpayB2bData(window.b2bCustomer);
     let errors = [];
     for (let index in b2bCustomorData) {
         if (!b2bCustomorData[index]) {
@@ -247,8 +239,8 @@ function heidelpayPayment(placeOrderComponent, paymentInstance) {
             .then(data => {
                 let post;
                 if (window.b2bCustomer) {
-                    let heidelpayB2BCustomer = gatherHeidelpayB2BData(window.b2bCustomer);
-                    post = {data, heidelpayBirthDate, heidelpayB2BCustomer};
+                    let heidelpayB2bCustomer = gatherHeidelpayB2bData(window.b2bCustomer);
+                    post = {data, heidelpayBirthDate, heidelpayB2bCustomer};
                 } else {
                     post = {data, heidelpayBirthDate};
                 }
@@ -263,12 +255,12 @@ function heidelpayPayment(placeOrderComponent, paymentInstance) {
                 .then(response => {
                     if (response.success === true) {
                         placeOrderComponent.preparePayment();
-                        closeHeidelpayCCModal();
-                        closeHeidelpaySepaModal();
-                        closeHeidelpaySepaGuaranteedModal();
+                        closeHeidelpayCardsModal();
+                        closeHeidelpaySepaDirectDebitModal();
+                        closeHeidelpaySepaDirectDebitGuaranteedModal();
                         closeHeidelpayPaypalModal();
                         closeHeidelpayIdealModal();
-                        closeHeidelpayB2BCustomerModal();
+                        closeHeidelpayB2bCustomerModal();
                         enableButtons();
                         return;
                     }
@@ -298,18 +290,18 @@ function showErrorNotification(errorText) {
 }
 
 function enableButtons() {
-    document.getElementById('heidelpayCCSubmit').disabled = false;
+    document.getElementById('heidelpayCardsSubmit').disabled = false;
     document.getElementById('ccModalPayButtonArrow').className = '';
-    document.getElementById('heidelpaySepaSubmit').disabled = false;
-    document.getElementById('sepaModalPayButtonArrow').className = '';
-    document.getElementById('heidelpaySepaGuaranteedSubmit').disabled = false;
-    document.getElementById('sepaGuaranteedModalPayButtonArrow').className = '';
+    document.getElementById('heidelpaySepaDirectDebitSubmit').disabled = false;
+    document.getElementById('sepaDirectDebitModalPayButtonArrow').className = '';
+    document.getElementById('heidelpaySepaDirectDebitGuaranteedSubmit').disabled = false;
+    document.getElementById('sepaDirectDebitGuaranteedModalPayButtonArrow').className = '';
     document.getElementById('heidelpayPaypalSubmit').disabled = false;
     document.getElementById('paypalModalPayButtonArrow').className = '';
     document.getElementById('heidelpayIdealSubmit').disabled = false;
     document.getElementById('idealModalPayButtonArrow').className = '';
-    document.getElementById('heidelpayB2BCustomerSubmit').disabled = false;
-    document.getElementById('heidelpayB2BCustomerButtonArrow').className = '';
+    document.getElementById('heidelpayB2bCustomerSubmit').disabled = false;
+    document.getElementById('heidelpayB2bCustomerButtonArrow').className = '';
     document.getElementById('checkoutButtonHeidelpay').disabled = false;
     document.getElementById('checkoutButtonHeidelpayArrow').className = 'fa fa-arrow-right';
 }

@@ -8,7 +8,7 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Model;
 /**
  * InvoiceGuaranteedSetting model
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ class InvoiceGuaranteedSetting extends Model
     public $isActive = false;
 
     /** @var string $displayName  Payment method display name */
-    public $displayName = 'Invoice B2C guaranteed';
+    public $displayName = 'Invoice guaranteed B2C';
 
     /** @var string $basketMinTotal  Minimum basket amount for payment method */
     public $basketMinTotal = '';
@@ -48,18 +48,6 @@ class InvoiceGuaranteedSetting extends Model
     /** @var string $iconURL  Path to icon of payment method */
     public $iconURL = '';
 
-    /** @var bool $guaranteedOrFactoring  Use invoice guaranteed or factoring */
-    public $guaranteedOrFactoring = false;
-
-    /** @var string $reasonCodeCancel  ID of Plenty return reason */
-    public $reasonCodeCancel = '';
-
-    /** @var string $reasonCodeReturn  ID of Plenty return reason */
-    public $reasonCodeReturn = '';
-
-    /** @var string $reasonCodeCredit  ID of Plenty return reason */
-    public $reasonCodeCredit = '';
-
     /**
      * Database table name
      *
@@ -67,7 +55,8 @@ class InvoiceGuaranteedSetting extends Model
      */
     public function getTableName(): string
     {
-        return PluginConfiguration::PLUGIN_NAME.'::'.explode('\\', __CLASS__)[2];
+        /** @noinspection OffsetOperationsInspection */
+        return PluginConfiguration::PLUGIN_NAME.'::'. explode('\\', __CLASS__)[2];
     }
 
     /**
@@ -85,11 +74,7 @@ class InvoiceGuaranteedSetting extends Model
         $this->basketMinTotal = $data['basketMinTotal'] ?? '';
         $this->basketMaxTotal = $data['basketMaxTotal'] ?? '';
         $this->iconURL = $data['iconURL'] ?? '';
-        $this->guaranteedOrFactoring = false; //$data['guaranteedOrFactoring'] ?? false;
-        $this->reasonCodeCancel = $data['reasonCodeCancel'] ?? '';
-        $this->reasonCodeReturn = $data['reasonCodeReturn'] ?? '';
-        $this->reasonCodeCredit = $data['reasonCodeCredit'] ?? '';
-        
+
         return $this;
     }
 }

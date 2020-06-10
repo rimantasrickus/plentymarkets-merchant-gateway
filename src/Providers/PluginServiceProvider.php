@@ -10,23 +10,23 @@ use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Helpers\SessionHelper;
 use Plenty\Plugin\Translation\Translator;
 use Plenty\Modules\Order\Models\OrderType;
-use HeidelpayMGW\Methods\SepaPaymentMethod;
+use HeidelpayMGW\Methods\SepaDirectDebitPaymentMethod;
 use HeidelpayMGW\Models\PaymentInformation;
 use HeidelpayMGW\Methods\IdealPaymentMethod;
 use Plenty\Modules\Document\Models\Document;
 use HeidelpayMGW\Methods\PaypalPaymentMethod;
 use HeidelpayMGW\Methods\SofortPaymentMethod;
 use HeidelpayMGW\Methods\InvoicePaymentMethod;
-use HeidelpayMGW\Methods\FlexipayPaymentMethod;
-use HeidelpayMGW\Methods\CreditCardPaymentMethod;
+use HeidelpayMGW\Methods\FlexiPayDirectPaymentMethod;
+use HeidelpayMGW\Methods\CardsPaymentMethod;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Methods\SepaGuaranteedPaymentMethod;
+use HeidelpayMGW\Methods\SepaDirectDebitGuaranteedPaymentMethod;
 use HeidelpayMGW\Providers\PluginRouteServiceProvider;
 use Plenty\Modules\Order\Pdf\Models\OrderPdfGeneration;
 use HeidelpayMGW\Methods\InvoiceGuaranteedPaymentMethod;
 use Plenty\Modules\Basket\Events\Basket\AfterBasketCreate;
 use Plenty\Modules\Payment\Events\Checkout\ExecutePayment;
-use HeidelpayMGW\Methods\InvoiceGuaranteedPaymentMethodB2B;
+use HeidelpayMGW\Methods\InvoiceGuaranteedPaymentMethodB2b;
 use HeidelpayMGW\Repositories\PaymentInformationRepository;
 use HeidelpayMGW\EventProcedures\RefundTransactionProcedure;
 use Plenty\Modules\Order\Pdf\Events\OrderPdfGenerationEvent;
@@ -41,7 +41,7 @@ use Plenty\Modules\Payment\Method\Contracts\PaymentMethodContainer;
 /**
  * Service provider of plugin
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ class PluginServiceProvider extends ServiceProvider
     {
         $this->getApplication()->register(PluginRouteServiceProvider::class);
     }
-    
+
     /**
      * Everything that needs constant attention goes here. Like system events and so on.
      *
@@ -80,7 +80,8 @@ class PluginServiceProvider extends ServiceProvider
      * @param PaymentMethodContainer $payContainer  Plentymarkets PaymentMethodContainer
      * @param SessionHelper $sessionHelper  Helper class to save information to session
      * @param Dispatcher $eventDispatcher  Plentymarkets event Dispatcher
-     * @param PaymentInformationRepository $paymentInformationRepository  Heidelpay payment information repository
+     * @param PaymentInformationRepository $paymentInformationRepository  heidelpay payment information repository
+     * @param EventProceduresService $eventProceduresService
      *
      * @return void
      */
@@ -92,78 +93,78 @@ class PluginServiceProvider extends ServiceProvider
         PaymentInformationRepository $paymentInformationRepository,
         EventProceduresService $eventProceduresService
     ) {
-        //Invoice
+        // Invoice
         $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE,
             InvoicePaymentMethod::class,
             $this->paymentMethodEvents()
         );
-        //Invoice guaranteed B2C
+        // Invoice guaranteed B2C
         $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED,
             InvoiceGuaranteedPaymentMethod::class,
             $this->paymentMethodEvents()
         );
-        //Invoice guaranteed B2B
+        // Invoice guaranteed B2B
         $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B,
-            InvoiceGuaranteedPaymentMethodB2B::class,
+            InvoiceGuaranteedPaymentMethodB2b::class,
             $this->paymentMethodEvents()
         );
-        //Credit card
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_CREDIT_CARD);
+        // Credit/Debit card
+        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_CARDS);
         $payContainer->register(
-            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_CREDIT_CARD,
-            CreditCardPaymentMethod::class,
+            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_CARDS,
+            CardsPaymentMethod::class,
             $this->paymentMethodEvents()
         );
-        //Sepa
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SEPA);
+        // SEPA Direct Debit
+        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT);
         $payContainer->register(
-            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SEPA,
-            SepaPaymentMethod::class,
+            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT,
+            SepaDirectDebitPaymentMethod::class,
             $this->paymentMethodEvents()
         );
-        //Sepa guaranteed
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED);
+        // SEPA Direct Debit Guaranteed
+        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT_GUARANTEED);
         $payContainer->register(
-            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED,
-            SepaGuaranteedPaymentMethod::class,
+            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT_GUARANTEED,
+            SepaDirectDebitGuaranteedPaymentMethod::class,
             $this->paymentMethodEvents()
         );
-        //Paypal
+        // PayPal
         $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_PAYPAL);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_PAYPAL,
             PaypalPaymentMethod::class,
             $this->paymentMethodEvents()
         );
-        //iDEAL
+        // iDEAL
         $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_IDEAL);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_IDEAL,
             IdealPaymentMethod::class,
             $this->paymentMethodEvents()
         );
-        //Sofort
+        // Sofort
         $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SOFORT);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SOFORT,
             SofortPaymentMethod::class,
             $this->paymentMethodEvents()
         );
-        //Flexipay
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_FLEXIPAY);
+        // FlexiPay Direct
+        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT);
         $payContainer->register(
-            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_FLEXIPAY,
-            FlexipayPaymentMethod::class,
+            PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT,
+            FlexiPayDirectPaymentMethod::class,
             $this->paymentMethodEvents()
         );
 
-        //charge authorization event
+        // charge authorization event
         $eventProceduresService->registerProcedure(
             'authorizationCharge',
             ProcedureEntry::EVENT_TYPE_ORDER,

@@ -9,7 +9,7 @@ use HeidelpayMGW\Models\PaymentInformation;
 /**
  * Payment information repository
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ class PaymentInformationRepository
     /**
      * Returns PaymentInformation model by external Order ID
      *
-     * @param string $externalOrderId  Heidelpay Order ID
+     * @param string $externalOrderId  heidelpay Order ID
      *
      * @return PaymentInformation|null
      */
@@ -79,7 +79,7 @@ class PaymentInformationRepository
     /**
      * Returns PaymentInformation model by Payment resource ID.
      *
-     * @param string $paymentResourceId  Heidelpay payment type
+     * @param string $paymentResourceId  heidelpay payment type
      *
      * @return PaymentInformation|null  Returns PaymentInformation with information such as OrderId, ExternalOrderId,
      *                                  PaymentResourceId, payment transaction information, like shortId, amount and so on.

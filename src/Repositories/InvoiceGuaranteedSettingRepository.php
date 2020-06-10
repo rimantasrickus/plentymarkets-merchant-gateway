@@ -7,7 +7,7 @@ use HeidelpayMGW\Models\InvoiceGuaranteedSetting;
 /**
  * Invoice guaranteed settings repository
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,29 +35,5 @@ class InvoiceGuaranteedSettingRepository extends BaseSettingRepository
     public function __construct()
     {
         parent::__construct(pluginApp(InvoiceGuaranteedSetting::class));
-    }
-
-    /**
-     * Get Heidelpay return reason
-     *
-     * @param string $returnId  Plenty return reason ID
-     *
-     * @return string
-     */
-    public function getReturnCode(string $returnId): string
-    {
-        $model = $this->get();
-
-        if ($model->reasonCodeCancel === $returnId) {
-            return 'CANCEL';
-        }
-        if ($model->reasonCodeReturn === $returnId) {
-            return 'RETURN';
-        }
-        if ($model->reasonCodeCredit === $returnId) {
-            return 'CREDIT';
-        }
-
-        return 'CANCEL';
     }
 }

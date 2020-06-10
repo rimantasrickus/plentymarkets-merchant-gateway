@@ -6,13 +6,11 @@ use Plenty\Plugin\Templates\Twig;
 use HeidelpayMGW\Helpers\ApiKeysHelper;
 use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
-use HeidelpayMGW\Repositories\InvoiceGuaranteedB2BSettingRepository;
 
 /**
 * Returns rendered BuyNowButton twig template
 *
-* Copyright (C) 2019 heidelpay GmbH
+* Copyright (C) 2020 heidelpay GmbH
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -39,17 +37,13 @@ class BuyNowButtonContainer
      *
      * @param Twig $twig  Twig templating engine
      * @param PaymentHelper $paymentHelper  Payment helper class
-     * @param InvoiceGuaranteedSettingRepository $invoiceGuaranteedRepo  Invoice guaranteed settings repository to get guaranteed or factoring flag
-     * @param InvoiceGuaranteedB2BSettingRepository $invoiceGuaranteedB2BRepo  Invoice guaranteed B2B settings repository to get guaranteed or factoring flag
-     * @param ApiKeysHelper $apiKeysHelper  Returns Api keys depending if it's sandbox or production mode
+     * @param ApiKeysHelper $apiKeysHelper  Returns Api keys
      *
      * @return string
      */
     public function call(
         Twig $twig,
         PaymentHelper $paymentHelper,
-        InvoiceGuaranteedSettingRepository $invoiceGuaranteedRepo,
-        InvoiceGuaranteedB2BSettingRepository $invoiceGuaranteedB2BRepo,
         ApiKeysHelper $apiKeysHelper
     ): string {
         $data = [
@@ -58,17 +52,15 @@ class BuyNowButtonContainer
             'routeName' => PluginConfiguration::PLUGIN_NAME,
             'invoice' => PluginConfiguration::PAYMENT_KEY_INVOICE,
             'invoiceGuaranteed' => PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED,
-            'useInvoiceFactoring' => $invoiceGuaranteedRepo->get()->guaranteedOrFactoring,
-            'invoiceGuaranteedB2B' => PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B,
-            'useInvoiceB2BFactoring' => $invoiceGuaranteedB2BRepo->get()->guaranteedOrFactoring,
-            'creditCard' => PluginConfiguration::PAYMENT_KEY_CREDIT_CARD,
-            'sepa' => PluginConfiguration::PAYMENT_KEY_SEPA,
-            'sepaGuaranteed' => PluginConfiguration::PAYMENT_KEY_SEPA_GUARANTEED,
-            'sepaMandateError' => 'Please agree to SEPA Mandate',
+            'invoiceGuaranteedB2b' => PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B,
+            'cards' => PluginConfiguration::PAYMENT_KEY_CARDS,
+            'sepaDirectDebit' => PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT,
+            'sepaDirectDebitGuaranteed' => PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT_GUARANTEED,
+            'sepaDirectDebitMandateError' => 'Please agree to SEPA Direct Debit Mandate',
             'paypal' => PluginConfiguration::PAYMENT_KEY_PAYPAL,
             'ideal' => PluginConfiguration::PAYMENT_KEY_IDEAL,
             'sofort' => PluginConfiguration::PAYMENT_KEY_SOFORT,
-            'flexipay' => PluginConfiguration::PAYMENT_KEY_FLEXIPAY
+            'flexipayDirect' => PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT
         ];
 
         return $twig->render(

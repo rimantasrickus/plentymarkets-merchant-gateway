@@ -17,7 +17,7 @@ use HeidelpayMGW\Repositories\InvoiceGuaranteedSettingRepository;
 /**
  * Invoice Guaranteed payment service class
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
     /**
      * Make API call to cancel charge
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param Order $order  Plenty Order
      * @param int $originalOrderId Original Plenty Order ID
      *
@@ -102,22 +102,6 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
         /** @var array $data */
         $data = parent::prepareCancelTransactionRequest($paymentInformation, $order);
 
-        if ($paymentInformation->paymentMethod === PluginConfiguration::INVOICE_FACTORING) {
-            /** @var InvoiceGuaranteedSettingRepository $invoiceGuaranteedSettingRepo */
-            $invoiceGuaranteedSettingRepo = pluginApp(InvoiceGuaranteedSettingRepository::class);
-            $reason = '';
-            /** @var OrderItem $item */
-            foreach ($order->orderItems as $item) {
-                /** @var OrderItemProperty $property */
-                foreach ($item->properties as $property) {
-                    if ($property->typeId === OrderPropertyType::RETURNS_REASON) {
-                        /** @var string $reason */
-                        $reason = $invoiceGuaranteedSettingRepo->getReturnCode($property->value);
-                    }
-                }
-            }
-            $data['reason'] = $reason;
-        }
         /** @var array $libResponse */
         $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::cancelTransaction', $data);
         /** @var string $commentText */
@@ -157,7 +141,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
      * Update plentymarkets Order with external Order ID and comment
      *
      * @param int $orderId  Plenty Order ID
-     * @param string $externalOrderId  Heidelpay Order ID
+     * @param string $externalOrderId  heidelpay Order ID
      *
      * @return void
      */
@@ -184,7 +168,7 @@ class InvoiceGuaranteedPaymentService extends AbstractPaymentService
     /**
      * Make API call ship to finalize transaction
      *
-     * @param PaymentInformation $paymentInformation  Heidelpay payment information
+     * @param PaymentInformation $paymentInformation  heidelpay payment information
      * @param integer $orderId  Plenty Order ID
      *
      * @throws Exception

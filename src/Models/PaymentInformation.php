@@ -8,7 +8,7 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Model;
 /**
  * PaymentInformation model
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,16 +36,16 @@ class PaymentInformation extends Model
     /** @var string $orderId  Plenty Order ID */
     public $orderId = '';
 
-    /** @var string $externalOrderId  Heidelpay Order ID */
+    /** @var string $externalOrderId  heidelpay Order ID */
     public $externalOrderId = '';
 
-    /** @var string $paymentMethod  Heidelpay payment method */
+    /** @var string $paymentMethod  heidelpay payment method */
     public $paymentMethod = '';
 
-    /** @var string $paymentType  Heidelpay payment type ID */
+    /** @var string $paymentType  heidelpay payment type ID */
     public $paymentType = '';
 
-    /** @var array $transaction  Heidelpay payment transaction information like payment ID, amount, redirect URL and so on */
+    /** @var array $transaction  heidelpay payment transaction information like payment ID, amount, redirect URL and so on */
     public $transaction = array();
 
     /**
@@ -55,7 +55,8 @@ class PaymentInformation extends Model
      */
     public function getTableName(): string
     {
-        return PluginConfiguration::PLUGIN_NAME.'::'.explode('\\', __CLASS__)[2];
+        /** @noinspection OffsetOperationsInspection */
+        return PluginConfiguration::PLUGIN_NAME.'::'. explode('\\', __CLASS__)[2];
     }
 
     /**

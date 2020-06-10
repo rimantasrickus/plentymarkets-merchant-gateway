@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response as BaseResponse;
 /**
  * Class for Database manipulation
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,11 +74,11 @@ class TestController extends Controller
             $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\PluginSetting');
             $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\InvoiceSetting');
             $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\InvoiceGuaranteedSetting');
-            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\InvoiceGuaranteedB2BSetting');
-            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\CreditCardSetting');
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\InvoiceGuaranteedB2bSetting');
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\CardsSetting');
             $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\PaypalSetting');
-            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\SepaSetting');
-            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\SepaGuaranteedSetting');
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\SepaDirectDebitSetting');
+            $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\SepaDirectDebitGuaranteedSetting');
         } else {
             $migrate->updateTable(PluginConfiguration::PLUGIN_NAME.'\\Models\\'.$model);
         }

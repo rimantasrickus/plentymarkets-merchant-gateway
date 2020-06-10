@@ -12,7 +12,7 @@ use HeidelpayMGW\Repositories\PaypalSettingRepository;
 /**
  * PayPal payment service
  *
- * Copyright (C) 2019 heidelpay GmbH
+ * Copyright (C) 2020 heidelpay GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,10 +75,10 @@ class PaypalPaymentService extends AbstractPaymentService
     {
         $data = $this->prepareChargeRequest($payment);
         
-        if ($this->paypalSettings->mode == PluginConfiguration::AUTHORIZATION_CAPTURE) {
+        if ($this->paypalSettings->mode === PluginConfiguration::AUTHORIZATION_CAPTURE) {
             $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::authorisationCapture', $data);
         } else {
-            $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::directDebit', $data);
+            $libResponse = $this->libCall->call(PluginConfiguration::PLUGIN_NAME.'::charge', $data);
         }
         
         $this->getLogger(__METHOD__)->debug(
