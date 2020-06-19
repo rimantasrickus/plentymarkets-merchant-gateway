@@ -70,8 +70,8 @@ class PluginRouteServiceProvider extends RouteServiceProvider
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/sepa-direct-debit-settings', 'SepaDirectDebitSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/sepa-direct-debit-settings', 'SepaDirectDebitSettingsController@saveSettings');
                 // SEPA Direct Debit guaranteed settings
-                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/sepa-direct-debit-guaranteed-settings', 'sepaDirectDebitGuaranteedSettingsController@getSettings');
-                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/sepa-direct-debit-guaranteed-settings', 'sepaDirectDebitGuaranteedSettingsController@saveSettings');
+                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/sepa-direct-debit-guaranteed-settings', 'SepaDirectDebitGuaranteedSettingsController@getSettings');
+                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/sepa-direct-debit-guaranteed-settings', 'SepaDirectDebitGuaranteedSettingsController@saveSettings');
                 // PayPal settings
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/paypal-settings', 'PaypalSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/paypal-settings', 'PaypalSettingsController@saveSettings');
@@ -82,8 +82,8 @@ class PluginRouteServiceProvider extends RouteServiceProvider
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/sofort-settings', 'SofortSettingsController@getSettings');
                 $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/sofort-settings', 'SofortSettingsController@saveSettings');
                 // FlexiPay Direct settings
-                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/flexipay-direct-settings', 'FlexipayDirectSettingsController@getSettings');
-                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/flexipay-direct-settings', 'FlexipayDirectSettingsController@saveSettings');
+                $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/flexipay-direct-settings', 'FlexiPayDirectSettingsController@getSettings');
+                $apiRouter->post(PluginConfiguration::PLUGIN_NAME.'/flexipay-direct-settings', 'FlexiPayDirectSettingsController@saveSettings');
 
                 //Test
                 $apiRouter->get(PluginConfiguration::PLUGIN_NAME.'/show', 'TestController@show');
