@@ -87,7 +87,7 @@ function prepareHeidelpayPayment() {
 
                 document.getElementById('heidelpayCardsSubmit').onclick = function() {
                     document.getElementById('heidelpayCardsSubmit').disabled = true;
-                    document.getElementById('ccModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
+                    document.getElementById('cardsModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
                     heidelpayPayment(placeOrderComponent, card);
                 };
                 return;
