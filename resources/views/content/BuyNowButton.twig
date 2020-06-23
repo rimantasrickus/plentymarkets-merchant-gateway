@@ -50,7 +50,7 @@ function prepareHeidelpayPayment() {
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{invoiceGuaranteedB2b}}') {
                 // Creating a customer instance
-                var Customer = heidelpayInstance.B2bCustomer()
+                var Customer = heidelpayInstance.B2BCustomer()
                 // Rendering the customer form
                 Customer.create({
                     containerId: 'customerB2b',
