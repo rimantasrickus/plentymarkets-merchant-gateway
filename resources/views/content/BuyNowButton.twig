@@ -50,7 +50,7 @@ function prepareHeidelpayPayment() {
             }
             if (mop.id === getHeidelpayBasketMOP() && mop.paymentKey === '{{invoiceGuaranteedB2b}}') {
                 // Creating a customer instance
-                var Customer = heidelpayInstance.B2bCustomer()
+                var Customer = heidelpayInstance.B2BCustomer()
                 // Rendering the customer form
                 Customer.create({
                     containerId: 'customerB2b',
@@ -87,7 +87,7 @@ function prepareHeidelpayPayment() {
 
                 document.getElementById('heidelpayCardsSubmit').onclick = function() {
                     document.getElementById('heidelpayCardsSubmit').disabled = true;
-                    document.getElementById('ccModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
+                    document.getElementById('cardsModalPayButtonArrow').className = 'fa fa-circle-o-notch fa-spin';
                     heidelpayPayment(placeOrderComponent, card);
                 };
                 return;
@@ -291,7 +291,7 @@ function showErrorNotification(errorText) {
 
 function enableButtons() {
     document.getElementById('heidelpayCardsSubmit').disabled = false;
-    document.getElementById('ccModalPayButtonArrow').className = '';
+    document.getElementById('cardsModalPayButtonArrow').className = '';
     document.getElementById('heidelpaySepaDirectDebitSubmit').disabled = false;
     document.getElementById('sepaDirectDebitModalPayButtonArrow').className = '';
     document.getElementById('heidelpaySepaDirectDebitGuaranteedSubmit').disabled = false;
