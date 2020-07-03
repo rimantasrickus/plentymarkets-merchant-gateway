@@ -2,11 +2,11 @@
 
 namespace HeidelpayMGW\Methods;
 
-use Plenty\Plugin\Application;
-use HeidelpayMGW\Services\BasketService;
-use Plenty\Plugin\Translation\Translator;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use Plenty\Modules\Payment\Method\Contracts\PaymentMethodService;
+use HeidelpayMGW\Services\BasketService;
+use Plenty\Modules\Payment\Method\Services\PaymentMethodBaseService;
+use Plenty\Plugin\Application;
+use Plenty\Plugin\Translation\Translator;
 
 /**
 * Base payment method class
@@ -31,7 +31,7 @@ use Plenty\Modules\Payment\Method\Contracts\PaymentMethodService;
 *
 * @package  heidelpayMGW/methods
 */
-class BasePaymentMethod extends PaymentMethodService
+class BasePaymentMethod extends PaymentMethodBaseService
 {
     const AVAILABLE_COUNTRIES = [];
 
@@ -110,7 +110,8 @@ class BasePaymentMethod extends PaymentMethodService
     {
         $app = pluginApp(Application::class);
         
-        return $this->settings->iconURL ?: $app->getUrlPath(PluginConfiguration::PLUGIN_NAME) . '/images/default_payment_icon.png';
+        return $this->settings->iconURL ?: $app->getUrlPath(PluginConfiguration::PLUGIN_NAME) .
+            '/images/default_payment_icon.png';
     }
 
     /**
