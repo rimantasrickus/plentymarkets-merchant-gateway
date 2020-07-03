@@ -84,9 +84,10 @@ class BasePaymentMethod extends PaymentMethodBaseService
     /**
      * Get the name of the payment method
      *
+     * @param string $lang
      * @return string  Payment method's name in checkout or PDF document
      */
-    public function getName(): string
+    public function getName(string $lang = ""): string
     {
         return $this->settings->displayName;
     }
@@ -96,7 +97,7 @@ class BasePaymentMethod extends PaymentMethodBaseService
      *
      * @return float
      */
-    public function getFee()
+    public function getFee(): float
     {
         return 0.00;
     }
@@ -104,9 +105,10 @@ class BasePaymentMethod extends PaymentMethodBaseService
     /**
      * Get the path of the icon
      *
+     * @param string $lang
      * @return string  Icon path to display in checkout
      */
-    public function getIcon(): string
+    public function getIcon(string $lang = ""): string
     {
         $app = pluginApp(Application::class);
         
@@ -118,11 +120,12 @@ class BasePaymentMethod extends PaymentMethodBaseService
      * Get the description of the payment method
      * Child class should implement it's own method
      *
+     * @param string $lang
      * @return string
      */
-    public function getDescription(): string
+    public function getDescription(string $lang = ""): string
     {
-        return'';
+        return '';
     }
 
     /**
