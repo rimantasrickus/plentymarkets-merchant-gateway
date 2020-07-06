@@ -94,70 +94,60 @@ class PluginServiceProvider extends ServiceProvider
         EventProceduresService $eventProceduresService
     ) {
         // Invoice
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE,
             InvoicePaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // Invoice guaranteed B2C
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED,
             InvoiceGuaranteedPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // Invoice guaranteed B2B
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B,
             InvoiceGuaranteedPaymentMethodB2b::class,
             $this->paymentMethodEvents()
         );
         // Credit/Debit card
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_CARDS);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_CARDS,
             CardsPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // SEPA Direct Debit
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT,
             SepaDirectDebitPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // SEPA Direct Debit Guaranteed
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT_GUARANTEED);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT_GUARANTEED,
             SepaDirectDebitGuaranteedPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // PayPal
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_PAYPAL);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_PAYPAL,
             PaypalPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // iDEAL
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_IDEAL);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_IDEAL,
             IdealPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // Sofort
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SOFORT);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SOFORT,
             SofortPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // FlexiPay Direct
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT,
             FlexiPayDirectPaymentMethod::class,
