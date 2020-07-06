@@ -142,4 +142,68 @@ class BasePaymentMethod extends PaymentMethodBaseService
 
         return true;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSourceUrl(string $lang = ""): string
+    {
+        return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isSwitchableTo(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isSwitchableFrom(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isBackendSearchable(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isBackendActive(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBackendName(string $lang = ""): string
+    {
+        return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function canHandleSubscriptions(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBackendIcon(): string
+    {
+        return '';
+    }
 }
