@@ -159,7 +159,7 @@ class PluginServiceProvider extends ServiceProvider
             'authorizationCharge',
             ProcedureEntry::EVENT_TYPE_ORDER,
             [
-                'de' => 'Authorization charge ('.PluginConfiguration::PLUGIN_NAME.')',
+                'de' => 'Charge Transaktion ('.PluginConfiguration::PLUGIN_NAME.')',
                 'en' => 'Authorization charge ('.PluginConfiguration::PLUGIN_NAME.')'
             ],
             AuthorizationChargeProcedure::class . '@handle'
@@ -169,17 +169,17 @@ class PluginServiceProvider extends ServiceProvider
             'finalizeTransaction',
             ProcedureEntry::EVENT_TYPE_ORDER,
             [
-                'de' => 'Finalize transaction ('.PluginConfiguration::PLUGIN_NAME.')',
+                'de' => 'Finalize Transaktion ('.PluginConfiguration::PLUGIN_NAME.')',
                 'en' => 'Finalize transaction ('.PluginConfiguration::PLUGIN_NAME.')'
             ],
             FinalizeTransactionProcedure::class . '@handle'
         );
         //perform refund transaction
         $eventProceduresService->registerProcedure(
-            'finalizeTransaction',
+            'cancelTransaction',
             ProcedureEntry::EVENT_TYPE_ORDER,
             [
-                'de' => 'Cancel transaction ('.PluginConfiguration::PLUGIN_NAME.')',
+                'de' => 'Cancel Transaktion ('.PluginConfiguration::PLUGIN_NAME.')',
                 'en' => 'Cancel transaction ('.PluginConfiguration::PLUGIN_NAME.')'
             ],
             RefundTransactionProcedure::class . '@handle'
