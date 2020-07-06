@@ -247,7 +247,7 @@ class PluginServiceProvider extends ServiceProvider
                 try {
                     //if payment method not ours, we don't care
                     if (!$paymentHelper->isHeidelpayMGWMOP($event->getMop())) {
-                        return $event->setType(GetPaymentMethodContent::RETURN_TYPE_CONTINUE);
+                        return;
                     }
                     /** @var array $paymentInformation */
                     $paymentInformation = $sessionHelper->getValue('paymentInformation');
