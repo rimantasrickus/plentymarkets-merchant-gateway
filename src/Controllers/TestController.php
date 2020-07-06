@@ -38,10 +38,6 @@ class TestController extends Controller
 {
     use Loggable;
 
-    public function __construct()
-    {
-    }
-
     /**
      * Reset model
      *
@@ -98,6 +94,7 @@ class TestController extends Controller
     {
         $model = $request->get('model');
         
-        return $response->json(pluginApp(DataBase::class)->query(PluginConfiguration::PLUGIN_NAME.'\\Models\\'.$model)->get());
+        return $response->json(pluginApp(DataBase::class)
+            ->query(PluginConfiguration::PLUGIN_NAME.'\\Models\\'.$model)->get());
     }
 }
