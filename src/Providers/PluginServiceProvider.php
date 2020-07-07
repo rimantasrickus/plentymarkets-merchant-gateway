@@ -160,7 +160,7 @@ class PluginServiceProvider extends ServiceProvider
             ProcedureEntry::EVENT_TYPE_ORDER,
             [
                 'de' => 'Charge Transaktion ('.PluginConfiguration::PLUGIN_NAME.')',
-                'en' => 'Authorization charge ('.PluginConfiguration::PLUGIN_NAME.')'
+                'en' => 'Charge transaction ('.PluginConfiguration::PLUGIN_NAME.')'
             ],
             AuthorizationChargeProcedure::class . '@handle'
         );
