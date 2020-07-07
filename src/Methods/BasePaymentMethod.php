@@ -180,7 +180,7 @@ class BasePaymentMethod extends PaymentMethodBaseService
      */
     public function isBackendActive(): bool
     {
-        return true;
+        return false;
     }
 
     /**
