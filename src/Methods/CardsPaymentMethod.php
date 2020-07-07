@@ -44,4 +44,13 @@ class CardsPaymentMethod extends BasePaymentMethod
     {
         return parent::isActive();
     }
+
+    /**
+     * @param string $lang
+     * @return string
+     */
+    public function getBackendName(string $lang = ""): string
+    {
+        return 'Heidelpay MGW Cards';
+    }
 }
