@@ -172,7 +172,7 @@ class BasePaymentMethod extends PaymentMethodBaseService
      */
     public function isBackendSearchable(): bool
     {
-        return false;
+        return true;
     }
 
     /**
