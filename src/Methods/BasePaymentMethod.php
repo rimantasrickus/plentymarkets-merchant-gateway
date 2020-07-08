@@ -2,11 +2,11 @@
 
 namespace HeidelpayMGW\Methods;
 
-use Plenty\Plugin\Application;
-use HeidelpayMGW\Services\BasketService;
-use Plenty\Plugin\Translation\Translator;
 use HeidelpayMGW\Configuration\PluginConfiguration;
-use Plenty\Modules\Payment\Method\Contracts\PaymentMethodService;
+use HeidelpayMGW\Services\BasketService;
+use Plenty\Modules\Payment\Method\Services\PaymentMethodBaseService;
+use Plenty\Plugin\Application;
+use Plenty\Plugin\Translation\Translator;
 
 /**
 * Base payment method class
@@ -31,7 +31,7 @@ use Plenty\Modules\Payment\Method\Contracts\PaymentMethodService;
 *
 * @package  heidelpayMGW/methods
 */
-class BasePaymentMethod extends PaymentMethodService
+class BasePaymentMethod extends PaymentMethodBaseService
 {
     const AVAILABLE_COUNTRIES = [];
 
@@ -84,9 +84,10 @@ class BasePaymentMethod extends PaymentMethodService
     /**
      * Get the name of the payment method
      *
+     * @param string $lang
      * @return string  Payment method's name in checkout or PDF document
      */
-    public function getName(): string
+    public function getName(string $lang = ""): string
     {
         return $this->settings->displayName;
     }
@@ -96,7 +97,7 @@ class BasePaymentMethod extends PaymentMethodService
      *
      * @return float
      */
-    public function getFee()
+    public function getFee(): float
     {
         return 0.00;
     }
@@ -104,24 +105,27 @@ class BasePaymentMethod extends PaymentMethodService
     /**
      * Get the path of the icon
      *
+     * @param string $lang
      * @return string  Icon path to display in checkout
      */
-    public function getIcon(): string
+    public function getIcon(string $lang = ""): string
     {
         $app = pluginApp(Application::class);
         
-        return $this->settings->iconURL ?: $app->getUrlPath(PluginConfiguration::PLUGIN_NAME) . '/images/default_payment_icon.png';
+        return $this->settings->iconURL ?: $app->getUrlPath(PluginConfiguration::PLUGIN_NAME) .
+            '/images/default_payment_icon.png';
     }
 
     /**
      * Get the description of the payment method
      * Child class should implement it's own method
      *
+     * @param string $lang
      * @return string
      */
-    public function getDescription(): string
+    public function getDescription(string $lang = ""): string
     {
-        return'';
+        return '';
     }
 
     /**
@@ -137,5 +141,69 @@ class BasePaymentMethod extends PaymentMethodService
         }
 
         return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSourceUrl(string $lang = ""): string
+    {
+        return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isSwitchableTo(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isSwitchableFrom(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isBackendSearchable(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isBackendActive(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBackendName(string $lang = ""): string
+    {
+        return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function canHandleSubscriptions(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBackendIcon(): string
+    {
+        return '';
     }
 }

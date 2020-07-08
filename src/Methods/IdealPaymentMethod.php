@@ -59,6 +59,15 @@ class IdealPaymentMethod extends BasePaymentMethod
     }
 
     /**
+     * @param string $lang
+     * @return string
+     */
+    public function getBackendName(string $lang = ""): string
+    {
+        return 'Heidelpay MGW iDEAL';
+    }
+
+    /**
      * Check if country of the address is in available countries list
      *
      * @return bool  True if not in the white list

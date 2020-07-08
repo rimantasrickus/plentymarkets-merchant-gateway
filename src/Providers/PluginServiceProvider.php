@@ -94,70 +94,60 @@ class PluginServiceProvider extends ServiceProvider
         EventProceduresService $eventProceduresService
     ) {
         // Invoice
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE,
             InvoicePaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // Invoice guaranteed B2C
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED,
             InvoiceGuaranteedPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // Invoice guaranteed B2B
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B,
             InvoiceGuaranteedPaymentMethodB2b::class,
             $this->paymentMethodEvents()
         );
         // Credit/Debit card
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_CARDS);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_CARDS,
             CardsPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // SEPA Direct Debit
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT,
             SepaDirectDebitPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // SEPA Direct Debit Guaranteed
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT_GUARANTEED);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SEPA_DIRECT_DEBIT_GUARANTEED,
             SepaDirectDebitGuaranteedPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // PayPal
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_PAYPAL);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_PAYPAL,
             PaypalPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // iDEAL
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_IDEAL);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_IDEAL,
             IdealPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // Sofort
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SOFORT);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_SOFORT,
             SofortPaymentMethod::class,
             $this->paymentMethodEvents()
         );
         // FlexiPay Direct
-        $paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT);
         $payContainer->register(
             PluginConfiguration::PLUGIN_KEY.'::'.PluginConfiguration::PAYMENT_KEY_FLEXIPAY_DIRECT,
             FlexiPayDirectPaymentMethod::class,
@@ -169,7 +159,7 @@ class PluginServiceProvider extends ServiceProvider
             'authorizationCharge',
             ProcedureEntry::EVENT_TYPE_ORDER,
             [
-                'de' => 'Authorization charge ('.PluginConfiguration::PLUGIN_NAME.')',
+                'de' => 'Autorisierung erfassen ('.PluginConfiguration::PLUGIN_NAME.')',
                 'en' => 'Authorization charge ('.PluginConfiguration::PLUGIN_NAME.')'
             ],
             AuthorizationChargeProcedure::class . '@handle'
@@ -179,17 +169,17 @@ class PluginServiceProvider extends ServiceProvider
             'finalizeTransaction',
             ProcedureEntry::EVENT_TYPE_ORDER,
             [
-                'de' => 'Finalize transaction ('.PluginConfiguration::PLUGIN_NAME.')',
+                'de' => 'Finalize Transaktion ('.PluginConfiguration::PLUGIN_NAME.')',
                 'en' => 'Finalize transaction ('.PluginConfiguration::PLUGIN_NAME.')'
             ],
             FinalizeTransactionProcedure::class . '@handle'
         );
         //perform refund transaction
         $eventProceduresService->registerProcedure(
-            'finalizeTransaction',
+            'cancelTransaction',
             ProcedureEntry::EVENT_TYPE_ORDER,
             [
-                'de' => 'Cancel transaction ('.PluginConfiguration::PLUGIN_NAME.')',
+                'de' => 'Cancel Transaktion ('.PluginConfiguration::PLUGIN_NAME.')',
                 'en' => 'Cancel transaction ('.PluginConfiguration::PLUGIN_NAME.')'
             ],
             RefundTransactionProcedure::class . '@handle'
@@ -247,7 +237,7 @@ class PluginServiceProvider extends ServiceProvider
                 try {
                     //if payment method not ours, we don't care
                     if (!$paymentHelper->isHeidelpayMGWMOP($event->getMop())) {
-                        return $event->setType(GetPaymentMethodContent::RETURN_TYPE_CONTINUE);
+                        return;
                     }
                     /** @var array $paymentInformation */
                     $paymentInformation = $sessionHelper->getValue('paymentInformation');

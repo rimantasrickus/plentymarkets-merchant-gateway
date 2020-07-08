@@ -1,9 +1,11 @@
 <?php
 namespace HeidelpayMGW\Migrations;
 
-use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
-
+use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Models\InvoiceGuaranteedB2bSetting;
+use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
 /**
  * Create InvoiceGuaranteedB2b model's table
@@ -30,6 +32,18 @@ use HeidelpayMGW\Models\InvoiceGuaranteedB2bSetting;
  */
 class CreateInvoiceGuaranteedB2bSettingTable extends BasePluginMigration
 {
+    use Loggable;
+
+    /**
+     * @var PaymentHelper
+     */
+    private $paymentHelper;
+
+    public function __construct(PaymentHelper $paymentHelper)
+    {
+        $this->paymentHelper = $paymentHelper;
+    }
+
     /**
      * Create InvoiceGuaranteedB2bSetting model's table
      *
@@ -40,5 +54,6 @@ class CreateInvoiceGuaranteedB2bSettingTable extends BasePluginMigration
     public function run(Migrate $migrate)
     {
         $this->createTable($migrate, InvoiceGuaranteedB2bSetting::class);
+        $this->paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_INVOICE_GUARANTEED_B2B);
     }
 }

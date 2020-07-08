@@ -1,10 +1,11 @@
 <?php
 namespace HeidelpayMGW\Migrations;
 
-use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
-
+use HeidelpayMGW\Configuration\PluginConfiguration;
 use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Models\SofortSetting;
+use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
 /**
  * Create SofortSetting model's table
@@ -34,6 +35,16 @@ class CreateSofortSettingTable extends BasePluginMigration
     use Loggable;
 
     /**
+     * @var PaymentHelper
+     */
+    private $paymentHelper;
+
+    public function __construct(PaymentHelper $paymentHelper)
+    {
+        $this->paymentHelper = $paymentHelper;
+    }
+
+    /**
      * Create SofortSetting model's table
      *
      * @param Migrate $migrate
@@ -43,5 +54,6 @@ class CreateSofortSettingTable extends BasePluginMigration
     public function run(Migrate $migrate)
     {
         $this->createTable($migrate, SofortSetting::class);
+        $this->paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_SOFORT);
     }
 }

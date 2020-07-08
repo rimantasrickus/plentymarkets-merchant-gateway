@@ -2,6 +2,9 @@
 
 namespace HeidelpayMGW\Migrations;
 
+use HeidelpayMGW\Configuration\PluginConfiguration;
+use HeidelpayMGW\Helpers\Loggable;
+use HeidelpayMGW\Helpers\PaymentHelper;
 use HeidelpayMGW\Models\CardsSetting;
 use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
 
@@ -30,6 +33,18 @@ use Plenty\Modules\Plugin\DataBase\Contracts\Migrate;
  */
 class CreateCardsSettingTable extends BasePluginMigration
 {
+    use Loggable;
+
+    /**
+     * @var PaymentHelper
+     */
+    private $paymentHelper;
+
+    public function __construct(PaymentHelper $paymentHelper)
+    {
+        $this->paymentHelper = $paymentHelper;
+    }
+
     /**
      * Create CardsSetting model's table
      *
@@ -40,5 +55,6 @@ class CreateCardsSettingTable extends BasePluginMigration
     public function run(Migrate $migrate)
     {
         $this->createTable($migrate, CardsSetting::class);
+        $this->paymentHelper->createMopIfNotExists(PluginConfiguration::PAYMENT_KEY_CARDS);
     }
 }
