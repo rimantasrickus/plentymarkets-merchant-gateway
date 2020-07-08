@@ -159,7 +159,7 @@ class PluginServiceProvider extends ServiceProvider
             'authorizationCharge',
             ProcedureEntry::EVENT_TYPE_ORDER,
             [
-                'de' => 'Autorisierung mit Erfassung ('.PluginConfiguration::PLUGIN_NAME.')',
+                'de' => 'Autorisierung erfassen ('.PluginConfiguration::PLUGIN_NAME.')',
                 'en' => 'Authorization charge ('.PluginConfiguration::PLUGIN_NAME.')'
             ],
             AuthorizationChargeProcedure::class . '@handle'
