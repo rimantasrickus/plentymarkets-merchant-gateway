@@ -21,5 +21,5 @@ Das Format basiert auf [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) u
 *   Erstveröffentlichung.
 
 [1.0.0]: https://github.com/heidelpay/plentymarkets-merchant-gateway/tree/1.0.0
-[1.0.1]: https://github.com/heidelpay/plentymarkets-merchant-gateway/compare/1.0.0...1.0.1
-[1.0.2]: https://github.com/heidelpay/plentymarkets-merchant-gateway/compare/1.0.1...1.0.2
+[1.0.1]: https://github.com/heidelpay/plentymarkets-merchant-gateway/compare/1.0.0..1.0.1
+[1.0.2]: https://github.com/heidelpay/plentymarkets-merchant-gateway/compare/1.0.1..1.0.2
