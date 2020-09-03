@@ -22,7 +22,7 @@ Dieses Modul basiert auf dem heidelpay php-sdk (https://github.com/heidelpay/hei
 + Für die Plugin-Konfiguration gehen Sie bitte zu `Einrichtung`->`Aufträge`->`Zahlung`->`Plugins`->`Heidelpay`.
 
 ## Plugin-Einstellungen
-####### Öffentlicher / Privater Schlüssel
+#### Öffentlicher / Privater Schlüssel
 Zum Erstellen von Zahlungsarten durch den Browser ist ein öffentlicher Schlüssel erforderlich.
 Der private Schlüssel ist für die Authentifizierung auf dem heidelpay-Server zur Durchführung von Transaktionen erforderlich.
 
@@ -34,19 +34,19 @@ Der erste Buchstabe des jeweiligen Schlüssels bestimmt die Umgebung in der das 
 > Die Webhooks dienen dazu, Änderungen an den Zahlungen mit dem Plentymarkets System zu synchronisieren.
 > Beispielsweise die Aktualisierung des Zahlungsstatus, sobald eine Rechnung von dem Kunden bezahlt wurde.
 
-####### Parameter der Zahlungsart
-###### Aktiv
+##### Parameter der Zahlungsart
+##### Aktiv
 Aktivieren Sie das Häckchen um die Zahlungsart auf der Checkout-Seite zur Verfügung zu stellen.
 
-###### Anzeigename
+##### Anzeigename
 Der Name der Zahlungsart wird auf der Checkout-Seite angezeigt.  
 Ein Standardname wird angezeigt, wenn die Eingabe leer gelassen wird.
 
-####### Min-/Max-Summe
+##### Min-/Max-Summe
 Die Zahlungsart steht nur dann zur Verfügung, wenn der Warenkorb eine Summe zwischen diesen Werten aufweist.
 Wenn Sie einen dieser Werte auf 0 setzen, wird die entsprechende Beschränkung deaktiviert.
 
-####### URL zum Zahlungssymbol
+##### URL zum Zahlungssymbol
 Damit wird ein Icon für die Zahlungsart definiert, das auf der Checkout-Seite zusätzlich zum Anzeigenamen angezeigt wird.
 Wenn das Feld leer gelassen wird, wird das Standardsymbol verwendet.  
 Voraussetzungen für die URL-Zeichenfolge:
@@ -54,7 +54,7 @@ Voraussetzungen für die URL-Zeichenfolge:
 * sie muss mit 'http://' oder 'https://' beginnen
 * sie muss mit '.jpg', '.png' oder '.gif' enden
 
-####### Transaktionsmodus (Kartenzahlung und Paypal)
+##### Transaktionsmodus (Kartenzahlung und Paypal)
 Kartenzahlungen und Paypal können auf zwei verschiedene Arten verwendet werden:
 * Direktbelastung: das Bankkonto des Kunden wird direkt belastet.
 * Autorisieren und belasten: Zuerst wird eine Summe auf dem Konto des Kunden reserviert und Sie belasten diese Summe zu einem späteren Zeitpunkt.
