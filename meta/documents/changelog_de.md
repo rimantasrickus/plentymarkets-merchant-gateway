@@ -10,7 +10,7 @@ Das Format basiert auf [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) u
 ## [1.0.1][1.0.1]
 ### Change
 - BasePaymentMethod erbt von PaymentMethodBaseService
-- Payment Methods Werden über die Migrations angelegt
+- Payment Methods werden über die Migrations angelegt
 - Deutsche Übersetzung für die Ereignisse hinzugefügt
 
 ### Fix
