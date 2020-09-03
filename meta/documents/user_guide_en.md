@@ -61,4 +61,5 @@ Card payments and paypal can be used in two different modes:
 
 ## Manual
 For further information like a workflow description or how to create event procedures,
-please refer to our [manual] (https://dev.heidelpay.com/user-guide-plentymarkets-mgw-plugin)
+please refer to our [manual] (https://dev.heidelpay.de/handbuch-plentymarkets-merchant-gateway-plugin/) 
+Currently only available in german
