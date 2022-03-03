@@ -5,7 +5,7 @@ Das Format basiert auf [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) u
 
 ## [1.0.3][1.0.3]
 ### Fix
-- use correct language after redirect
+- Die Sprache des Kunden wird nun im Redirect in den Shop berücksichtigt.
 
 ## [1.0.2][1.0.2]
 ### Fix
